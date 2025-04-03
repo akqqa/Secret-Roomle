@@ -16,6 +16,13 @@
 
 // Can be boss, secret, shop, etc etc etc
 class Room{
+    constructor(posX, posY) {
+        this.type = "start";
+        this.posX = posX;
+        this.posY = posY;
+        this.deadEnd = false;
+        this.neighbours = [];
+    }
 
 }
 
@@ -68,16 +75,44 @@ class Generator {
 
     
     generateMap() { // Considered a separate map class, but no real point tbh since itd have to pass half the stuff anyway
+        let roomsRemaining = this.numRooms;
         // Start at center square
-        let center = [6, 6]
+        let center = [6, 6];
+        let [centerY, centerX] = center
+        let roomQueue = [];
+        // Place starting room in queue, and add to grid:
+        let startRoom = new Room(centerY,centerX)
+        roomQueue.push(startRoom);
+        this.map[centerY][centerX] = roomQueue[0];
+        console.log(this.map[centerY][centerX]);
+
+        // Loop over each room in queue
+        while (roomQueue.length != 0) {
+            // ADD counter so that every 16 rooms the start room is reseeded into queue :)
+            let currentRoom = roomQueue.shift();
+            // For each coordinate left, up, down, right of this room, see if youll create a new room, and follow game logic to do so. Then add each new room to both the queue and the map
+            // (down, up, right, left)
+            neighbourList = [[currentRoom.posY + 1, currentRoom.posX], [currentRoom.posY - 1, currentRoom.posX], [currentRoom.posY, currentRoom.posX + 1], [currentRoom.posY, currentRoom.posX - 1]]
+            neighbourList.array.forEach(element => {
+                // Perform checks to see if should generate a room here, and if so, add to queue and grid.
+                // Check 0: In bounds?
+                // Check 1: Is this space already occupied?
+                // Check 2: More than one filled neighbour already for this cell?
+                // Check 3: Rooms left?
+                // Check 4: 50% chance
+                // Create room here
+            });
+            // Blog post says a room is a dead end if it creates no neighbours, but is this true? say one doesnt create any, but later on it loops around and tries to put a room there from the other side. it can do this because no more than 2 already filled neighbours (does allow some loops see void). Therefore must wait till end, manually calculate dead ends, create list, sort by manhattan distance to start room (manhattan? no.. cause could loop around . hm. is there a way of doing it so they loop et it writes dead ends as it goes? AH write them as it goes then do a final pass of them and remove any that dont meet the criteria :) tht keeps it in order !!)
+
+        }
 
     }
  
 }
 
 let generator = new Generator(2, false, false, false);
-console.log(generator.map);
-generator.generateMap;
+generator.generateMap();
+
 
 
 
