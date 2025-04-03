@@ -92,8 +92,8 @@ class Generator {
             let currentRoom = roomQueue.shift();
             // For each coordinate left, up, down, right of this room, see if youll create a new room, and follow game logic to do so. Then add each new room to both the queue and the map
             // (down, up, right, left)
-            neighbourList = [[currentRoom.posY + 1, currentRoom.posX], [currentRoom.posY - 1, currentRoom.posX], [currentRoom.posY, currentRoom.posX + 1], [currentRoom.posY, currentRoom.posX - 1]]
-            neighbourList.array.forEach(element => {
+            let neighbourList = [[currentRoom.posY + 1, currentRoom.posX], [currentRoom.posY - 1, currentRoom.posX], [currentRoom.posY, currentRoom.posX + 1], [currentRoom.posY, currentRoom.posX - 1]]
+            neighbourList.forEach(element => {
                 // Perform checks to see if should generate a room here, and if so, add to queue and grid.
                 // Check 0: In bounds?
                 // Check 1: Is this space already occupied?
