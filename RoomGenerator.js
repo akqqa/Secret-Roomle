@@ -35,6 +35,7 @@ class Generator {
         this.numRooms = this.generateNumRooms();
         this.minDeadEnds = this.generateMinDeadEnds();
         this.map = [...Array(13)].map(e => Array(13));
+        this.deadEndQueue = [];
     }
 
     generateNumRooms() {
@@ -73,9 +74,16 @@ class Generator {
         return minDeadEnds;
     }
 
-    // Utility for generating all neighbouring rooms for a given room
+    // Utility for generating all neighbouring rooms for a given room - prunes those out of bounds
     generateNeighbours(room) {
-        return [new Room(room.posY + 1, room.posX), new Room(room.posY - 1, room.posX), new Room(room.posY, room.posX + 1), new Room(room.posY, room.posX - 1)];
+        let neighbours = [new Room(room.posY + 1, room.posX), new Room(room.posY - 1, room.posX), new Room(room.posY, room.posX + 1), new Room(room.posY, room.posX - 1)];
+        let neighboursPruned = [];
+        for (let i = 0; i < 4; i++) {
+            if (!(neighbours[i].posY < 0 || neighbours[i].posY >= 13 || neighbours[i].posX < 0 || neighbours[i].posX >= 13)) {
+                neighboursPruned.push(neighbours[i]);
+            }
+        }
+        return neighboursPruned;
     }
 
     
@@ -106,24 +114,18 @@ class Generator {
             // (down, up, right, left)
             // MAKE THESE ROOMS!!
             let neighbourList = this.generateNeighbours(currentRoom);
+            let roomCounter = 0;
             neighbourList.forEach(neighbour => {
                 // Perform checks to see if should generate a room here, and if so, add to queue and grid.
-                // Check 0: In bounds?
-                if (neighbour.posY < 0 || neighbour.posY >= 13 || neighbour.posX < 0 || neighbour.posX >= 13) {
-                    return;
-                }
                 // Check 1: Is this space already occupied?
-                if (typeof this.map[neighbour.posY][neighbour.posX] != "undefined") {
+                if (this.map[neighbour.posY][neighbour.posX] !== undefined) {
                     return;
                 }
                 // Check 2: More than one filled neighbour already for this cell?
                 let neighbourListSquared = this.generateNeighbours(neighbour);
                 let neighbourCounter = 0;
                 neighbourListSquared.forEach(neighbourSquared => {
-                    if (neighbourSquared.posY < 0 || neighbourSquared.posY >= 13 || neighbourSquared.posX < 0 || neighbourSquared.posX >= 13) {
-                        return;
-                    }
-                    if (typeof this.map[neighbourSquared.posY][neighbourSquared.posX] != "undefined") {
+                    if (this.map[neighbourSquared.posY][neighbourSquared.posX] !== undefined) {
                         neighbourCounter += 1;
                     }
                 })
@@ -132,7 +134,7 @@ class Generator {
                     if (this.stage != 12) { //   from manual testing looks like only void allows loops
                         return;
                     }
-                    if (neighbour > 2 || Math.random() < 0.85) {
+                    if (neighbour > 2 || Math.random() < 0.9) {
                         return;
                     }
                 }
@@ -148,14 +150,19 @@ class Generator {
                 this.map[neighbour.posY][neighbour.posX] = neighbour;
                 roomQueue.push(neighbour);
                 roomsRemaining -= 1;
+                roomCounter += 1;
             });
-            // Blog post says a room is a dead end if it creates no neighbours, but is this true? say one doesnt create any, but later on it loops around and tries to put a room there from the other side. it can do this because no more than 2 already filled neighbours (does allow some loops see void). Therefore must wait till end, manually calculate dead ends, create list, sort by manhattan distance to start room (manhattan? no.. cause could loop around . hm. is there a way of doing it so they loop et it writes dead ends as it goes? AH write them as it goes then do a final pass of them and remove any that dont meet the criteria :) tht keeps it in order !!)
+            // Blog post says a room is a dead end if it creates no neighbours, but is this true? say one doesnt create any, but later on it loops around and tries to put a room there from the other side. it can do this because no more than 2 already filled neighbours (does allow some loops see void). Therefore must wait till end, manually calculate dead ends, create list, sort by manhattan distance to start room (manhattan? no.. cause could loop around . hm. is there a way of doing it so they loop et it writes dead ends as it goes? AH write them as it goes then do a final pass of them and remove any that dont meet the criteria :) tht keeps it in order !!) - actually basically unnecceesary except for void so do it anyway lol
+            if (roomCounter == 0) {
+                this.deadEndQueue.push(currentRoom);
+            }
         }
     }
 
     generateMap() {
         while(1 == 1) {
             this.map = [...Array(13)].map(e => Array(13));
+            this.deadEndQueue = [];
             this.generateLayout();
             // Check conditions match?
             // First count rooms
@@ -170,7 +177,45 @@ class Generator {
             if (roomCounter != this.numRooms) {
                 continue;
             }
+            // Second, verify the dead end queue, and then check the count is correct - this usually takes off one (not sure why) but is needed in void
+            let deadEndQueuePruned = []
+            this.deadEndQueue.forEach(room => {
+                if (room.type == "start") {
+                    return;
+                }
+                let neighbours = this.generateNeighbours(room);
+                // If more than one neighbour, not a dead end so remove from queue
+                let neighbourCounter = 0;
+                neighbours.forEach(neighbour => {
+                    if (this.map[neighbour.posY][neighbour.posX] !== undefined) {
+                        neighbourCounter += 1;
+                    }
+                })
+                if (neighbourCounter == 1) {
+                    deadEndQueuePruned.push(room);
+                }
+            })
+            this.deadEndQueue = deadEndQueuePruned;
+            if (this.deadEndQueue.length < this.minDeadEnds) {
+                continue;
+            }
             break;
+        }
+
+        // Now a valid layout has been generated, place rooms in dead ends (for now just do boss, super secret, shop, item) - altho implement more to reduce amount of dead ends!!
+        this.deadEndQueue.pop().type = "boss";
+        this.deadEndQueue.pop().type = "supersecret";
+        if (this.stage < 7) {
+            this.deadEndQueue.pop().type = "shop";
+            this.deadEndQueue.pop().type = "item"
+            if (this.labyrinth) {
+                this.deadEndQueue.pop().type = "item";
+            }
+        } else if (this.stage == 12) {
+            // Void - generate 7 more boss rooms lol - can it be more ? idk look into that
+            for (let i = 0; i < 7; i++) {
+                this.deadEndQueue.pop().type = "boss";
+            }
         }
         
     }
@@ -181,9 +226,17 @@ class Generator {
                 if (this.map[j][i] === undefined) {
                     process.stdout.write("   ");
                 } else if (this.map[j][i].type == "start") {
+                    process.stdout.write("[.]");
+                } else if (this.map[j][i].type == "boss") {
+                    process.stdout.write("[B]");
+                } else if (this.map[j][i].type == "supersecret") {
                     process.stdout.write("[S]");
+                } else if (this.map[j][i].type == "shop") {
+                    process.stdout.write("[$]");
+                } else if (this.map[j][i].type == "item") {
+                    process.stdout.write("[I]");
                 } else {
-                    process.stdout.write("[X]");
+                    process.stdout.write("[ ]");
                 }
             }
             process.stdout.write("\n");
@@ -192,7 +245,7 @@ class Generator {
  
 }
 
-let generator = new Generator(12, false, false, false);
+let generator = new Generator(5, true, false, false);
 generator.generateMap();
 generator.printMap();
 
