@@ -8,6 +8,7 @@
 // thats the generator done! can buildother stuf on top later
 // large rooms and such arent necessary. cause gameplay doesnt matter rn lol m- this is basic. worst case can add later if really want to but not well documented.
 // ^ issue here is that, this algorithm wont have rock info and stuff, so.. its not super useful. but - again we dont know the game so would have to fake it anyway e.g select certain rooms that we know arent next to a secret room and say they have rocks on that side etc. - thats for gamifying it later
+// for rocks, go through and randomly assign "above blocked" "left blocked" etc to places where they can be blocked. this then narrows it down more. but make surenitiss liek 50 percent change or less even idk
 // It doesnt have to be perfect :) its jsut for fun !!! and for a small project to get you back into coding for fun like uni
 // Can add ultra secret once done for extra challenge, will require red rooms filling all empty space, then using connection rules
 // Gameplay can be like, first guess is nothing, each fail reveals new info such as boss room, rooms with blocked sides, etc.
@@ -15,6 +16,7 @@
 // Using https://bindingofisaacrebirth.fandom.com/wiki/Level_Generation and https://www.boristhebrave.com/2020/09/12/dungeon-generation-in-binding-of-isaac/ for algorithm
 
 // Can be boss, secret, shop, etc etc etc
+// Possibility for large rooms - each grid cell contains one room as usual, but can be duplicated in case of larger rooms with copies of the same object. hm. but then pos is weird. and so is getting neighbours. hm
 class Room{
     constructor(posY, posX) {
         this.type = "empty";
@@ -22,6 +24,7 @@ class Room{
         this.posX = posX;
         this.deadEnd = false;
         this.neighbours = [];
+        this.secretWeight = Math.floor(Math.random() * (15 - 10)) + 10;
     }
 
 }
@@ -84,6 +87,22 @@ class Generator {
             }
         }
         return neighboursPruned;
+    }
+
+    // Utility for finding existing neighbours
+    findNeighbours(room) {
+        let coords = [[room.posY + 1, room.posX], [room.posY - 1, room.posX], [room.posY, room.posX + 1], [room.posY, room.posX - 1]]
+        let neighbours = [];
+        coords.forEach(coord => {
+            // In bounds
+            if (coord[0] < 0 || coord[0] >= 13 || coord[1] < 0 || coord[1] >= 13) {
+                return;
+            }
+            if (this.map[coord[0]][coord[1]] instanceof  Room) {
+                neighbours.push(this.map[coord[0]][coord[1]]);
+            }
+        });
+        return neighbours;
     }
 
     
@@ -217,6 +236,64 @@ class Generator {
                 this.deadEndQueue.pop().type = "boss";
             }
         }
+
+
+        // Place the secret room.
+        // 1. loop through each undefined and create a room for it
+        // 2. assign each room a weight based on number of neighbours that are not candidates, or boss rooms, or secret rooms (if boss or secret room, weight = 0)
+        // 3. pick highest weight candidate
+        let candidates = [];
+        for(let i = 0; i < 13; i++) {
+            for(let j = 0; j < 13; j++) {
+                if (this.map[j][i] === undefined) {
+                    let room = new Room(j,i);
+                    room.type = "candidate";
+                    candidates.push(room);
+                }
+            }
+        }
+        candidates.forEach(candidate => {
+            let invalidFlag = false;
+            let candidateNeighbours = this.findNeighbours(candidate);
+            let numNeighbours = 0;
+            candidateNeighbours.forEach(neighbour => {
+                console.log(neighbour.type);
+                if (neighbour.type == "boss" || neighbour.type == "supersecret") {
+                    invalidFlag = true;
+                    return;
+                } 
+                numNeighbours += 1;
+            });
+            console.log("num neighbours:" + numNeighbours);
+            if (invalidFlag) {
+                candidate.secretWeight = 0;
+            } else if (numNeighbours == 2) {
+                candidate.secretWeight -= 3;
+            } else if (numNeighbours == 1) {
+                candidate.secretWeight -= 6
+            } else if (numNeighbours == 0) {
+                candidate.secretWeight = 0;
+            }
+            console.log(candidate.secretWeight);
+        });
+        // Find highest weight candidate (with some randomness for equal weights)
+        let topWeight = 0;
+        let bestCandidate = undefined;
+        candidates.forEach(candidate => {
+            if (candidate.secretWeight > topWeight) {
+                topWeight = candidate.secretWeight;
+                bestCandidate = candidate;
+            } else if (candidate.secretWeight == topWeight) {
+                // Random chance to replace current best candidate so there isnt a top left bias
+                if (Math.random() > 0.5) {
+                    //topWeight = candidate.secretWeight;
+                    bestCandidate = candidate;
+                }
+            }
+        });
+        // Place best candidate in map, others are garbage collected
+        bestCandidate.type = "secret";
+        this.map[bestCandidate.posY][bestCandidate.posX] = bestCandidate;
         
     }
 
@@ -231,6 +308,8 @@ class Generator {
                     process.stdout.write("[B]");
                 } else if (this.map[j][i].type == "supersecret") {
                     process.stdout.write("[S]");
+                } else if (this.map[j][i].type == "secret") {
+                    process.stdout.write("[s]");
                 } else if (this.map[j][i].type == "shop") {
                     process.stdout.write("[$]");
                 } else if (this.map[j][i].type == "item") {
@@ -245,7 +324,7 @@ class Generator {
  
 }
 
-let generator = new Generator(5, true, false, false);
+let generator = new Generator(12, false, false, false);
 generator.generateMap();
 generator.printMap();
 
