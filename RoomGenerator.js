@@ -12,12 +12,13 @@
 // It doesnt have to be perfect :) its jsut for fun !!! and for a small project to get you back into coding for fun like uni
 // Can add ultra secret once done for extra challenge, will require red rooms filling all empty space, then using connection rules
 // Gameplay can be like, first guess is nothing, each fail reveals new info such as boss room, rooms with blocked sides, etc.
+// ^ yep so, nothing, then reveal room types, then reveal blocked sides, anything else? idk
 
 // Using https://bindingofisaacrebirth.fandom.com/wiki/Level_Generation and https://www.boristhebrave.com/2020/09/12/dungeon-generation-in-binding-of-isaac/ for algorithm
 
 // Can be boss, secret, shop, etc etc etc
 // Possibility for large rooms - each grid cell contains one room as usual, but can be duplicated in case of larger rooms with copies of the same object. hm. but then pos is weird. and so is getting neighbours. hm
-class Room{
+export class Room{
     constructor(posY, posX) {
         this.type = "empty";
         this.posY = posY;
@@ -29,7 +30,7 @@ class Room{
 
 }
 
-class Generator {
+export class Generator {
     constructor(stage, labyrinth, lost, hard) {
         this.stage = stage;
         this.labyrinth = labyrinth;
@@ -124,9 +125,9 @@ class Generator {
         let resetCounter = -1;
         while (roomQueue.length != 0) {
             resetCounter += 1;
-            if (resetCounter != 0 && resetCounter % 16 == 0) {
-                roomQueue.unshift(startRoom);
-            }
+            // if (resetCounter != 0 && resetCounter % 16 == 0) {
+            //     roomQueue.unshift(startRoom);
+            // }
             // ADD counter so that every 16 rooms the start room is reseeded into queue :)
             let currentRoom = roomQueue.shift();
             // For each coordinate left, up, down, right of this room, see if youll create a new room, and follow game logic to do so. Then add each new room to both the queue and the map
@@ -324,11 +325,9 @@ class Generator {
  
 }
 
-let generator = new Generator(12, false, false, false);
-generator.generateMap();
-generator.printMap();
-
-
+// let generator = new Generator(4, false, false, false);
+// generator.generateMap();
+// generator.printMap();
 
 
 
