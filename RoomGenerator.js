@@ -18,6 +18,8 @@
 
 // Using https://bindingofisaacrebirth.fandom.com/wiki/Level_Generation and https://www.boristhebrave.com/2020/09/12/dungeon-generation-in-binding-of-isaac/ for algorithm
 
+const rockOdds = 0.4 // rockOdds chance of rock appearing in each valid space
+
 // Can be boss, secret, shop, etc etc etc
 // Possibility for large rooms - each grid cell contains one room as usual, but can be duplicated in case of larger rooms with copies of the same object. hm. but then pos is weird. and so is getting neighbours. hm
 export class Room{
@@ -28,6 +30,7 @@ export class Room{
         this.deadEnd = false;
         this.neighbours = [];
         this.secretWeight = Math.floor(Math.random() * (15 - 10)) + 10;
+        this.rocks = [false, false, false, false] // up, down, left, right
     }
 
 }
@@ -293,6 +296,36 @@ export class Generator {
         // Place best candidate in map, others are garbage collected
         bestCandidate.type = "secret";
         this.map[bestCandidate.posY][bestCandidate.posX] = bestCandidate;
+
+        // Final step - generate rock positions for rooms - to inform the player more about where the secret rooms could be 
+        // Impossible to get accurate odds so just do 50/50 and see how it feels from there lol
+        for(let i = 0; i < 13; i++) {
+            for(let j = 0; j < 13; j++) {
+                if (this.map[j][i] !== undefined && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss") {
+                    if (j > 0 && this.map[j-1][i] === undefined) {
+                        if (Math.random() < rockOdds) {
+                            this.map[j][i].rocks[0] = true;
+                        }
+                    }
+                    if (j < 12 && this.map[j+1][i] === undefined ) {
+                        if (Math.random() < rockOdds) {
+                            this.map[j][i].rocks[1] = true;
+                        }
+                    }
+                    if (i > 0 && this.map[j][i-1] === undefined) {
+                        if (Math.random() < rockOdds) {
+                            this.map[j][i].rocks[2] = true;
+                        }
+                    }
+                    if (i < 12 && this.map[j][i+1] === undefined ) {
+                        if (Math.random() < rockOdds) {
+                            this.map[j][i].rocks[3] = true;
+                        }
+                    }
+                    console.log(this.map[j][i].rocks)
+                }
+            }
+        }
         
     }
 

@@ -7,7 +7,7 @@ console.log("js loaded");
 
 //Math.seedrandom(5);
 
-let generator = new Generator(8, false, false, true);
+let generator = new Generator(4, false, false, true);
 generator.generateMap();
 //generator.printMap();
 
@@ -58,6 +58,31 @@ function drawMap() {
                     console.log(images[0])
                     ctx.drawImage(images[0], x, y, 30, 30);
                     
+                }
+                // Draw rocks
+                if (room.rocks[0] == true) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "red";
+                    ctx.rect(x+12, y, 6,6);
+                    ctx.fill();
+                }
+                if (room.rocks[1] == true) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "red";
+                    ctx.rect(x+12, y+24, 6,6);
+                    ctx.fill();
+                }
+                if (room.rocks[2] == true) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "red";
+                    ctx.rect(x, y+12, 6,6);
+                    ctx.fill();
+                }
+                if (room.rocks[3] == true) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "red";
+                    ctx.rect(x+24, y+12, 6,6);
+                    ctx.fill();
                 }
             }  
         }
