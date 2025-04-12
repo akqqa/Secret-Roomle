@@ -14,6 +14,8 @@
 // Gameplay can be like, first guess is nothing, each fail reveals new info such as boss room, rooms with blocked sides, etc.
 // ^ yep so, nothing, then reveal room types, then reveal blocked sides, anything else? idk
 
+// NEED TO ADD POP CHECKS TO ENSURE NOT UNDEFINED
+
 // Using https://bindingofisaacrebirth.fandom.com/wiki/Level_Generation and https://www.boristhebrave.com/2020/09/12/dungeon-generation-in-binding-of-isaac/ for algorithm
 
 // Can be boss, secret, shop, etc etc etc
@@ -44,7 +46,9 @@ export class Generator {
 
     generateNumRooms() {
         // Create number of rooms on stage
-        let numRooms = Math.min(20, Math.floor(Math.random(0,1)*2) + 5 + Math.floor(this.stage * (10 / 3)));
+        let numRooms = Math.min(21, Math.floor(Math.random(1,2)*3) + 5 + Math.floor(this.stage * (10 / 3)));
+        //let numRooms = Math.min(24, Math.floor(Math.random()*8) + 5 + Math.floor(this.stage * 3.35));
+        console.log(Math.floor(this.stage * (10 / 3)));
         if (this.labyrinth) {
             numRooms = Math.min(45, Math.floor(numRooms * 1.8));
         } else if (this.lost) {
@@ -58,7 +62,6 @@ export class Generator {
         if (this.hard) {
             numRooms += 2 + Math.floor(Math.random(0,1)*2);
         }
-        console.log(numRooms);
         return numRooms;
     }
 
@@ -74,7 +77,6 @@ export class Generator {
         if (this.stage == 12) {
             minDeadEnds += 2;
         }
-        console.log(minDeadEnds);
         return minDeadEnds;
     }
 
@@ -119,7 +121,6 @@ export class Generator {
         roomQueue.push(startRoom);
         this.map[centerY][centerX] = roomQueue[0];
         roomsRemaining -= 1;
-        console.log(this.map[centerY][centerX]);
 
         // Loop over each room in queue
         let resetCounter = -1;
@@ -258,14 +259,12 @@ export class Generator {
             let candidateNeighbours = this.findNeighbours(candidate);
             let numNeighbours = 0;
             candidateNeighbours.forEach(neighbour => {
-                console.log(neighbour.type);
                 if (neighbour.type == "boss" || neighbour.type == "supersecret") {
                     invalidFlag = true;
                     return;
                 } 
                 numNeighbours += 1;
             });
-            console.log("num neighbours:" + numNeighbours);
             if (invalidFlag) {
                 candidate.secretWeight = 0;
             } else if (numNeighbours == 2) {
@@ -275,7 +274,6 @@ export class Generator {
             } else if (numNeighbours == 0) {
                 candidate.secretWeight = 0;
             }
-            console.log(candidate.secretWeight);
         });
         // Find highest weight candidate (with some randomness for equal weights)
         let topWeight = 0;
