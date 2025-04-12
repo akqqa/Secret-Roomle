@@ -18,7 +18,7 @@
 
 // Using https://bindingofisaacrebirth.fandom.com/wiki/Level_Generation and https://www.boristhebrave.com/2020/09/12/dungeon-generation-in-binding-of-isaac/ for algorithm
 
-const rockOdds = 0.4 // rockOdds chance of rock appearing in each valid space
+const rockOdds = 0.3 // rockOdds chance of rock appearing in each valid space
 
 // Can be boss, secret, shop, etc etc etc
 // Possibility for large rooms - each grid cell contains one room as usual, but can be duplicated in case of larger rooms with copies of the same object. hm. but then pos is weird. and so is getting neighbours. hm
@@ -299,27 +299,34 @@ export class Generator {
 
         // Final step - generate rock positions for rooms - to inform the player more about where the secret rooms could be 
         // Impossible to get accurate odds so just do 50/50 and see how it feels from there lol
+        // make it so if rock generates on one side, much more liekly to alkso geenrate on opposite side?
+        // CURRENT IMPLEMENTATION is biased as always goes in order. to fix, randomise order rocks are populated :)
+        let rockOddsAdjusted = rockOdds;
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
                 if (this.map[j][i] !== undefined && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss") {
                     if (j > 0 && this.map[j-1][i] === undefined) {
-                        if (Math.random() < rockOdds) {
+                        if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[0] = true;
+                            rockOddsAdjusted =  rockOdds * 2;
                         }
                     }
                     if (j < 12 && this.map[j+1][i] === undefined ) {
-                        if (Math.random() < rockOdds) {
+                        if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[1] = true;
+                            rockOddsAdjusted =  rockOdds * 2;
                         }
                     }
                     if (i > 0 && this.map[j][i-1] === undefined) {
-                        if (Math.random() < rockOdds) {
+                        if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[2] = true;
+                            rockOddsAdjusted =  rockOdds * 2;
                         }
                     }
                     if (i < 12 && this.map[j][i+1] === undefined ) {
-                        if (Math.random() < rockOdds) {
+                        if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[3] = true;
+                            rockOddsAdjusted =  rockOdds * 2;
                         }
                     }
                     console.log(this.map[j][i].rocks)
