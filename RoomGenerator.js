@@ -31,6 +31,7 @@ export class Room{
         this.neighbours = [];
         this.secretWeight = Math.floor(Math.random() * (15 - 10)) + 10;
         this.rocks = [false, false, false, false] // up, down, left, right
+        this.hidden = false;
     }
 
 }
@@ -228,7 +229,9 @@ export class Generator {
 
         // Now a valid layout has been generated, place rooms in dead ends (for now just do boss, super secret, shop, item) - altho implement more to reduce amount of dead ends!!
         this.deadEndQueue.pop().type = "boss";
-        this.deadEndQueue.pop().type = "supersecret";
+        let supersecret = this.deadEndQueue.pop();
+        supersecret.type = "supersecret";
+        supersecret.hidden = true;
         if (this.stage < 7) {
             this.deadEndQueue.pop().type = "shop";
             this.deadEndQueue.pop().type = "item"
@@ -295,6 +298,7 @@ export class Generator {
         });
         // Place best candidate in map, others are garbage collected
         bestCandidate.type = "secret";
+        bestCandidate.hidden = true;
         this.map[bestCandidate.posY][bestCandidate.posX] = bestCandidate;
 
         // Final step - generate rock positions for rooms - to inform the player more about where the secret rooms could be 
@@ -308,25 +312,25 @@ export class Generator {
                     if (j > 0 && this.map[j-1][i] === undefined) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[0] = true;
-                            rockOddsAdjusted =  rockOdds * 2;
+                            rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
                     if (j < 12 && this.map[j+1][i] === undefined ) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[1] = true;
-                            rockOddsAdjusted =  rockOdds * 2;
+                            rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
                     if (i > 0 && this.map[j][i-1] === undefined) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[2] = true;
-                            rockOddsAdjusted =  rockOdds * 2;
+                            rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
                     if (i < 12 && this.map[j][i+1] === undefined ) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[3] = true;
-                            rockOddsAdjusted =  rockOdds * 2;
+                            rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
                     console.log(this.map[j][i].rocks)

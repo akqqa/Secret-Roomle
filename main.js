@@ -2,7 +2,6 @@ import { Room, Generator } from './RoomGenerator.js';
 //import seedrandom from 'seedrandom';
 console.log(window.seedrandom);
 
-
 console.log("js loaded");
 
 //Math.seedrandom(5);
@@ -29,9 +28,13 @@ imagePaths.forEach((path, index) => {
     };
 });
 
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+var hoveredRoom = null;
+
 function checkImagesLoaded() {
     if (imagesLoaded === imagePaths.length) {
-        drawMap();
+        drawMap(canvas, ctx);
     } else {
         requestAnimationFrame(checkImagesLoaded);
     }
@@ -39,10 +42,9 @@ function checkImagesLoaded() {
 
 checkImagesLoaded();
 
-function drawMap() {
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
 
+function drawMap(canvas, ctx, hoveredRoom = null) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let x = 30; x < 420; x += 30) {
         for (let y = 30; y < 420; y += 30) {
             let room = generator.map[(y/30) - 1][(x/30) - 1];
@@ -85,9 +87,27 @@ function drawMap() {
                     ctx.fill();
                 }
             }  
+            // If room is undefined or a hidden secret room, then if the current hovered coordinates are this room, fill it grey.
+            if (hoveredRoom && (room === undefined || (room.type == "secret" && room.hidden) || (room.type == "supersecret" && room.hidden))) { // fiddly short circuiting
+                if ((y/30) - 1 == (Math.floor(hoveredRoom[1]/30)) - 1 && (x/30) - 1 == (Math.floor(hoveredRoom[0]/30)) - 1) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "grey";
+                    ctx.rect(x, y, 30,30);
+                    ctx.fill();
+                }
+            }
         }
     }
 }
+
+// Event listener for moving mouse over canvas - https://roblouie.com/article/617/transforming-mouse-coordinates-to-canvas-coordinates/
+canvas.addEventListener("mousemove", event => {
+    let transform = ctx.getTransform();
+    let transformedX = event.offsetX - transform.e;
+    let transformedY = event.offsetY - transform.f;
+    drawMap(canvas, ctx, [transformedX, transformedY]);
+})
+
 
 
 
