@@ -188,6 +188,8 @@ export class Generator {
         while(1 == 1) {
             this.map = [...Array(13)].map(e => Array(13));
             this.deadEndQueue = [];
+            this.numRooms = this.generateNumRooms();
+            this.minDeadEnds = this.generateMinDeadEnds();
             this.generateLayout();
             // Check conditions match?
             // First count rooms
