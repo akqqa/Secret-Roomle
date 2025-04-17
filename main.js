@@ -1,13 +1,6 @@
 import { Room, Generator } from './RoomGenerator.js';
 //import seedrandom from 'seedrandom';
 
-stage = 0; // stage = 1 is room types, stage = 2 is rocks
-var guesses = 4;
-var secretFound = false;
-var supersecretFound = false;
-var attempts = 0;
-var gameover = false;
-
 //Size constants
 const roomSize = 50;
 const mapSize = roomSize * 15;
@@ -64,6 +57,8 @@ var secretFound = false;
 var supersecretFound = false;
 var attempts = 0;
 var gameover = false;
+var won = false;
+var lost = false;
 
 var gamedata = localStorage.getItem("secretRoomleData");
 
@@ -97,7 +92,9 @@ function initializeGamedata() {
                                         secretFound: false,
                                         supersecretFound: false,
                                         attempts: 0,
-                                        gameover: false
+                                        gameover: false,
+                                        won: false,
+                                        lost: false
                                         };
         } else { // Otherwise set the variables to continue todays progress
             // Set generator variables to the saved ones
@@ -116,6 +113,8 @@ function initializeGamedata() {
             supersecretFound = parsedData.currentProgress.supersecretFound;
             attempts = parsedData.currentProgress.attempts;
             gameover = parsedData.currentProgress.gameover;
+            won = parsedData.currentProgress.won;
+            lost = parsedData.currentProgress.lost;
         }
         gamedata = parsedData;
     } else {
@@ -128,7 +127,9 @@ function initializeGamedata() {
                 secretFound: false,
                 supersecretFound: false,
                 attempts: 0,
-                gameover: false
+                gameover: false,
+                won: false,
+                lost: false
             },
             stats: {
                 totalGames: 0,
@@ -157,6 +158,8 @@ function startGame() {
     supersecretFound = false;
     attempts = 0;
     gameover = false;
+    won = false;
+    lost = false;
     generator.generateMap();
 
     initializeGamedata();
@@ -254,6 +257,25 @@ function drawMap(hoveredRoom = null) {
             } 
         }
     }
+
+    // Won or lost
+    if (lost) {
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
+        ctx.fill();
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        ctx.font = "50px sans-serif";
+        ctx.fillText("You LOSE!", mapSize / 2, mapSize / 3);
+    } else if (won) {
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+        ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
+        ctx.fill();
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        ctx.font = "50px sans-serif";
+        ctx.fillText("You win!", mapSize / 2, mapSize / 3);
+    }
 }
 
 // Function for timer, as well as updating the seed when a new date is rolled over to
@@ -286,7 +308,9 @@ function countdown() {
             secretFound: false,
             supersecretFound: false,
             attempts: 0,
-            gameover: false
+            gameover: false,
+            won: false,
+            lost: false
         }
         localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
 
@@ -342,6 +366,8 @@ canvas.addEventListener("click", event => {
         // Loss logic
         if (guesses == 0) {
             gameover = true;
+            won = false;
+            lost = true;
             stage = 2;
             // Unhide secret rooms
             for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
@@ -353,13 +379,6 @@ canvas.addEventListener("click", event => {
                 }
             }
             drawMap(null);
-            ctx.beginPath();
-            ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-            ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
-            ctx.fill();
-            ctx.fillStyle = "rgba(0, 0, 0, 1)";
-            ctx.font = "50px sans-serif";
-            ctx.fillText("You LOSE!", mapSize / 2, mapSize / 3);
             gamedata.stats.totalGames += 1;
         }
         console.log(secretFound);
@@ -368,15 +387,10 @@ canvas.addEventListener("click", event => {
         // Win logic
         if (secretFound && supersecretFound) {
             gameover = true;
+            won = true;
+            lost = false;
             stage = 2;
             drawMap(null);
-            ctx.beginPath();
-            ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-            ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
-            ctx.fill();
-            ctx.fillStyle = "rgba(0, 0, 0, 1)";
-            ctx.font = "50px sans-serif";
-            ctx.fillText("You win!", mapSize / 2, mapSize / 3);
             gamedata.stats.wins += 1;
             gamedata.stats.totalGames += 1;
         }
@@ -390,6 +404,8 @@ canvas.addEventListener("click", event => {
         gamedata.currentProgress.supersecretFound = supersecretFound;
         gamedata.currentProgress.attempts = attempts;
         gamedata.currentProgress.gameover = gameover;
+        gamedata.currentProgress.won = won;
+        gamedata.currentProgress.lost = lost;
 
         console.log(gamedata.currentMap);
         localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
