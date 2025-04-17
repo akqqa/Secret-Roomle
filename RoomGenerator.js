@@ -52,7 +52,6 @@ export class Generator {
         // Create number of rooms on stage
         let numRooms = Math.min(21, Math.floor(Math.random(1,2)*3) + 5 + Math.floor(this.stage * (10 / 3)));
         //let numRooms = Math.min(24, Math.floor(Math.random()*8) + 5 + Math.floor(this.stage * 3.35));
-        console.log(Math.floor(this.stage * (10 / 3)));
         if (this.labyrinth) {
             numRooms = Math.min(45, Math.floor(numRooms * 1.8));
         } else if (this.lost) {
@@ -335,7 +334,6 @@ export class Generator {
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    console.log(this.map[j][i].rocks)
                 }
             }
         }
