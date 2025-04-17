@@ -142,14 +142,14 @@ export class Generator {
             neighbourList.forEach(neighbour => {
                 // Perform checks to see if should generate a room here, and if so, add to queue and grid.
                 // Check 1: Is this space already occupied?
-                if (this.map[neighbour.posY][neighbour.posX] !== undefined) {
+                if (this.map[neighbour.posY][neighbour.posX]) {
                     return;
                 }
                 // Check 2: More than one filled neighbour already for this cell?
                 let neighbourListSquared = this.generateNeighbours(neighbour);
                 let neighbourCounter = 0;
                 neighbourListSquared.forEach(neighbourSquared => {
-                    if (this.map[neighbourSquared.posY][neighbourSquared.posX] !== undefined) {
+                    if (this.map[neighbourSquared.posY][neighbourSquared.posX]) {
                         neighbourCounter += 1;
                     }
                 })
@@ -195,7 +195,7 @@ export class Generator {
             let roomCounter = 0;
             for(let i = 0; i < 13; i++) {
                 for(let j = 0; j < 13; j++) {
-                    if (this.map[j][i] !== undefined) {
+                    if (this.map[j][i]) {
                         roomCounter += 1;
                     }
                 }
@@ -213,7 +213,7 @@ export class Generator {
                 // If more than one neighbour, not a dead end so remove from queue
                 let neighbourCounter = 0;
                 neighbours.forEach(neighbour => {
-                    if (this.map[neighbour.posY][neighbour.posX] !== undefined) {
+                    if (this.map[neighbour.posY][neighbour.posX]) {
                         neighbourCounter += 1;
                     }
                 })
@@ -254,7 +254,7 @@ export class Generator {
         let candidates = [];
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
-                if (this.map[j][i] === undefined) {
+                if (!this.map[j][i]) {
                     let room = new Room(j,i);
                     room.type = "candidate";
                     candidates.push(room);
@@ -309,26 +309,26 @@ export class Generator {
         let rockOddsAdjusted = rockOdds;
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
-                if (this.map[j][i] !== undefined && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss") {
-                    if (j > 0 && this.map[j-1][i] === undefined) {
+                if (this.map[j][i] && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss") {
+                    if (j > 0 && !this.map[j-1][i]) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[0] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    if (j < 12 && this.map[j+1][i] === undefined ) {
+                    if (j < 12 && !this.map[j+1][i]) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[1] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    if (i > 0 && this.map[j][i-1] === undefined) {
+                    if (i > 0 && !this.map[j][i-1]) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[2] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    if (i < 12 && this.map[j][i+1] === undefined ) {
+                    if (i < 12 && !this.map[j][i+1]) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[3] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
@@ -343,7 +343,7 @@ export class Generator {
     printMap() {
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
-                if (this.map[j][i] === undefined) {
+                if (!this.map[j][i]) {
                     process.stdout.write("   ");
                 } else if (this.map[j][i].type == "start") {
                     process.stdout.write("[.]");

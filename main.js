@@ -1,12 +1,23 @@
 import { Room, Generator } from './RoomGenerator.js';
+//import seedrandom from 'seedrandom';
+
+stage = 0; // stage = 1 is room types, stage = 2 is rocks
+var guesses = 4;
+var secretFound = false;
+var supersecretFound = false;
+var attempts = 0;
+var gameover = false;
 
 //Size constants
 const roomSize = 50;
 const mapSize = roomSize * 15;
 const halfCell = roomSize / 2.5;
 const rockSize = roomSize / 5;
-//import seedrandom from 'seedrandom';
-console.log(window.seedrandom);
+let currentDate = new Date();
+let seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString();
+console.log(seed);
+Math.seedrandom(seed); 
+
 
 // Need to add a main routing part where checks the users cookies, if done for today dont give them the game, if not give them the game. etc. nothing complex! all local
 // Can have an unlimited page just for practice :) - just do another html page where it doesnt care for cookies and lets you press r etc.
@@ -40,11 +51,12 @@ canvas.width = mapSize;
 canvas.height = mapSize;
 const ctx = canvas.getContext('2d');
 var hoveredRoom = null;
-let levelnum = Math.floor(Math.random()*13 + 1)
-let labyrinth = Math.random() < 0.5;
-let lost =  Math.random() < 0.5;
-let hard =  Math.random() < 0.5;
-var generator = new Generator(levelnum, labyrinth, lost, hard);
+var generator = null;
+var levelnum = null;
+var labyrinth = null;
+var lost = null;
+var hard = null;
+
 
 var stage = 0; // stage = 1 is room types, stage = 2 is rocks
 var guesses = 4;
@@ -53,19 +65,92 @@ var supersecretFound = false;
 var attempts = 0;
 var gameover = false;
 
+var gamedata = localStorage.getItem("secretRoomleData");
+
+
 checkImagesLoaded(); // Checks if images are loaded. If so, starts the game.
 
 function checkImagesLoaded() {
     if (imagesLoaded === imagePaths.length) {
         startGame();
+        countdown();
+        setInterval(countdown, 1000);
     } else {
         requestAnimationFrame(checkImagesLoaded);
     }
 }
 
+function initializeGamedata() {
+    // Once game starts, load localstorage gamedata and load in the data if relevant
+    // Get game data
+    gamedata = localStorage.getItem("secretRoomleData");
+    let localStorageDate = new Date();
+    if (gamedata) {
+        let parsedData = JSON.parse(gamedata);
+        console.log("parsed data:")
+        console.log(parsedData);
+        // If no longer the data in saved data, replace it with fresh data
+        if (localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() != parsedData.lastPlayedDate) {
+            parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString();
+            parsedData.currentProgress = {stage: 0,
+                                        guesses: 4,
+                                        secretFound: false,
+                                        supersecretFound: false,
+                                        attempts: 0,
+                                        gameover: false
+                                        };
+        } else { // Otherwise set the variables to continue todays progress
+            // Set generator variables to the saved ones
+            console.log(parsedData.map)
+            console.log(parsedData.currentProgress.stage);
+            if (parsedData.currentMap != null) {
+                generator.map = parsedData.currentMap;
+                console.log("SETMAP");
+                console.log(generator.map);
+            }
+            stage = parsedData.currentProgress.stage;
+            guesses = parsedData.currentProgress.guesses;
+            console.log(parsedData.currentProgress.guesses);
+
+            secretFound = parsedData.currentProgress.secretFound;
+            supersecretFound = parsedData.currentProgress.supersecretFound;
+            attempts = parsedData.currentProgress.attempts;
+            gameover = parsedData.currentProgress.gameover;
+        }
+        gamedata = parsedData;
+    } else {
+        gamedata = {
+            lastPlayedDate: localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(),
+            currentMap: null,
+            currentProgress: {
+                stage: 0,
+                guesses: 4,
+                secretFound: false,
+                supersecretFound: false,
+                attempts: 0,
+                gameover: false
+            },
+            stats: {
+                totalGames: 0,
+                secretRoomsFound: 0,
+                superSecretRoomsFound: 0,
+                wins: 0,
+                winStreak: 0,
+                maxStreak: 0
+            }
+        };
+    }
+    localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
+}
 
 // Sets variables, and generates map, starting the game
 function startGame() {
+    levelnum = Math.floor(Math.random()*13 + 1)
+    labyrinth = Math.random() < 0.5;
+    lost =  Math.random() < 0.5;
+    hard =  Math.random() < 0.5;
+    generator = new Generator(levelnum, labyrinth, lost, hard);
+
     stage = 0; // stage = 1 is room types, stage = 2 is rocks
     guesses = 4;
     secretFound = false;
@@ -73,18 +158,24 @@ function startGame() {
     attempts = 0;
     gameover = false;
     generator.generateMap();
+
+    initializeGamedata();
+
     drawMap();
 }
 
 // Draws the map, also accounting for which room is hovered over, and what the current game stage is
 function drawMap(hoveredRoom = null) {
+    if (generator == null) {
+        return;
+    }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
         for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
             let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
 
             // If room is undefined or a hidden secret room, then if the current hovered coordinates are this room, fill it grey.
-            if (hoveredRoom && (room === undefined || (room.type == "secret" && room.hidden) || (room.type == "supersecret" && room.hidden))) { // fiddly short circuiting
+            if (hoveredRoom && (!room || (room.type == "secret" && room.hidden) || (room.type == "supersecret" && room.hidden))) { // fiddly short circuiting
                 if ((y/roomSize) - 1 == (Math.floor(hoveredRoom[1]/roomSize)) - 1 && (x/roomSize) - 1 == (Math.floor(hoveredRoom[0]/roomSize)) - 1) {
                     ctx.beginPath();
                     ctx.fillStyle = "black";
@@ -94,7 +185,7 @@ function drawMap(hoveredRoom = null) {
             }
 
             if (stage == 0) {
-                if (room !== undefined) {
+                if (room) {
                     if (room.type == "wrong") {
                         ctx.beginPath();
                         ctx.fillStyle = "red";
@@ -111,7 +202,7 @@ function drawMap(hoveredRoom = null) {
                 // Add coniditon for if exposed secret room should still draw the ?
             }
             if (stage == 1 || stage == 2) {
-                if (room !== undefined) {
+                if (room) {
                     if (room.type == "boss") {
                         ctx.drawImage(images[1], x, y, roomSize, roomSize);
                     } else if (room.type == "shop") {
@@ -134,7 +225,7 @@ function drawMap(hoveredRoom = null) {
             }
             if (stage == 2) {
                 // Draw rocks
-                if (room !== undefined) {
+                if (room) {
                     if (room.rocks[0] == true) {
                         ctx.beginPath();
                         ctx.fillStyle = "red";
@@ -165,8 +256,55 @@ function drawMap(hoveredRoom = null) {
     }
 }
 
+// Function for timer, as well as updating the seed when a new date is rolled over to
+function countdown() {
+    const now = new Date();
+    const utcNow = new Date(now.toUTCString().slice(0, -4));
+    const tomorrow = new Date(utcNow);
+    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+    tomorrow.setUTCHours(0, 0, 0, 0);
+
+    const diff = tomorrow - utcNow;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById("countdown").textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+
+    // Logic for changing seed and restarting game
+    let newDate = new Date();
+    let newSeed = newDate.getUTCDate().toString() + newDate.getUTCMonth().toString() + newDate.getUTCFullYear().toString();
+    //let newSeed = seed + 1; // for testing regeneration
+    if (seed != newSeed) {
+        console.log("updating due to new seed");
+        // Update gamedata before changing seed
+        gamedata.lastPlayedDate = newSeed;
+        gamedata.currentMap = null,
+        gamedata.currentProgress = {
+            stage: 0,
+            guesses: 4,
+            secretFound: false,
+            supersecretFound: false,
+            attempts: 0,
+            gameover: false
+        }
+        localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
+
+        console.log(gamedata);
+
+        seed = newSeed
+        Math.seedrandom(newSeed); 
+        startGame();
+
+    }
+    console.log(seed);
+
+    
+}
+
 // Event listener for moving mouse over canvas - https://roblouie.com/article/617/transforming-mouse-coordinates-to-canvas-coordinates/
 canvas.addEventListener("mousemove", event => {
+    console.log("moved");
     if (!gameover) {
         let transform = ctx.getTransform();
         let transformedX = event.offsetX - transform.e;
@@ -185,7 +323,7 @@ canvas.addEventListener("click", event => {
         let x = Math.floor(transformedX/roomSize) - 1;
         let room = generator.map[y][x];
         // If room is undefined, set it to a wrong room
-        if (room === undefined) {
+        if (!room) {
             let newRoom = new Room(y,x);
             newRoom.type = "wrong";
             generator.map[y][x] = newRoom;
@@ -194,9 +332,11 @@ canvas.addEventListener("click", event => {
         } else if (room.type == "secret") {
             room.hidden = false;
             secretFound = true;
+            gamedata.stats.secretRoomsFound += 1;
         } else if (room.type == "supersecret") {
             room.hidden = false;
             supersecretFound = true;
+            gamedata.stats.superSecretRoomsFound += 1;
         }
 
         // Loss logic
@@ -207,7 +347,7 @@ canvas.addEventListener("click", event => {
             for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
                 for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
                     let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
-                    if (room !== undefined && room.hidden == true) {
+                    if (room && room.hidden == true) {
                         room.hidden = false;
                     }
                 }
@@ -220,7 +360,7 @@ canvas.addEventListener("click", event => {
             ctx.fillStyle = "rgba(0, 0, 0, 1)";
             ctx.font = "50px sans-serif";
             ctx.fillText("You LOSE!", mapSize / 2, mapSize / 3);
-
+            gamedata.stats.totalGames += 1;
         }
         console.log(secretFound);
         console.log(supersecretFound);
@@ -237,15 +377,31 @@ canvas.addEventListener("click", event => {
             ctx.fillStyle = "rgba(0, 0, 0, 1)";
             ctx.font = "50px sans-serif";
             ctx.fillText("You win!", mapSize / 2, mapSize / 3);
+            gamedata.stats.wins += 1;
+            gamedata.stats.totalGames += 1;
         }
+
+        // After every valid click, update localstorage with info about todays game, overwriting it.
+        gamedata.currentMap = generator.map;
+        console.log("updated map");
+        gamedata.currentProgress.stage = stage;
+        gamedata.currentProgress.guesses = guesses;
+        gamedata.currentProgress.secretFound = secretFound;
+        gamedata.currentProgress.supersecretFound = supersecretFound;
+        gamedata.currentProgress.attempts = attempts;
+        gamedata.currentProgress.gameover = gameover;
+
+        console.log(gamedata.currentMap);
+        localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
     }
 })
 
 addEventListener("keydown", (event) => {
-    if (event.key == "r") {
-        console.log("r key!")
-        startGame();
-    }
+    // Add for inifnite mode
+    // if (event.key == "r") {
+    //     console.log("r key!")
+    //     startGame();
+    // }
 });
 
 // Next: Add onclick listener, if secret room clicked reveal, if not, colour it in and add 1 to the stage. after 4 stages fail. MAYBE actuall add 4 stages the first reveals where the starting room is to help find the boss room
