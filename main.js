@@ -40,7 +40,11 @@ canvas.width = mapSize;
 canvas.height = mapSize;
 const ctx = canvas.getContext('2d');
 var hoveredRoom = null;
-var generator = new Generator(Math.floor(Math.random()*13 + 1), false, false, true);
+let levelnum = Math.floor(Math.random()*13 + 1)
+let labyrinth = Math.random() < 0.5;
+let lost =  Math.random() < 0.5;
+let hard =  Math.random() < 0.5;
+var generator = new Generator(levelnum, labyrinth, lost, hard);
 
 var stage = 0; // stage = 1 is room types, stage = 2 is rocks
 var guesses = 4;
@@ -213,6 +217,9 @@ canvas.addEventListener("click", event => {
             ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
             ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
             ctx.fill();
+            ctx.fillStyle = "rgba(0, 0, 0, 1)";
+            ctx.font = "50px sans-serif";
+            ctx.fillText("You LOSE!", mapSize / 2, mapSize / 3);
 
         }
         console.log(secretFound);
@@ -227,6 +234,9 @@ canvas.addEventListener("click", event => {
             ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
             ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
             ctx.fill();
+            ctx.fillStyle = "rgba(0, 0, 0, 1)";
+            ctx.font = "50px sans-serif";
+            ctx.fillText("You win!", mapSize / 2, mapSize / 3);
         }
     }
 })
@@ -240,6 +250,7 @@ addEventListener("keydown", (event) => {
 
 // Next: Add onclick listener, if secret room clicked reveal, if not, colour it in and add 1 to the stage. after 4 stages fail. MAYBE actuall add 4 stages the first reveals where the starting room is to help find the boss room
 // ALSO MAYBE THE DEEPER THE MAP IS THE MORE ATTEMPTS YOU GET
+// For womb + its very hard. consider changing it so that colour of your guess is equated to distance from a secret room. and make rocks more common
 
 
 
