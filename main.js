@@ -1,6 +1,8 @@
 import { Room, Generator } from './RoomGenerator.js';
 //import seedrandom from 'seedrandom';
 
+// TODO - replace all stage, guesses etc. with just directly using gamedata!
+
 //Size constants
 const roomSize = 50;
 const mapSize = roomSize * 15;
@@ -281,7 +283,7 @@ function drawMap(hoveredRoom = null) {
 // Function for timer, as well as updating the seed when a new date is rolled over to
 function countdown() {
     const now = new Date();
-    const utcNow = new Date(now.toUTCString().slice(0, -4));
+    const utcNow = new Date(now.toUTCString());
     const tomorrow = new Date(utcNow);
     tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
     tomorrow.setUTCHours(0, 0, 0, 0);
