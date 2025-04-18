@@ -4,7 +4,7 @@ import { Room, Generator } from './RoomGenerator.js';
 // TODO - replace all stage, guesses etc. with just directly using gamedata!
 
 //Size constants
-const roomSize = 50;
+const roomSize = 45;
 const mapSize = roomSize * 15;
 const halfCell = roomSize / 2.5;
 const rockSize = roomSize / 5;
@@ -144,6 +144,18 @@ function initializeGamedata() {
         };
     }
     localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
+
+    // Set stats
+    setStats();
+}
+
+function setStats() {
+    document.getElementById("gamesPlayed").textContent = gamedata.stats.totalGames; 
+    document.getElementById("gamesWon").textContent = gamedata.stats.wins; 
+    document.getElementById("secretRoomsFound").textContent = gamedata.stats.secretRoomsFound; 
+    document.getElementById("superSecretRoomsFound").textContent = gamedata.stats.superSecretRoomsFound; 
+    document.getElementById("currentWinstreak").textContent = gamedata.stats.winStreak; 
+    document.getElementById("bestWinstreak").textContent = gamedata.stats.maxStreak; 
 }
 
 // Sets variables, and generates map, starting the game
@@ -267,7 +279,9 @@ function drawMap(hoveredRoom = null) {
         ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
         ctx.fill();
         ctx.fillStyle = "rgba(0, 0, 0, 1)";
-        ctx.font = "50px sans-serif";
+        ctx.font = "50px Upheaval";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
         ctx.fillText("You LOSE!", mapSize / 2, mapSize / 3);
     } else if (won) {
         ctx.beginPath();
@@ -275,7 +289,9 @@ function drawMap(hoveredRoom = null) {
         ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
         ctx.fill();
         ctx.fillStyle = "rgba(0, 0, 0, 1)";
-        ctx.font = "50px sans-serif";
+        ctx.font = "50px Upheaval";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
         ctx.fillText("You win!", mapSize / 2, mapSize / 3);
     }
 }
@@ -342,6 +358,11 @@ canvas.addEventListener("mousemove", event => {
 // Handles guesses by the player
 canvas.addEventListener("click", event => {
     if (!gameover) {
+        // If this is the first click of a new game, add to total games played in stats (so entering counts as a game played, as you can get secret rooms even if you dont "win")
+        if (stage == 0 && secretFound == false && supersecretFound == false) {
+            gamedata.stats.totalGames += 1;
+        }
+
         let transform = ctx.getTransform();
         let transformedX = event.offsetX - transform.e;
         let transformedY = event.offsetY - transform.f;
@@ -394,7 +415,6 @@ canvas.addEventListener("click", event => {
             stage = 2;
             drawMap(null);
             gamedata.stats.wins += 1;
-            gamedata.stats.totalGames += 1;
         }
 
         // After every valid click, update localstorage with info about todays game, overwriting it.
@@ -411,15 +431,18 @@ canvas.addEventListener("click", event => {
 
         console.log(gamedata.currentMap);
         localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
+        setStats();
     }
 })
 
 addEventListener("keydown", (event) => {
     // Add for inifnite mode
-    // if (event.key == "r") {
-    //     console.log("r key!")
-    //     startGame();
-    // }
+    if (event.key == "r") {
+        console.log("r key!")
+        seed = seed + 1;
+        Math.seedrandom(seed);
+        startGame();
+    }
 });
 
 // Next: Add onclick listener, if secret room clicked reveal, if not, colour it in and add 1 to the stage. after 4 stages fail. MAYBE actuall add 4 stages the first reveals where the starting room is to help find the boss room
