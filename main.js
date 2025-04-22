@@ -416,12 +416,12 @@ canvas.addEventListener("click", event => {
             generator.map[y][x] = newRoom;
             stage = Math.min(2, stage+1);
             guesses -= 1;
-        } else if (room.type == "secret") {
+        } else if (room.type == "secret" && room.hidden) {
             room.hidden = false;
             secretFound = true;
             gamedata.stats.secretRoomsFound += 1;
             guesses -= 1;
-        } else if (room.type == "supersecret") {
+        } else if (room.type == "supersecret" && room.hidden) {
             room.hidden = false;
             supersecretFound = true;
             gamedata.stats.superSecretRoomsFound += 1;
