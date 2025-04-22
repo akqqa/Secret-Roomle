@@ -93,7 +93,7 @@ function checkImagesLoaded() {
     if (imagesLoaded === imagePaths.length) {
         startGame();
         countdown();
-        setInterval(countdown, 100000);
+        setInterval(countdown, 1000);
     } else {
         requestAnimationFrame(checkImagesLoaded);
     }
