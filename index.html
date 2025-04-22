@@ -9,17 +9,17 @@
   <body>
     <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script> 
     <div style="display: flex; justify-content: center; gap: 20px; flex-direction: row; font-family: Upheaval;"> <!-- Div to get everything vertically in the center  -->
-      <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 100%; max-width: 100vw; box-sizing: border-box;"> <!-- Main Div  -->
-        <img src = "images/title.png"></img>
-        <p style="font-size: 20px"><span id="floorname"></span>, <span id="cursename">no curse</span></p>
-        <p style="width: 20em; white-space: pre-line; align-self: flex-start;">Guesses Remaining: <span id="guessesremaining"></span></p>
-        <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;"> <!-- Div containing main vertical content -->
+      <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; box-sizing: border-box;"> <!-- Main Div  -->
+        <h1 style="font-size: clamp(2.75rem, 12vw, 5rem); margin: 0; color: #5485ae; text-align: center">Secret Roomle</h1>
+        <p style="font-size: clamp(1.25rem, 5vw, 1.5rem); margin: 1rem 0;"><span id="floorname"></span>, <span id="cursename">no curse</span></p>
+        <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.25rem;"> <!-- Div containing main vertical content -->
+          <p style="font-size: clamp(1.25rem, 5vw, 1.5rem); white-space: pre-line; align-self: flex-start; margin: 0 0 -1rem;">Guesses Remaining: <span id="guessesremaining"></span></p>
           <canvas id="gameCanvas" width="450" height="450" style="border:1px solid #000;"></canvas>
-          <div id="countdownDiv" style="font-size: 24px; text-align: center;">
-            <p>New floor in <span id="countdown" >loading time...</span></p>
+          <div id="countdownDiv" style="font-size: clamp(1.25rem, 5vw, 1.5rem); text-align: center;">
+            <p style="margin: 0">New floor in <span id="countdown" >loading time...</span></p>
           </div>
-          <div id="statsDiv"  style="font-size: 24px; text-align: center;">
-            <h1>Lifetime Stats:</h1>
+          <div id="statsDiv"  style="font-size: clamp(1.25rem, 5vw, 1.5rem); text-align: center;">
+            <h1 style="font-size: clamp(2rem, 8vw, 3rem); margin-top: 0">Lifetime Stats:</h1>
             <p>Games Played: <span id="gamesPlayed"></span></p>
             <p>Wins: <span id="gamesWon"></span></p>
             <p>Secret Rooms Found: <span id="secretRoomsFound"></span></p>
