@@ -496,7 +496,7 @@ addEventListener("resize", (event) => {
 });
 
 function setScaling() {
-    size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.06);
+    size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.044);
     roomSize = size;
     mapSize = roomSize * 15;
     halfCell = roomSize / 2.5;
