@@ -22,9 +22,7 @@ const floornames = [
 const startingGuesses = 6;
 
 //Size constants
-var size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.06);
-console.log("SIZE");
-console.log(size);
+var size;
 var roomSize;
 var mapSize;
 var halfCell;
@@ -447,8 +445,6 @@ canvas.addEventListener("click", event => {
             }
             drawMap(null);
         }
-        console.log(secretFound);
-        console.log(supersecretFound);
 
         // Win logic
         if (secretFound && supersecretFound) {
@@ -496,12 +492,13 @@ addEventListener("resize", (event) => {
 });
 
 function setScaling() {
-    size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.044);
-    roomSize = size;
-    mapSize = roomSize * 15;
+    //size = Math.ceil(Math.min(window.innerWidth, window.innerHeight) * 0.66); old formula
+    size = Math.ceil(Math.min(window.innerWidth * 0.85, 616))
+    mapSize = size;
+    roomSize = Math.ceil(mapSize / 15);
     halfCell = roomSize / 2.5;
     rockSize = roomSize / 5;
-
+    console.log(size);
 }
 
 // Next: Add onclick listener, if secret room clicked reveal, if not, colour it in and add 1 to the stage. after 4 stages fail. MAYBE actuall add 4 stages the first reveals where the starting room is to help find the boss room
