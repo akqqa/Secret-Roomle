@@ -22,13 +22,14 @@ const floornames = [
 const startingGuesses = 6;
 
 //Size constants
-var size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.05);
+var size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.06);
 console.log("SIZE");
 console.log(size);
-var roomSize = size;
-var mapSize = roomSize * 15;
-var halfCell = roomSize / 2.5;
-var rockSize = roomSize / 5;
+var roomSize;
+var mapSize;
+var halfCell;
+var rockSize;
+setScaling();
 let currentDate = new Date();
 let seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString();
 console.log(seed);
@@ -488,15 +489,20 @@ addEventListener("keydown", (event) => {
 });
 
 addEventListener("resize", (event) => {
-    size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.05);
-    roomSize = size;
-    mapSize = roomSize * 15;
-    halfCell = roomSize / 2.5;
-    rockSize = roomSize / 5;
+    setScaling();
     canvas.width = mapSize;
     canvas.height = mapSize;
     drawMap();
 });
+
+function setScaling() {
+    size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.06);
+    roomSize = size;
+    mapSize = roomSize * 15;
+    halfCell = roomSize / 2.5;
+    rockSize = roomSize / 5;
+
+}
 
 // Next: Add onclick listener, if secret room clicked reveal, if not, colour it in and add 1 to the stage. after 4 stages fail. MAYBE actuall add 4 stages the first reveals where the starting room is to help find the boss room
 // ALSO MAYBE THE DEEPER THE MAP IS THE MORE ATTEMPTS YOU GET
