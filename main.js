@@ -167,10 +167,10 @@ function initializeGamedata() {
     localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
 
     // Set stats
-    setStats();
+    setElements();
 }
 
-function setStats() {
+function setElements() {
     document.getElementById("gamesPlayed").textContent = gamedata.stats.totalGames; 
     document.getElementById("gamesWon").textContent = gamedata.stats.wins; 
     document.getElementById("secretRoomsFound").textContent = gamedata.stats.secretRoomsFound; 
@@ -188,6 +188,11 @@ function setStats() {
         curse = "curse of the lost";
     }
     document.getElementById("cursename").textContent = curse;
+
+    // Background based on level
+    let levelnameTrimmed = levelname.substring(0, levelname.lastIndexOf(" "));
+    let backgroundPath = "./images/Backgrounds/" + levelnameTrimmed + ".png";
+    document.getElementById("body").style.backgroundImage = `url("${backgroundPath}")`;
 }
 
 // Sets variables, and generates map, starting the game
@@ -393,6 +398,12 @@ canvas.addEventListener("mousemove", event => {
         drawMap([transformedX, transformedY]);
     }
 })
+// Remove hover once out
+canvas.addEventListener("mouseout", event => {
+    if (!gameover) {
+        drawMap();
+    }
+})
 
 // Handles guesses by the player
 canvas.addEventListener("click", event => {
@@ -470,7 +481,7 @@ canvas.addEventListener("click", event => {
 
         console.log(gamedata.currentMap);
         localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
-        setStats();
+        setElements();
     }
 })
 
