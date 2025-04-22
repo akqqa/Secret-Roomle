@@ -2,9 +2,30 @@ import { Room, Generator } from './RoomGenerator.js';
 //import seedrandom from 'seedrandom';
 
 // TODO - replace all stage, guesses etc. with just directly using gamedata!
+// floor relevant background image, gueses remaining, infinite mode on diff page, general graphics changes. implement winstreaks, ultra secret? make larger floors easier?
+
+const floornames = [
+    ["Basement I", "Burning Basement I", "Cellar I"],
+    ["Basement II", "Burning Basement II", "Cellar II"],
+    ["Caves I", "Catacombs I", "Flooded Caves I"],
+    ["Caves II", "Catacombs II", "Flooded Caves II"],
+    ["Depths I", "Necropolis I", "Dank Depths I"],
+    ["Depths II", "Necropolis II", "Dank Depths II"],
+    ["Womb I", "Utero I", "Scarred Womb I"],
+    ["Womb II", "Utero II", "Scarred Womb II"],
+    ["Womb II", "Utero II", "Scarred Womb II"], // Technicality due to stage 9 being hush
+    ["Cathederal", "Sheol"],
+    ["Chest", "Dark Room"],
+    ["Void"]
+]
+
+const startingGuesses = 6;
 
 //Size constants
-const roomSize = 45;
+const size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.05); // SO AT MINIMUM the canvas scales to screen (only on refresh)
+console.log("SIZE");
+console.log(size);
+const roomSize = size;
 const mapSize = roomSize * 15;
 const halfCell = roomSize / 2.5;
 const rockSize = roomSize / 5;
@@ -51,10 +72,11 @@ var levelnum = null;
 var labyrinth = null;
 var lost = null;
 var hard = null;
+var levelname = null;
 
 
 var stage = 0; // stage = 1 is room types, stage = 2 is rocks
-var guesses = 4;
+var guesses = startingGuesses;
 var secretFound = false;
 var supersecretFound = false;
 var attempts = 0;
@@ -71,7 +93,7 @@ function checkImagesLoaded() {
     if (imagesLoaded === imagePaths.length) {
         startGame();
         countdown();
-        setInterval(countdown, 1000);
+        setInterval(countdown, 100000);
     } else {
         requestAnimationFrame(checkImagesLoaded);
     }
@@ -90,7 +112,7 @@ function initializeGamedata() {
         if (localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() != parsedData.lastPlayedDate) {
             parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString();
             parsedData.currentProgress = {stage: 0,
-                                        guesses: 4,
+                                        guesses: startingGuesses,
                                         secretFound: false,
                                         supersecretFound: false,
                                         attempts: 0,
@@ -125,7 +147,7 @@ function initializeGamedata() {
             currentMap: null,
             currentProgress: {
                 stage: 0,
-                guesses: 4,
+                guesses: startingGuesses,
                 secretFound: false,
                 supersecretFound: false,
                 attempts: 0,
@@ -156,18 +178,37 @@ function setStats() {
     document.getElementById("superSecretRoomsFound").textContent = gamedata.stats.superSecretRoomsFound; 
     document.getElementById("currentWinstreak").textContent = gamedata.stats.winStreak; 
     document.getElementById("bestWinstreak").textContent = gamedata.stats.maxStreak; 
+
+    // Also set the guesses remaining for this current game
+    document.getElementById("guessesremaining").textContent = guesses;
+    document.getElementById("floorname").textContent = levelname;
+    let curse = "no curse";
+    if (labyrinth) {
+        curse = "curse of the labyrinth";
+    } else if (lost) {
+        curse = "curse of the lost";
+    }
+    document.getElementById("cursename").textContent = curse;
 }
 
 // Sets variables, and generates map, starting the game
 function startGame() {
-    levelnum = Math.floor(Math.random()*13 + 1)
-    labyrinth = Math.random() < 0.5;
-    lost =  Math.random() < 0.5;
+    levelnum = Math.floor(Math.random()*12 + 1)
+    labyrinth = false;
+    lost = false;
+    if (Math.random() < 0.6) {
+        if (Math.random() < 0.5) {
+            labyrinth = true;
+        } else {
+            lost = true;
+        }
+    }
     hard =  Math.random() < 0.5;
     generator = new Generator(levelnum, labyrinth, lost, hard);
+    levelname = floornames[levelnum-1][Math.floor(Math.random() * floornames[levelnum-1].length)]
 
     stage = 0; // stage = 1 is room types, stage = 2 is rocks
-    guesses = 4;
+    guesses = startingGuesses;
     secretFound = false;
     supersecretFound = false;
     attempts = 0;
@@ -216,7 +257,7 @@ function drawMap(hoveredRoom = null) {
                         ctx.drawImage(images[0], x, y, roomSize, roomSize);
                     }
                 }
-                // Add coniditon for if exposed secret room should still draw the ?
+                // Add condition for if exposed secret room should still draw the ?
             }
             if (stage == 1 || stage == 2) {
                 if (room) {
@@ -322,7 +363,7 @@ function countdown() {
         gamedata.currentMap = null,
         gamedata.currentProgress = {
             stage: 0,
-            guesses: 4,
+            guesses: startingGuesses,
             secretFound: false,
             supersecretFound: false,
             attempts: 0,
@@ -337,7 +378,6 @@ function countdown() {
         seed = newSeed
         Math.seedrandom(newSeed); 
         startGame();
-
     }
     console.log(seed);
 
@@ -359,7 +399,7 @@ canvas.addEventListener("mousemove", event => {
 canvas.addEventListener("click", event => {
     if (!gameover) {
         // If this is the first click of a new game, add to total games played in stats (so entering counts as a game played, as you can get secret rooms even if you dont "win")
-        if (stage == 0 && secretFound == false && supersecretFound == false) {
+        if (stage == 0 && guesses == startingGuesses) {
             gamedata.stats.totalGames += 1;
         }
 
@@ -374,17 +414,20 @@ canvas.addEventListener("click", event => {
             let newRoom = new Room(y,x);
             newRoom.type = "wrong";
             generator.map[y][x] = newRoom;
-            guesses -= 1;
             stage = Math.min(2, stage+1);
+            guesses -= 1;
         } else if (room.type == "secret") {
             room.hidden = false;
             secretFound = true;
             gamedata.stats.secretRoomsFound += 1;
+            guesses -= 1;
         } else if (room.type == "supersecret") {
             room.hidden = false;
             supersecretFound = true;
             gamedata.stats.superSecretRoomsFound += 1;
+            guesses -= 1;
         }
+        document.getElementById("guessesremaining").textContent = guesses; // Update guesses remaining visually
 
         // Loss logic
         if (guesses == 0) {
@@ -402,7 +445,6 @@ canvas.addEventListener("click", event => {
                 }
             }
             drawMap(null);
-            gamedata.stats.totalGames += 1;
         }
         console.log(secretFound);
         console.log(supersecretFound);
@@ -439,9 +481,9 @@ addEventListener("keydown", (event) => {
     // Add for inifnite mode
     if (event.key == "r") {
         console.log("r key!")
-        seed = seed + 1;
-        Math.seedrandom(seed);
-        startGame();
+        //seed = seed + 1;
+        //Math.seedrandom(seed);
+        //startGame();
     }
 });
 
