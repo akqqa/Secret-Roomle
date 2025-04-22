@@ -8,33 +8,26 @@
   </head>
   <body>
     <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script> 
-    <div style="display: flex; justify-content: center; gap: 20px; flex-direction: row; font-family: Upheaval;">
-      <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;">
+    <div style="display: flex; justify-content: center; gap: 20px; flex-direction: row; font-family: Upheaval;"> <!--  -->
+      <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: Upheaval;"> <!-- Main Div  -->
         <img src = "images/title.png"></img>
         <p style="font-size: 20px"><span id="floorname"></span>, <span id="cursename">no curse</span></p>
-        <div style="display: flex; align-items: flex-start; justify-content: center; flex-direction: row; gap: 20px;">
-          <div style="width: 25rem">
+        <p style="width: 20em; white-space: pre-line; align-self: flex-start;">Guesses Remaining: <span id="guessesremaining"></span></p>
+        <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;"> <!-- Div containing main vertical content -->
+          <canvas id="gameCanvas" width="450" height="450" style="border:1px solid #000;"></canvas>
+          <div id="countdownDiv" style="font-size: 24px; text-align: center;">
+            <p>New floor in <span id="countdown" >loading time...</span></p>
           </div>
-          <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;">
-            <canvas id="gameCanvas" width="450" height="450" style="border:1px solid #000;"></canvas>
-            <div id="countdownDiv" style="font-size: 24px; text-align: center;">
-              <p>New floor in <span id="countdown" >loading time...</span></p>
-            </div>
-            <div id="statsDiv"  style="font-size: 24px; text-align: center; border:1px solid #000; padding-left: 100px; padding-right: 100px;">
-              <h1>Lifetime Stats:</h1>
-              <p>Games Played: <span id="gamesPlayed"></span></p>
-              <p>Wins: <span id="gamesWon"></span></p>
-              <p>Secret Rooms Found: <span id="secretRoomsFound"></span></p>
-              <p>Super Secret Rooms Found: <span id="superSecretRoomsFound"></span></p>
-              <p>Current Winstreak: <span id="currentWinstreak"></span></p>
-              <p>Best Winstreak: <span id="bestWinstreak"></span></p>
-            </div>
+          <div id="statsDiv"  style="font-size: 24px; text-align: center; border:1px solid #000; padding-left: 100px; padding-right: 100px;">
+            <h1>Lifetime Stats:</h1>
+            <p>Games Played: <span id="gamesPlayed"></span></p>
+            <p>Wins: <span id="gamesWon"></span></p>
+            <p>Secret Rooms Found: <span id="secretRoomsFound"></span></p>
+            <p>Super Secret Rooms Found: <span id="superSecretRoomsFound"></span></p>
+            <p>Current Winstreak: <span id="currentWinstreak"></span></p>
+            <p>Best Winstreak: <span id="bestWinstreak"></span></p>
           </div>
-          <div style="width: 25rem; font-size: 24px;">
-            <p style="width: 20em; white-space: pre-line;">Guesses Remaining: <br/> <span style="font-size: 50px;" id="guessesremaining"></span></p>
-          </div>
-        </div>
-        
+        </div> 
       </div>
     </div>
   

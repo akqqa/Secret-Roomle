@@ -22,13 +22,13 @@ const floornames = [
 const startingGuesses = 6;
 
 //Size constants
-const size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.05); // SO AT MINIMUM the canvas scales to screen (only on refresh)
+var size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.05);
 console.log("SIZE");
 console.log(size);
-const roomSize = size;
-const mapSize = roomSize * 15;
-const halfCell = roomSize / 2.5;
-const rockSize = roomSize / 5;
+var roomSize = size;
+var mapSize = roomSize * 15;
+var halfCell = roomSize / 2.5;
+var rockSize = roomSize / 5;
 let currentDate = new Date();
 let seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString();
 console.log(seed);
@@ -93,7 +93,7 @@ function checkImagesLoaded() {
     if (imagesLoaded === imagePaths.length) {
         startGame();
         countdown();
-        setInterval(countdown, 100000);
+        setInterval(countdown, 1000);
     } else {
         requestAnimationFrame(checkImagesLoaded);
     }
@@ -485,6 +485,17 @@ addEventListener("keydown", (event) => {
         //Math.seedrandom(seed);
         //startGame();
     }
+});
+
+addEventListener("resize", (event) => {
+    size = Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.05);
+    roomSize = size;
+    mapSize = roomSize * 15;
+    halfCell = roomSize / 2.5;
+    rockSize = roomSize / 5;
+    canvas.width = mapSize;
+    canvas.height = mapSize;
+    drawMap();
 });
 
 // Next: Add onclick listener, if secret room clicked reveal, if not, colour it in and add 1 to the stage. after 4 stages fail. MAYBE actuall add 4 stages the first reveals where the starting room is to help find the boss room
