@@ -239,6 +239,69 @@ export class Generator {
             if (this.labyrinth) {
                 this.deadEndQueue.pop().type = "item";
             }
+            // Planetarium
+            if (this.deadEndQueue.length > 0) {
+                if (this.stage < 7) {
+                    if (Math.random() < 0.01) {
+                        this.deadEndQueue.pop().type = "planetarium";
+                    }
+                }
+            }
+            // Sac or Dice room
+            if (this.deadEndQueue.length > 0) {
+                if (Math.random() < 5/14) { // Assuming Isaac has high health
+                    if (Math.random() < 1/5) { // Assuming Isaac has more than 2 keys
+                        this.deadEndQueue.pop().type = "dice";
+                    } else {
+                        this.deadEndQueue.pop().type = "sacrifice";
+                    }
+                }
+            }
+            // Library
+            if (this.deadEndQueue.length > 0) {
+                if (Math.random() < 1/20) {
+                    this.deadEndQueue.pop().type = "library";
+                }
+            }
+            // Curse Room
+            if (this.deadEndQueue.length > 0) {
+                if (Math.random() < 1/2) { // Assuming no devil rooms taken this run
+                    this.deadEndQueue.pop().type = "curse";
+                }
+            }
+            // Miniboss
+            if (this.deadEndQueue.length > 0) {
+                if (this.stage = 1 && Math.random() < 1/2) { // Higher chance on first floor
+                    this.deadEndQueue.pop().type = "miniboss";
+                } else if (Math.random() < 1/4) {
+                    this.deadEndQueue.pop().type = "miniboss";
+                }
+            }
+            // Challenge Room 
+            if (this.deadEndQueue.length > 0) {
+                if (this.stage % 2 == 0 && this.stage < 10) { // Guarenteed spawn as assuming isaac has high health
+                    this.deadEndQueue.pop().type = "bosschallenge"; // Boss on second floors
+                } else if (this.stage < 10) {
+                    this.deadEndQueue.pop().type = "challenge";
+                }
+            }
+            // Arcade / Vault 
+            if (this.deadEndQueue.length > 0) {
+                if (this.stage % 2 == 0 && this.stage < 10 && !this.labyrinth) { // Assuming isaac has at least 5 coins, guarenteed to spawn on even floors
+                    if (Math.random() < 2/5) {
+                        this.deadEndQueue.pop().type = "vault";
+                    } else {
+                        this.deadEndQueue.pop().type = "arcade";
+                    }
+                }
+            }
+            // Bedroom (cba to distinguish which type)
+            if (this.deadEndQueue.length > 0) {
+                if (this.stage < 7) {
+                    this.deadEndQueue.pop().type = "bedroom";
+                }
+            }
+
         } else if (this.stage == 12) {
             // Void - generate 7 more boss rooms lol - can it be more ? idk look into that
             for (let i = 0; i < 7; i++) {

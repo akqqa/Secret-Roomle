@@ -20,17 +20,7 @@ const floornames = [
     ["Void"]
 ]
 
-let visualSize = 1;
-// Create canvas and various variables
-const canvas = document.getElementById('gameCanvas');
-// Set canvas dimensions
-canvas.width = mapSize;
-canvas.height = mapSize;
-const ctx = canvas.getContext('2d');
-ctx.scale(size/visualSize, size/visualSize);
-setScaling();
-canvas.width = mapSize;
-canvas.height = mapSize;
+
 
 const startingGuesses = 6;
 
@@ -45,6 +35,14 @@ let seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toStr
 console.log(seed);
 Math.seedrandom(seed); 
 
+let visualSize = 1;
+// Create canvas and various variables
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+ctx.scale(size/visualSize, size/visualSize);
+setScaling();
+canvas.width = mapSize;
+canvas.height = mapSize;
 
 // Need to add a main routing part where checks the users cookies, if done for today dont give them the game, if not give them the game. etc. nothing complex! all local
 // Can have an unlimited page just for practice :) - just do another html page where it doesnt care for cookies and lets you press r etc.
@@ -54,7 +52,10 @@ console.log("js loaded");
 //Math.seedrandom(5);
 
 // ON PAGE LOAD LOAD IMAGES
-const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", "images/superSecretRoom.png", "images/rock.png", "images/poop.png"];
+const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", 
+    "images/superSecretRoom.png", "images/planetariumRoom.png", "images/diceRoom.png", "images/sacrificeRoom.png", "images/libraryRoom.png", 
+    "images/curseRoom.png", "images/minibossRoom.png", "images/challengeRoom.png", "images/bossChallengeRoom.png", "images/arcadeRoom.png", 
+    "images/vaultRoom.png", "images/bedroomRoom.png", "images/rock.png", "images/poop.png"];
 const images = [];  
 let imagesLoaded = 0; 
 
@@ -212,7 +213,7 @@ function startGame() {
     curseLabyrinth = false;
     curseLost = false;
     if (Math.random() < 0.3) {
-        if (Math.random() < 0.6) {
+        if (Math.random() < 0.6 && (levelnum % 2 != 0 || levelnum > 9)) { // Only labyrinth if first floor of chapter
             curseLabyrinth = true;
         } else {
             curseLost = true;
@@ -283,15 +284,33 @@ function drawMap(hoveredRoom = null) {
                     } else if (room.type == "item") {
                         ctx.drawImage(images[3], x, y, roomSize, roomSize);
                     } else if (room.type == "wrong") {
-                        // ctx.beginPath();
-                        // ctx.fillStyle = "red";
-                        // ctx.rect((room.posX+1)*roomSize, (room.posY+1)*roomSize, roomSize,roomSize);
-                        // ctx.fill();
-                        ctx.drawImage(images[7], x, y, roomSize, roomSize);
+                        ctx.drawImage(images[18], x, y, roomSize, roomSize);
                     } else if (room.type == "secret" && !room.hidden) {
                         ctx.drawImage(images[4], x, y, roomSize, roomSize);
                     } else if (room.type == "supersecret" && !room.hidden) {
                         ctx.drawImage(images[5], x, y, roomSize, roomSize);
+                    } else if (room.type == "planetarium" && !room.hidden) {
+                        ctx.drawImage(images[6], x, y, roomSize, roomSize);
+                    } else if (room.type == "dice" && !room.hidden) {
+                        ctx.drawImage(images[7], x, y, roomSize, roomSize);
+                    } else if (room.type == "sacrifice" && !room.hidden) {
+                        ctx.drawImage(images[8], x, y, roomSize, roomSize);
+                    } else if (room.type == "library" && !room.hidden) {
+                        ctx.drawImage(images[9], x, y, roomSize, roomSize);
+                    } else if (room.type == "curse" && !room.hidden) {
+                        ctx.drawImage(images[10], x, y, roomSize, roomSize);
+                    } else if (room.type == "miniboss" && !room.hidden) {
+                        ctx.drawImage(images[11], x, y, roomSize, roomSize);
+                    } else if (room.type == "challenge" && !room.hidden) {
+                        ctx.drawImage(images[12], x, y, roomSize, roomSize);
+                    } else if (room.type == "bosschallenge" && !room.hidden) {
+                        ctx.drawImage(images[13], x, y, roomSize, roomSize);
+                    } else if (room.type == "arcade" && !room.hidden) {
+                        ctx.drawImage(images[14], x, y, roomSize, roomSize);
+                    } else if (room.type == "vault" && !room.hidden) {
+                        ctx.drawImage(images[15], x, y, roomSize, roomSize);
+                    } else if (room.type == "bedroom" && !room.hidden) {
+                        ctx.drawImage(images[16], x, y, roomSize, roomSize);
                     } else if (!room.hidden) { 
                         ctx.drawImage(images[0], x, y, roomSize, roomSize); 
                     }
@@ -302,28 +321,28 @@ function drawMap(hoveredRoom = null) {
                 if (room) {
                     if (room.rocks[0] == true) {
                         ctx.beginPath();
-                        ctx.drawImage(images[6], x+halfCell, y, rockSize, rockSize);
+                        ctx.drawImage(images[17], x+halfCell, y, rockSize, rockSize);
                         ctx.fill();
                     }
                     if (room.rocks[1] == true) {
                         ctx.beginPath();
                         //ctx.fillStyle = "red";
                         //ctx.rect(x+halfCell, y+(halfCell*2), rockSize ,rockSize);
-                        ctx.drawImage(images[6], x+halfCell, y+(halfCell*2), rockSize, rockSize);
+                        ctx.drawImage(images[17], x+halfCell, y+(halfCell*2), rockSize, rockSize);
                         ctx.fill();
                     }
                     if (room.rocks[2] == true) {
                         ctx.beginPath();
                         //ctx.fillStyle = "red";
                         //ctx.rect(x, y+halfCell, rockSize,rockSize);
-                        ctx.drawImage(images[6], x, y+halfCell, rockSize, rockSize);
+                        ctx.drawImage(images[17], x, y+halfCell, rockSize, rockSize);
                         ctx.fill();
                     }
                     if (room.rocks[3] == true) {
                         ctx.beginPath();
                         //ctx.fillStyle = "red";
                         //ctx.rect(x+(halfCell*2), y+halfCell, rockSize,rockSize);
-                        ctx.drawImage(images[6], x+(halfCell*2), y+halfCell, rockSize, rockSize);
+                        ctx.drawImage(images[17], x+(halfCell*2), y+halfCell, rockSize, rockSize);
                         ctx.fill();
                     }
                 }
