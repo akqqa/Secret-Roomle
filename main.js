@@ -42,7 +42,7 @@ console.log("js loaded");
 //Math.seedrandom(5);
 
 // ON PAGE LOAD LOAD IMAGES
-const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", "images/superSecretRoom.png"];
+const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", "images/superSecretRoom.png", "images/rock.png"];
 const images = [];  
 let imagesLoaded = 0; 
 
@@ -293,26 +293,28 @@ function drawMap(hoveredRoom = null) {
                 if (room) {
                     if (room.rocks[0] == true) {
                         ctx.beginPath();
-                        ctx.fillStyle = "red";
-                        ctx.rect(x+halfCell, y, rockSize,rockSize);
+                        ctx.drawImage(images[6], x+halfCell, y, rockSize, rockSize);
                         ctx.fill();
                     }
                     if (room.rocks[1] == true) {
                         ctx.beginPath();
-                        ctx.fillStyle = "red";
-                        ctx.rect(x+halfCell, y+(halfCell*2), rockSize,rockSize);
+                        //ctx.fillStyle = "red";
+                        //ctx.rect(x+halfCell, y+(halfCell*2), rockSize ,rockSize);
+                        ctx.drawImage(images[6], x+halfCell, y+(halfCell*2), rockSize, rockSize);
                         ctx.fill();
                     }
                     if (room.rocks[2] == true) {
                         ctx.beginPath();
-                        ctx.fillStyle = "red";
-                        ctx.rect(x, y+halfCell, rockSize,rockSize);
+                        //ctx.fillStyle = "red";
+                        //ctx.rect(x, y+halfCell, rockSize,rockSize);
+                        ctx.drawImage(images[6], x, y+halfCell, rockSize, rockSize);
                         ctx.fill();
                     }
                     if (room.rocks[3] == true) {
                         ctx.beginPath();
-                        ctx.fillStyle = "red";
-                        ctx.rect(x+(halfCell*2), y+halfCell, rockSize,rockSize);
+                        //ctx.fillStyle = "red";
+                        //ctx.rect(x+(halfCell*2), y+halfCell, rockSize,rockSize);
+                        ctx.drawImage(images[6], x+(halfCell*2), y+halfCell, rockSize, rockSize);
                         ctx.fill();
                     }
                 }
@@ -510,8 +512,8 @@ function setScaling() {
     size = Math.ceil(Math.min(window.innerWidth * 0.85, 616))
     mapSize = size;
     roomSize = Math.ceil(mapSize / 15);
-    halfCell = roomSize / 2.5;
-    rockSize = roomSize / 5;
+    halfCell = roomSize / 3;
+    rockSize = roomSize / 3;
     console.log(size);
 }
 
