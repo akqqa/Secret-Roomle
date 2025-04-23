@@ -417,51 +417,22 @@ function countdown() {
     
 }
 
-function isTouchDevice() { // https://stackoverflow.com/questions/4817029/whats-an-optimal-or-efficient-way-to-detect-a-touch-screen-device-using-javas
-    return (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
-}
+canvas.addEventListener("mousemove", event => {
+    console.log("moved");
+    if (!gameover) {
+        let transform = ctx.getTransform();
+        let transformedX = (event.offsetX - transform.e) * (size/visualSize);
+        let transformedY = (event.offsetY - transform.f) * (size/visualSize);
+        drawMap([transformedX, transformedY]);
+    }
+})
 
-// Event listener for moving mouse over canvas - https://roblouie.com/article/617/transforming-mouse-coordinates-to-canvas-coordinates/
-if (!isTouchDevice()) {
-    canvas.addEventListener("mousemove", event => {
-        console.log("moved");
-        if (!gameover) {
-            let transform = ctx.getTransform();
-            let transformedX = (event.offsetX - transform.e) * (size/visualSize);
-            let transformedY = (event.offsetY - transform.f) * (size/visualSize);
-            drawMap([transformedX, transformedY]);
-        }
-    })
-
-    // Remove hover once out
-    canvas.addEventListener("mouseout", event => {
-        if (!gameover) {
-            drawMap();
-        }
-    })
-}
-
-
-// // mobile hover
-// canvas.addEventListener("touchstart", event => {
-//     if (!gameover && event.touches.length > 0) {
-//         const rect = canvas.getBoundingClientRect();
-//         const touch = event.touches[0];
-//         const offsetX = touch.clientX - rect.left;
-//         const offsetY = touch.clientY - rect.top;
-
-//         let transform = ctx.getTransform();
-//         let transformedX = (offsetX - transform.e) * (size / visualSize);
-//         let transformedY = (offsetY - transform.f) * (size / visualSize);
-
-//         drawMap([transformedX, transformedY]);
-//     }
-// }, { passive: true });
-// canvas.addEventListener("touchend", () => {
-//     if (!gameover) {
-//         drawMap(); // clear hover
-//     }
-//});
+// Remove hover once out
+canvas.addEventListener("mouseout", event => {
+    if (!gameover) {
+        drawMap();
+    }
+})
 
 // Handles guesses by the player
 canvas.addEventListener("click", event => {
@@ -540,6 +511,9 @@ canvas.addEventListener("click", event => {
         console.log(gamedata.currentMap);
         localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
         setElements();
+
+        // DRAW THE DAMN MAP LOL
+        drawMap();
     }
 })
 
