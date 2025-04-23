@@ -3,6 +3,7 @@ import { Room, Generator } from './RoomGenerator.js';
 
 // TODO - replace all stage, guesses etc. with just directly using gamedata!
 // infinite mode on diff page, general graphics changes. implement winstreaks, ultra secret? ((make larger floors easier?)?, general presentation. mgraphics on canvas eg rocks and sfx maybe
+// improve canvas by using scaling instead of changing pixel values
 
 const floornames = [
     ["Basement I", "Burning Basement I", "Cellar I"],
@@ -19,6 +20,18 @@ const floornames = [
     ["Void"]
 ]
 
+let visualSize = 1;
+// Create canvas and various variables
+const canvas = document.getElementById('gameCanvas');
+// Set canvas dimensions
+canvas.width = mapSize;
+canvas.height = mapSize;
+const ctx = canvas.getContext('2d');
+ctx.scale(size/visualSize, size/visualSize);
+setScaling();
+canvas.width = mapSize;
+canvas.height = mapSize;
+
 const startingGuesses = 6;
 
 //Size constants
@@ -27,7 +40,6 @@ var roomSize;
 var mapSize;
 var halfCell;
 var rockSize;
-setScaling();
 let currentDate = new Date();
 let seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString();
 console.log(seed);
@@ -59,12 +71,7 @@ imagePaths.forEach((path, index) => {
     };
 });
 
-// Create canvas and various variables
-const canvas = document.getElementById('gameCanvas');
-// Set canvas dimensions
-canvas.width = mapSize;
-canvas.height = mapSize;
-const ctx = canvas.getContext('2d');
+
 var hoveredRoom = null;
 var generator = null;
 var levelnum = null;
@@ -511,12 +518,18 @@ addEventListener("resize", (event) => {
 
 function setScaling() {
     //size = Math.ceil(Math.min(window.innerWidth, window.innerHeight) * 0.66); old formula
-    size = Math.ceil(Math.min(window.innerWidth * 0.85, 616))
+    visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
+    document.getElementById("gameCanvas").style.width = `${visualSize}px`;
+    document.getElementById("gameCanvas").style.height = `${visualSize}px`;
+    console.log(document.getElementById("gameCanvas").width);
+    size = 616; // Now scaled with css and ctx
     mapSize = size;
     roomSize = Math.ceil(mapSize / 15);
     halfCell = roomSize / 3;
     rockSize = roomSize / 3;
-    console.log(size);
+    console.log(visualSize);
+    ctx.scale(size/visualSize, size/visualSize);
+
 }
 
 // Next: Add onclick listener, if secret room clicked reveal, if not, colour it in and add 1 to the stage. after 4 stages fail. MAYBE actuall add 4 stages the first reveals where the starting room is to help find the boss room
