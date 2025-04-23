@@ -68,8 +68,8 @@ const ctx = canvas.getContext('2d');
 var hoveredRoom = null;
 var generator = null;
 var levelnum = null;
-var labyrinth = null;
-var lost = null;
+var curseLabyrinth = null;
+var curseLost = null;
 var hard = null;
 var levelname = null;
 
@@ -182,15 +182,19 @@ function setElements() {
     document.getElementById("guessesremaining").textContent = guesses;
     document.getElementById("floorname").textContent = levelname;
     let curse = "no curse";
-    if (labyrinth) {
+    if (curseLabyrinth) {
         curse = "curse of the labyrinth";
-    } else if (lost) {
+    }
+    if (curseLost) {
         curse = "curse of the lost";
     }
     document.getElementById("cursename").textContent = curse;
 
     // Background based on level
-    let levelnameTrimmed = levelname.substring(0, levelname.lastIndexOf(" "));
+    let levelnameTrimmed = levelname;
+    if (levelname.includes(" ") && levelname != "Dark Room") {
+        levelnameTrimmed = levelname.substring(0, levelname.lastIndexOf(" "));
+    }
     let backgroundPath = "./images/Backgrounds/" + levelnameTrimmed + ".png";
     document.getElementById("body").style.backgroundImage = `url("${backgroundPath}")`;
 }
@@ -198,17 +202,17 @@ function setElements() {
 // Sets variables, and generates map, starting the game
 function startGame() {
     levelnum = Math.floor(Math.random()*12 + 1)
-    labyrinth = false;
-    lost = false;
-    if (Math.random() < 0.6) {
-        if (Math.random() < 0.5) {
-            labyrinth = true;
+    curseLabyrinth = false;
+    curseLost = false;
+    if (Math.random() < 0.3) {
+        if (Math.random() < 0.6) {
+            curseLabyrinth = true;
         } else {
-            lost = true;
+            curseLost = true;
         }
     }
     hard =  Math.random() < 0.5;
-    generator = new Generator(levelnum, labyrinth, lost, hard);
+    generator = new Generator(levelnum, curseLabyrinth, lost, hard);
     levelname = floornames[levelnum-1][Math.floor(Math.random() * floornames[levelnum-1].length)]
 
     stage = 0; // stage = 1 is room types, stage = 2 is rocks
@@ -218,7 +222,6 @@ function startGame() {
     attempts = 0;
     gameover = false;
     won = false;
-    lost = false;
     generator.generateMap();
 
     initializeGamedata();
@@ -487,11 +490,11 @@ canvas.addEventListener("click", event => {
 
 addEventListener("keydown", (event) => {
     // Add for inifnite mode
-    if (event.key == "r") {
+    if (event.key == "rlll") {
         console.log("r key!")
-        //seed = seed + 1;
-        //Math.seedrandom(seed);
-        //startGame();
+        seed = seed + 1;
+        Math.seedrandom(seed);
+        startGame();
     }
 });
 
