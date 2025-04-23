@@ -2,7 +2,7 @@ import { Room, Generator } from './RoomGenerator.js';
 //import seedrandom from 'seedrandom';
 
 // TODO - replace all stage, guesses etc. with just directly using gamedata!
-// floor relevant background image, gueses remaining, infinite mode on diff page, general graphics changes. implement winstreaks, ultra secret? make larger floors easier?
+// infinite mode on diff page, general graphics changes. implement winstreaks, ultra secret? ((make larger floors easier?)?, general presentation. mgraphics on canvas eg rocks and sfx maybe
 
 const floornames = [
     ["Basement I", "Burning Basement I", "Cellar I"],
