@@ -407,8 +407,8 @@ canvas.addEventListener("mousemove", event => {
     console.log("moved");
     if (!gameover) {
         let transform = ctx.getTransform();
-        let transformedX = event.offsetX - transform.e;
-        let transformedY = event.offsetY - transform.f;
+        let transformedX = (event.offsetX - transform.e) * (size/visualSize);
+        let transformedY = (event.offsetY - transform.f) * (size/visualSize);
         drawMap([transformedX, transformedY]);
     }
 })
@@ -428,8 +428,8 @@ canvas.addEventListener("click", event => {
         }
 
         let transform = ctx.getTransform();
-        let transformedX = event.offsetX - transform.e;
-        let transformedY = event.offsetY - transform.f;
+        let transformedX = (event.offsetX - transform.e) * (size/visualSize);
+        let transformedY = (event.offsetY - transform.f) * (size/visualSize);
         let y = Math.floor(transformedY/roomSize) - 1;
         let x = Math.floor(transformedX/roomSize) - 1;
         let room = generator.map[y][x];
