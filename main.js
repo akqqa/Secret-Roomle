@@ -435,7 +435,7 @@ canvas.addEventListener("mouseout", event => {
 })
 
 // mobile hover
-canvas.addEventListener("touchmove", event => {
+canvas.addEventListener("touchstart", event => {
     if (!gameover && event.touches.length > 0) {
         const rect = canvas.getBoundingClientRect();
         const touch = event.touches[0];
