@@ -348,7 +348,7 @@ function drawMap(hoveredRoom = null) {
         ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
         ctx.fill();
         ctx.fillStyle = "rgba(0, 0, 0, 1)";
-        ctx.font = "50px Upheaval";
+        ctx.font = "400px Upheaval";
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
         ctx.fillText("You win!", mapSize / 2, mapSize / 3);
@@ -522,7 +522,7 @@ function setScaling() {
     document.getElementById("gameCanvas").style.width = `${visualSize}px`;
     document.getElementById("gameCanvas").style.height = `${visualSize}px`;
     console.log(document.getElementById("gameCanvas").width);
-    size = 616; // Now scaled with css and ctx
+    size = 2000; // Now scaled with css and ctx
     mapSize = size;
     roomSize = Math.ceil(mapSize / 15);
     halfCell = roomSize / 3;
