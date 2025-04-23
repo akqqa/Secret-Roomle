@@ -417,43 +417,51 @@ function countdown() {
     
 }
 
+function isTouchDevice() { // https://stackoverflow.com/questions/4817029/whats-an-optimal-or-efficient-way-to-detect-a-touch-screen-device-using-javas
+    return (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
+}
+
 // Event listener for moving mouse over canvas - https://roblouie.com/article/617/transforming-mouse-coordinates-to-canvas-coordinates/
-canvas.addEventListener("mousemove", event => {
-    console.log("moved");
-    if (!gameover) {
-        let transform = ctx.getTransform();
-        let transformedX = (event.offsetX - transform.e) * (size/visualSize);
-        let transformedY = (event.offsetY - transform.f) * (size/visualSize);
-        drawMap([transformedX, transformedY]);
-    }
-})
-// Remove hover once out
-canvas.addEventListener("mouseout", event => {
-    if (!gameover) {
-        drawMap();
-    }
-})
+if (!isTouchDevice()) {
+    canvas.addEventListener("mousemove", event => {
+        console.log("moved");
+        if (!gameover) {
+            let transform = ctx.getTransform();
+            let transformedX = (event.offsetX - transform.e) * (size/visualSize);
+            let transformedY = (event.offsetY - transform.f) * (size/visualSize);
+            drawMap([transformedX, transformedY]);
+        }
+    })
 
-// mobile hover
-canvas.addEventListener("touchstart", event => {
-    if (!gameover && event.touches.length > 0) {
-        const rect = canvas.getBoundingClientRect();
-        const touch = event.touches[0];
-        const offsetX = touch.clientX - rect.left;
-        const offsetY = touch.clientY - rect.top;
+    // Remove hover once out
+    canvas.addEventListener("mouseout", event => {
+        if (!gameover) {
+            drawMap();
+        }
+    })
+}
 
-        let transform = ctx.getTransform();
-        let transformedX = (offsetX - transform.e) * (size / visualSize);
-        let transformedY = (offsetY - transform.f) * (size / visualSize);
 
-        drawMap([transformedX, transformedY]);
-    }
-}, { passive: true });
-canvas.addEventListener("touchend", () => {
-    if (!gameover) {
-        drawMap(); // clear hover
-    }
-});
+// // mobile hover
+// canvas.addEventListener("touchstart", event => {
+//     if (!gameover && event.touches.length > 0) {
+//         const rect = canvas.getBoundingClientRect();
+//         const touch = event.touches[0];
+//         const offsetX = touch.clientX - rect.left;
+//         const offsetY = touch.clientY - rect.top;
+
+//         let transform = ctx.getTransform();
+//         let transformedX = (offsetX - transform.e) * (size / visualSize);
+//         let transformedY = (offsetY - transform.f) * (size / visualSize);
+
+//         drawMap([transformedX, transformedY]);
+//     }
+// }, { passive: true });
+// canvas.addEventListener("touchend", () => {
+//     if (!gameover) {
+//         drawMap(); // clear hover
+//     }
+//});
 
 // Handles guesses by the player
 canvas.addEventListener("click", event => {
