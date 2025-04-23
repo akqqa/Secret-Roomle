@@ -260,10 +260,6 @@ function drawMap(hoveredRoom = null) {
             if (stage == 0) {
                 if (room) {
                     if (room.type == "wrong") {
-                        // ctx.beginPath();
-                        // ctx.fillStyle = "red";
-                        // ctx.rect((room.posX+1)*roomSize, (room.posY+1)*roomSize, roomSize,roomSize); // no room object so calculate size
-                        // ctx.fill();
                         ctx.drawImage(images[7], x, y, roomSize, roomSize);
                     } else if (room.type == "secret" && !room.hidden) {
                         ctx.drawImage(images[4], x, y, roomSize, roomSize);
