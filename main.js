@@ -353,7 +353,7 @@ function drawMap(hoveredRoom = null) {
         ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
         ctx.fill();
         ctx.fillStyle = "rgba(0, 0, 0, 1)";
-        ctx.font = "50px Upheaval";
+        ctx.font = "400px Upheaval";
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
         ctx.fillText("You LOSE!", mapSize / 2, mapSize / 3);
@@ -433,6 +433,27 @@ canvas.addEventListener("mouseout", event => {
         drawMap();
     }
 })
+
+// mobile hover
+canvas.addEventListener("touchmove", event => {
+    if (!gameover && event.touches.length > 0) {
+        const rect = canvas.getBoundingClientRect();
+        const touch = event.touches[0];
+        const offsetX = touch.clientX - rect.left;
+        const offsetY = touch.clientY - rect.top;
+
+        let transform = ctx.getTransform();
+        let transformedX = (offsetX - transform.e) * (size / visualSize);
+        let transformedY = (offsetY - transform.f) * (size / visualSize);
+
+        drawMap([transformedX, transformedY]);
+    }
+}, { passive: true });
+canvas.addEventListener("touchend", () => {
+    if (!gameover) {
+        drawMap(); // clear hover
+    }
+});
 
 // Handles guesses by the player
 canvas.addEventListener("click", event => {
