@@ -42,7 +42,7 @@ console.log("js loaded");
 //Math.seedrandom(5);
 
 // ON PAGE LOAD LOAD IMAGES
-const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", "images/superSecretRoom.png", "images/rock.png"];
+const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", "images/superSecretRoom.png", "images/rock.png", "images/poop.png"];
 const images = [];  
 let imagesLoaded = 0; 
 
@@ -252,10 +252,11 @@ function drawMap(hoveredRoom = null) {
             if (stage == 0) {
                 if (room) {
                     if (room.type == "wrong") {
-                        ctx.beginPath();
-                        ctx.fillStyle = "red";
-                        ctx.rect((room.posX+1)*roomSize, (room.posY+1)*roomSize, roomSize,roomSize);
-                        ctx.fill();
+                        // ctx.beginPath();
+                        // ctx.fillStyle = "red";
+                        // ctx.rect((room.posX+1)*roomSize, (room.posY+1)*roomSize, roomSize,roomSize); // no room object so calculate size
+                        // ctx.fill();
+                        ctx.drawImage(images[7], x, y, roomSize, roomSize);
                     } else if (room.type == "secret" && !room.hidden) {
                         ctx.drawImage(images[4], x, y, roomSize, roomSize);
                     } else if (room.type == "supersecret" && !room.hidden) {
@@ -275,10 +276,11 @@ function drawMap(hoveredRoom = null) {
                     } else if (room.type == "item") {
                         ctx.drawImage(images[3], x, y, roomSize, roomSize);
                     } else if (room.type == "wrong") {
-                        ctx.beginPath();
-                        ctx.fillStyle = "red";
-                        ctx.rect((room.posX+1)*roomSize, (room.posY+1)*roomSize, roomSize,roomSize);
-                        ctx.fill();
+                        // ctx.beginPath();
+                        // ctx.fillStyle = "red";
+                        // ctx.rect((room.posX+1)*roomSize, (room.posY+1)*roomSize, roomSize,roomSize);
+                        // ctx.fill();
+                        ctx.drawImage(images[7], x, y, roomSize, roomSize);
                     } else if (room.type == "secret" && !room.hidden) {
                         ctx.drawImage(images[4], x, y, roomSize, roomSize);
                     } else if (room.type == "supersecret" && !room.hidden) {
