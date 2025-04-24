@@ -3,9 +3,8 @@ import { Room, Generator } from './RoomGenerator.js';
 
 // TODO - replace all stage, guesses etc. with just directly using gamedata!
 // infinite mode on diff page, general graphics changes. implement winstreaks, ultra secret? ((make larger floors easier?)?, general presentation. mgraphics on canvas eg rocks and sfx maybe
-// make levelnum favour lower floors so game isnt constantly super hard!
-// alternate balancing: add 2 bombs for each chapter? start with 3, add 2 per chapter?
 // Make practice mode configurable - floor, curse, num of attempts (blank for infinite), or just random everything. Only make this mode once daily is finalised, and separate css sheet made
+// CONSIDER stage progressing every 2 bombs instead of every 1?. would require rock rebalancing and maybe more bombs. idk. feels a bit weird just having it affect the first few guesses  <add a flawless modifier to the end
 
 const floornames = [
     ["Basement I", "Burning Basement I", "Cellar I"],
@@ -275,7 +274,7 @@ function drawMap(hoveredRoom = null) {
                 // Add condition for if exposed secret room should still draw the ?
             }
             if (stage == 1 || stage == 2) {
-                if (room) {
+                if (room) { // Yes, i should have used a map or something. sue me.
                     if (room.type == "boss") {
                         ctx.drawImage(images[1], x, y, roomSize, roomSize);
                     } else if (room.type == "shop") {
@@ -496,6 +495,8 @@ canvas.addEventListener("click", event => {
                 }
             }
             drawMap(null);
+            // Modify users stats
+            gamedata.stats.winStreak = 0;
             loseSfx.play();
             deathSfx.play();
         } else if (secretFound && supersecretFound) {
@@ -504,7 +505,12 @@ canvas.addEventListener("click", event => {
             lost = false;
             stage = 2;
             drawMap(null);
+            // Modify users stats
             gamedata.stats.wins += 1;
+            gamedata.stats.winStreak  += 1;
+            if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
+                gamedata.stats.maxStreak = gamedata.stats.winStreak;
+            }
             // Stop sounds and play win
             secretRoomSfx.pause();
             secretRoomSfx.currentTime = 0;

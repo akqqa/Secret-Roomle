@@ -1,24 +1,13 @@
-// So the basic plan is:
-// Randomly select a floor, curse if applicable, etc ( do lter, for now, just do most basic as poc )
-// Randomly gen the number of rooms
-// Select the min dead ends
-// Generate according to the original script, and then verify it fits on the grid and has at least min dead ends
-// Perform logic for boss room, treasure room, etc if wanted
-// secret rooms when required
-// thats the generator done! can buildother stuf on top later
-// large rooms and such arent necessary. cause gameplay doesnt matter rn lol m- this is basic. worst case can add later if really want to but not well documented.
-// ^ issue here is that, this algorithm wont have rock info and stuff, so.. its not super useful. but - again we dont know the game so would have to fake it anyway e.g select certain rooms that we know arent next to a secret room and say they have rocks on that side etc. - thats for gamifying it later
-// for rocks, go through and randomly assign "above blocked" "left blocked" etc to places where they can be blocked. this then narrows it down more. but make surenitiss liek 50 percent change or less even idk
-// It doesnt have to be perfect :) its jsut for fun !!! and for a small project to get you back into coding for fun like uni
 // Can add ultra secret once done for extra challenge, will require red rooms filling all empty space, then using connection rules
 // Gameplay can be like, first guess is nothing, each fail reveals new info such as boss room, rooms with blocked sides, etc.
 // ^ yep so, nothing, then reveal room types, then reveal blocked sides, anything else? idk
 
 // NEED TO ADD POP CHECKS TO ENSURE NOT UNDEFINED
+// DOUBLE CHECK ROOMS ARE ADDED TO WOMB IF THEY CAN SPAWN THERE
 
 // Using https://bindingofisaacrebirth.fandom.com/wiki/Level_Generation and https://www.boristhebrave.com/2020/09/12/dungeon-generation-in-binding-of-isaac/ for algorithm
 
-const rockOdds = 0.3 // rockOdds chance of rock appearing in each valid space
+const rockOdds = 0.3 // rockOdds chance of rock appearing in each valid space - INCREASE TOI MAKE EASIER, DECREASE TO MAKE HARDER
 
 // Can be boss, secret, shop, etc etc etc
 // Possibility for large rooms - each grid cell contains one room as usual, but can be duplicated in case of larger rooms with copies of the same object. hm. but then pos is weird. and so is getting neighbours. hm
