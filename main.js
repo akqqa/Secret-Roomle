@@ -22,7 +22,11 @@ const floornames = [
     ["Void"]
 ]
 
-
+var bombSfx = new Audio("sfx/explosion.wav");
+var secretRoomSfx = new Audio("sfx/secret.ogg");
+var winSfx = new Audio("sfx/specialist.mp3");
+var loseSfx = new Audio("sfx/lose.ogg");
+var deathSfx = new Audio("sfx/death.wav");
 
 const startingGuesses = 6;
 
@@ -458,21 +462,36 @@ canvas.addEventListener("click", event => {
             generator.map[y][x] = newRoom;
             stage = Math.min(2, stage+1);
             guesses -= 1;
+            bombSfx.pause();
+            bombSfx.currentTime = 0;
+            bombSfx.play();
         } else if (room.type == "secret" && room.hidden) {
             room.hidden = false;
             secretFound = true;
             gamedata.stats.secretRoomsFound += 1;
             guesses -= 1;
+            bombSfx.pause();
+            bombSfx.currentTime = 0;
+            secretRoomSfx.pause();
+            secretRoomSfx.currentTime = 0;
+            bombSfx.play();
+            secretRoomSfx.play();
         } else if (room.type == "supersecret" && room.hidden) {
             room.hidden = false;
             supersecretFound = true;
             gamedata.stats.superSecretRoomsFound += 1;
             guesses -= 1;
+            bombSfx.pause();
+            bombSfx.currentTime = 0;
+            secretRoomSfx.pause();
+            secretRoomSfx.currentTime = 0;
+            bombSfx.play();
+            secretRoomSfx.play();
         }
         document.getElementById("guessesremaining").textContent = guesses; // Update guesses remaining visually
 
         // Loss logic
-        if (guesses == 0) {
+        if (guesses == 0 && !(secretFound && supersecretFound)) {
             gameover = true;
             won = false;
             lost = true;
@@ -487,16 +506,19 @@ canvas.addEventListener("click", event => {
                 }
             }
             drawMap(null);
-        }
-
-        // Win logic
-        if (secretFound && supersecretFound) {
+            loseSfx.play();
+            deathSfx.play();
+        } else if (secretFound && supersecretFound) {
             gameover = true;
             won = true;
             lost = false;
             stage = 2;
             drawMap(null);
             gamedata.stats.wins += 1;
+            // Stop sounds and play win
+            secretRoomSfx.pause();
+            secretRoomSfx.currentTime = 0;
+            winSfx.play();
         }
 
         // After every valid click, update localstorage with info about todays game, overwriting it.
