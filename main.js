@@ -5,6 +5,7 @@ import { Room, Generator } from './RoomGenerator.js';
 // infinite mode on diff page, general graphics changes. implement winstreaks, ultra secret? ((make larger floors easier?)?, general presentation. mgraphics on canvas eg rocks and sfx maybe
 // make levelnum favour lower floors so game isnt constantly super hard!
 // alternate balancing: add 2 bombs for each chapter? start with 3, add 2 per chapter?
+// Make practice mode configurable - floor, curse, num of attempts (blank for infinite), or just random everything. Only make this mode once daily is finalised, and separate css sheet made
 
 const floornames = [
     ["Basement I", "Burning Basement I", "Cellar I"],
@@ -56,7 +57,7 @@ console.log("js loaded");
 const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", 
     "images/superSecretRoom.png", "images/planetariumRoom.png", "images/diceRoom.png", "images/sacrificeRoom.png", "images/libraryRoom.png", 
     "images/curseRoom.png", "images/minibossRoom.png", "images/challengeRoom.png", "images/bossChallengeRoom.png", "images/arcadeRoom.png", 
-    "images/vaultRoom.png", "images/bedroomRoom.png", "images/rock.png", "images/poop.png", "images/bomb.png"];
+    "images/vaultRoom.png", "images/bedroomRoom.png", "images/rock.png", "images/scorch.png", "images/bomb.png"];
 const images = [];  
 let imagesLoaded = 0; 
 
