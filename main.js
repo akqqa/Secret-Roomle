@@ -72,7 +72,7 @@ imagePaths.forEach((path, index) => {
     let asyncCounter = counter; // needed for callback to use the correct counter
     counter++; 
     image.onload = () => {
-        asyncCounter 
+        //asyncCounter 
         images[asyncCounter] = image;
         imagesLoaded++;
     };
