@@ -50,12 +50,8 @@ setScaling();
 canvas.width = mapSize;
 canvas.height = mapSize;
 
-// Need to add a main routing part where checks the users cookies, if done for today dont give them the game, if not give them the game. etc. nothing complex! all local
-// Can have an unlimited page just for practice :) - just do another html page where it doesnt care for cookies and lets you press r etc.
-
 console.log("js loaded");
 
-//Math.seedrandom(5);
 
 // ON PAGE LOAD LOAD IMAGES
 const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", 
@@ -78,15 +74,13 @@ imagePaths.forEach((path, index) => {
     };
 });
 
-
-var hoveredRoom = null;
+// Variables
 var generator = null;
 var levelnum = null;
 var curseLabyrinth = null;
 var curseLost = null;
 var hard = null;
 var levelname = null;
-
 
 var stage = 0; // stage = 1 is room types, stage = 2 is rocks
 var guesses = startingGuesses;
@@ -97,8 +91,8 @@ var gameover = false;
 var won = false;
 var lost = false;
 
+// Gets the stored data if any in storage
 var gamedata = localStorage.getItem("secretRoomleData");
-
 
 checkImagesLoaded(); // Checks if images are loaded. If so, starts the game.
 
@@ -184,6 +178,7 @@ function initializeGamedata() {
     setElements();
 }
 
+// Sets the text of the page based on game data and current game
 function setElements() {
     document.getElementById("gamesPlayed").textContent = gamedata.stats.totalGames; 
     document.getElementById("gamesWon").textContent = gamedata.stats.wins; 
@@ -219,7 +214,7 @@ function startGame() {
     curseLabyrinth = false;
     curseLost = false;
     if (Math.random() < 0.3) {
-        if (Math.random() < 0.6 && (levelnum % 2 != 0 || levelnum > 9)) { // Only labyrinth if first floor of chapter
+        if (Math.random() < 0.5 && (levelnum % 2 != 0 || levelnum > 9)) { // Only labyrinth if first floor of chapter
             curseLabyrinth = true;
         } else {
             curseLost = true;
@@ -230,12 +225,17 @@ function startGame() {
     levelname = floornames[levelnum-1][Math.floor(Math.random() * floornames[levelnum-1].length)]
 
     stage = 0; // stage = 1 is room types, stage = 2 is rocks
-    guesses = startingGuesses;
+    guesses = (
+        levelnum <= 6 ? startingGuesses :
+        levelnum <= 11 ? startingGuesses + 2 : // +2 as harder without rooms - more dead ends for super secret
+        levelnum === 12 ? startingGuesses + 6 : // Void is nasty
+        null); // Attempt at balance based on starting floor
     secretFound = false;
     supersecretFound = false;
     attempts = 0;
     gameover = false;
     won = false;
+    lost = false;
     generator.generateMap();
 
     initializeGamedata();
@@ -256,10 +256,6 @@ function drawMap(hoveredRoom = null) {
             // If room is undefined or a hidden secret room, then if the current hovered coordinates are this room, fill it grey.
             if (hoveredRoom && (!room || (room.type == "secret" && room.hidden) || (room.type == "supersecret" && room.hidden))) { // fiddly short circuiting
                 if ((y/roomSize) - 1 == (Math.floor(hoveredRoom[1]/roomSize)) - 1 && (x/roomSize) - 1 == (Math.floor(hoveredRoom[0]/roomSize)) - 1) {
-                    // ctx.beginPath();
-                    // ctx.fillStyle = "black";
-                    // ctx.rect(x, y, roomSize,roomSize);
-                    // ctx.fill();
                     ctx.drawImage(images[19], x, y, roomSize, roomSize);
                 }
             }
@@ -329,22 +325,16 @@ function drawMap(hoveredRoom = null) {
                     }
                     if (room.rocks[1] == true) {
                         ctx.beginPath();
-                        //ctx.fillStyle = "red";
-                        //ctx.rect(x+halfCell, y+(halfCell*2), rockSize ,rockSize);
                         ctx.drawImage(images[17], x+halfCell, y+(halfCell*2), rockSize, rockSize);
                         ctx.fill();
                     }
                     if (room.rocks[2] == true) {
                         ctx.beginPath();
-                        //ctx.fillStyle = "red";
-                        //ctx.rect(x, y+halfCell, rockSize,rockSize);
                         ctx.drawImage(images[17], x, y+halfCell, rockSize, rockSize);
                         ctx.fill();
                     }
                     if (room.rocks[3] == true) {
                         ctx.beginPath();
-                        //ctx.fillStyle = "red";
-                        //ctx.rect(x+(halfCell*2), y+halfCell, rockSize,rockSize);
                         ctx.drawImage(images[17], x+(halfCell*2), y+halfCell, rockSize, rockSize);
                         ctx.fill();
                     }
@@ -445,7 +435,7 @@ canvas.addEventListener("mouseout", event => {
 canvas.addEventListener("click", event => {
     if (!gameover) {
         // If this is the first click of a new game, add to total games played in stats (so entering counts as a game played, as you can get secret rooms even if you dont "win")
-        if (stage == 0 && guesses == startingGuesses) {
+        if (stage == 0 && !secretFound && !supersecretFound) {
             gamedata.stats.totalGames += 1;
         }
 
@@ -574,10 +564,5 @@ function setScaling() {
     ctx.scale(size/visualSize, size/visualSize);
 
 }
-
-// Next: Add onclick listener, if secret room clicked reveal, if not, colour it in and add 1 to the stage. after 4 stages fail. MAYBE actuall add 4 stages the first reveals where the starting room is to help find the boss room
-// ALSO MAYBE THE DEEPER THE MAP IS THE MORE ATTEMPTS YOU GET
-// For womb + its very hard. consider changing it so that colour of your guess is equated to distance from a secret room. and make rocks more common
-
 
 
