@@ -3,7 +3,8 @@ import { Room, Generator } from './RoomGenerator.js';
 
 // TODO - replace all stage, guesses etc. with just directly using gamedata!
 // infinite mode on diff page, general graphics changes. implement winstreaks, ultra secret? ((make larger floors easier?)?, general presentation. mgraphics on canvas eg rocks and sfx maybe
-// improve canvas by using scaling instead of changing pixel values
+// make levelnum favour lower floors so game isnt constantly super hard!
+// alternate balancing: add 2 bombs for each chapter? start with 3, add 2 per chapter?
 
 const floornames = [
     ["Basement I", "Burning Basement I", "Cellar I"],
@@ -55,7 +56,7 @@ console.log("js loaded");
 const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", 
     "images/superSecretRoom.png", "images/planetariumRoom.png", "images/diceRoom.png", "images/sacrificeRoom.png", "images/libraryRoom.png", 
     "images/curseRoom.png", "images/minibossRoom.png", "images/challengeRoom.png", "images/bossChallengeRoom.png", "images/arcadeRoom.png", 
-    "images/vaultRoom.png", "images/bedroomRoom.png", "images/rock.png", "images/poop.png"];
+    "images/vaultRoom.png", "images/bedroomRoom.png", "images/rock.png", "images/poop.png", "images/bomb.png"];
 const images = [];  
 let imagesLoaded = 0; 
 
@@ -250,10 +251,11 @@ function drawMap(hoveredRoom = null) {
             // If room is undefined or a hidden secret room, then if the current hovered coordinates are this room, fill it grey.
             if (hoveredRoom && (!room || (room.type == "secret" && room.hidden) || (room.type == "supersecret" && room.hidden))) { // fiddly short circuiting
                 if ((y/roomSize) - 1 == (Math.floor(hoveredRoom[1]/roomSize)) - 1 && (x/roomSize) - 1 == (Math.floor(hoveredRoom[0]/roomSize)) - 1) {
-                    ctx.beginPath();
-                    ctx.fillStyle = "black";
-                    ctx.rect(x, y, roomSize,roomSize);
-                    ctx.fill();
+                    // ctx.beginPath();
+                    // ctx.fillStyle = "black";
+                    // ctx.rect(x, y, roomSize,roomSize);
+                    // ctx.fill();
+                    ctx.drawImage(images[19], x, y, roomSize, roomSize);
                 }
             }
 
