@@ -60,10 +60,6 @@ button:hover {
   .image-button {
     font-size: 13px;
   }
-
-  body {
-    backdrop-filter: none;
-  }
 }
 
 body{
