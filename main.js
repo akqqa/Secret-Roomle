@@ -101,7 +101,7 @@ var gamedata = localStorage.getItem("secretRoomleData");
 
 startGame();
 countdown();
-setInterval(countdown, 100000000);
+setInterval(countdown, 1000);
 
 function initializeGamedata() {
     // Once game starts, load localstorage gamedata and load in the data if relevant
@@ -113,7 +113,7 @@ function initializeGamedata() {
         console.log("parsed data:")
         console.log(parsedData);
         // If no longer the data in saved data, replace it with fresh data
-        if ( 1==1 ){//localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() != parsedData.lastPlayedDate) {
+        if ( localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() != parsedData.lastPlayedDate) {
             parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString();
             parsedData.currentProgress = {stage: 0,
                                         guesses: startingGuesses,
@@ -410,6 +410,7 @@ function countdown() {
 }
 
 canvas.addEventListener("mousemove", event => {
+    console.log("moved");
     if (!gameover) {
         let transform = ctx.getTransform();
         let transformedX = (event.offsetX - transform.e) * (size/visualSize);
@@ -535,7 +536,7 @@ canvas.addEventListener("click", event => {
 
 addEventListener("keydown", (event) => {
     // Add for inifnite mode
-    if (event.key == "r") {
+    if (event.key == "rlll") {
         console.log("r key!")
         seed = seed + 1;
         Math.seedrandom(seed);
