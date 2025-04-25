@@ -553,6 +553,11 @@ addEventListener("resize", (event) => {
     drawMap();
 });
 
+// Attempt at mobile chrome app fix
+addEventListener("load", (event) => {
+    setScaling();
+})
+
 function setScaling() {
     visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
     document.getElementById("gameCanvas").style.width = `${visualSize}px`;
