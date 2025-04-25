@@ -550,7 +550,7 @@ addEventListener("resize", (event) => {
 });
 
 function setScaling() {
-    visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
+    visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, window.screen.width * 0.33));
     document.getElementById("gameCanvas").style.width = `${visualSize}px`;
     document.getElementById("gameCanvas").style.height = `${visualSize}px`;
     console.log(document.getElementById("gameCanvas").width);
@@ -571,5 +571,3 @@ function drawCachedImage(imageName, x, y, width, height) {
         console.log("Uncached image error");
     }
 }
-
-
