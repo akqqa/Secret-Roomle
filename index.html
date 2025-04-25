@@ -11,15 +11,29 @@
   <body id="body" style="color: black; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; background-position: center; overflow-x: hidden; backdrop-filter: blur(2.4px);">
     <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script> 
     <div style="display: flex; justify-content: center;  font-family: Upheaval; align-items: center; padding: 0.5rem;"> <!-- Div to get everything vertically in the center  -->
-      <div style="display: flex; align-items: center; justify-content: space; flex-direction: column; box-sizing: border-box; background-color: rgb(152, 94, 81); padding-left: 1rem; padding-right: 1rem; padding-bottom: 1rem; border-style: solid; border-color: rgb(179, 120, 106);"> <!-- Main Div  -->
+      <div id="howToPlayModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h1 style="color:white"> how to play </h1>
+          <p>Some how to play text</p>
+        </div>
+      </div>
+      <div id="aboutModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h1 style="color:white"> about </h1>
+          <p>Some about text</p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space; flex-direction: column; box-sizing: border-box; background-color: rgb(152, 94, 81); padding-left: 1rem; padding-right: 1rem; padding-bottom: 1rem; border: 5px solid; border-color: rgb(179, 120, 106);"> <!-- Main Div  -->
         <h1 id="titleName" style="font-size: clamp(2.75rem, 5vw, 5rem); margin: 0; color: white; text-align: center; font-weight: normal;">Secret Roomle</h1>
         <p style="font-size: clamp(1.25rem, 5vw, 1.75rem); margin: 1rem 0;"><span id="floorname"></span>, <span id="cursename">no curse</span></p>
         <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.25rem;"> <!-- Div containing main vertical content -->
           <p style="font-size: clamp(1.25rem, 5vw, 1.5rem); white-space: pre-line; align-self: flex-start; margin: 0 0 -1rem;">Bombs Remaining: <span id="guessesremaining"></span></p>
-          <canvas id="gameCanvas" width="450" height="450" style="border-style: solid; border-color: rgba(179, 120, 106); background-color: rgba(70, 39, 33, 0.3); "></canvas>
+          <canvas id="gameCanvas" width="450" height="450" style="border: 5px solid; border-color: rgba(179, 120, 106); background-color: rgba(70, 39, 33, 0.3); "></canvas>
           <div class="buttons" style="display: flex; align-items: center; justify-content: space-evenly; flex-grow: 1; flex-direction: row; padding-bottom: 0rem; padding-top: 0.2rem; width:100%">
             <div class="image-button-container">
-              <button class="image-button">
+              <button id="howToPlayButton" class="image-button">
                 How to Play
               </button>
             </div>
@@ -28,7 +42,7 @@
                 Endless Mode
               </button>
             </div>
-            <div class="image-button-container">
+            <div id="aboutButton" class="image-button-container">
               <button class="image-button">
                 About
               </button>
@@ -39,7 +53,7 @@
           <div id="countdownDiv" style="font-size: clamp(1.25rem, 5vw, 1.5rem); text-align: center;">
             <p style="margin: 0">New floor in <span id="countdown" >loading time...</span></p>
           </div>
-          <div id="statsDiv"  style="font-size: clamp(1.25rem, 5vw, 1.5rem); text-align: center; margin-top: 0rem; border-style: solid; border-color: rgb(179, 120, 106); padding-left: clamp(1rem, 4vw, 2rem); padding-right: clamp(1rem, 4vw, 2rem); background-color: rgba(70, 39, 33, 0.3)">
+          <div id="statsDiv"  style="font-size: clamp(1.25rem, 5vw, 1.5rem); text-align: center; margin-top: 0rem; border: 5px solid; border-color: rgb(179, 120, 106); padding-left: clamp(1rem, 4vw, 2rem); padding-right: clamp(1rem, 4vw, 2rem); background-color: rgba(70, 39, 33, 0.3)">
             <h1 style="font-size: clamp(2rem, 8vw, 3rem); margin-top: 0; color: white; font-weight: normal;">Lifetime Stats:</h1>
             <p>Games Played: <span id="gamesPlayed"></span></p>
             <p>Wins: <span id="gamesWon"></span></p>
@@ -53,6 +67,7 @@
     </div>
   
     <script type="module" src="main.js"></script>
+    <!--Mobile detector script to fix bug with blurry background on mobile causing lag-->
     <script>
       const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
@@ -60,5 +75,50 @@
         document.body.style.backdropFilter = 'none';
       }
     </script>
+    <!--Modal logic - https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal-->
+    <script>
+      // Get the modal
+      var modal1 = document.getElementById("howToPlayModal");
+      var modal2 = document.getElementById("aboutModal");
+      // Get the button that opens the modal
+      var btn1 = document.getElementById("howToPlayButton");
+      var btn2 = document.getElementById("aboutButton");
+      // Get the <span> element that closes the modal
+      var span1 = modal1.getElementsByClassName("close")[0];
+      var span2 = modal2.getElementsByClassName("close")[0];
+      // When the user clicks the button, open the modal 
+      btn1.onclick = function() {
+        modal1.style.display = "block";
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
+      btn2.onclick = function() {
+        modal2.style.display = "block";
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
+      
+      // When the user clicks on <span> (x), close the modal
+      span1.onclick = function() {
+        modal1.style.display = "none";
+      }
+      span2.onclick = function() {
+        modal2.style.display = "none";
+      }
+      
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal1) {
+          modal1.style.display = "none";
+        }
+        if (event.target == modal2) {
+          modal2.style.display = "none";
+        }
+      }
+      </script>
   </body>
 </html>
