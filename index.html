@@ -8,28 +8,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
   </head>
-  <body id="body" style="color: black; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; background-position: center; overflow-x: hidden; backdrop-filter: blur(2px);">
+  <body id="body" style="color: black; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; background-position: center; overflow-x: hidden; backdrop-filter: blur(2.4px);">
     <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script> 
     <div style="display: flex; justify-content: center;  font-family: Upheaval; align-items: center; padding: 0.5rem;"> <!-- Div to get everything vertically in the center  -->
-      <div style="display: flex; align-items: center; justify-content: space; flex-direction: column; box-sizing: border-box; background-color: rgb(152, 94, 81); padding: 1rem; border-style: solid; border-color: rgb(179, 120, 106);"> <!-- Main Div  -->
+      <div style="display: flex; align-items: center; justify-content: space; flex-direction: column; box-sizing: border-box; background-color: rgb(152, 94, 81); padding-left: 1rem; padding-right: 1rem; padding-bottom: 1rem; border-style: solid; border-color: rgb(179, 120, 106);"> <!-- Main Div  -->
         <h1 id="titleName" style="font-size: clamp(2.75rem, 5vw, 5rem); margin: 0; color: white; text-align: center; font-weight: normal;">Secret Roomle</h1>
-        <div class="buttons" style="display: flex; align-items: center; justify-content: space-evenly; flex-grow: 1; flex-direction: row; padding-bottom: 1rem; padding-top: 0.2rem; width:100%">
-          <div class="image-button-container">
-            <button class="image-button">
-              About
-            </button>
-          </div>
-          <div class="image-button-container">
-            <button class="image-button">
-              Practice
-            </button>
-          </div>
-          <div class="image-button-container">
-            <button class="image-button">
-              Help
-            </button>
-          </div>
-        </div>
         <p style="font-size: clamp(1.25rem, 5vw, 1.75rem); margin: 1rem 0;"><span id="floorname"></span>, <span id="cursename">no curse</span></p>
         <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.25rem;"> <!-- Div containing main vertical content -->
           <p style="font-size: clamp(1.25rem, 5vw, 1.5rem); white-space: pre-line; align-self: flex-start; margin: 0 0 -1rem;">Bombs Remaining: <span id="guessesremaining"></span></p>
@@ -37,7 +20,24 @@
           <div id="countdownDiv" style="font-size: clamp(1.25rem, 5vw, 1.5rem); text-align: center;">
             <p style="margin: 0">New floor in <span id="countdown" >loading time...</span></p>
           </div>
-          <div id="statsDiv"  style="font-size: clamp(1.25rem, 5vw, 1.5rem); text-align: center; margin-top: 4rem; border-style: solid; border-color: rgb(179, 120, 106); padding-left: clamp(1rem, 4vw, 2rem); padding-right: clamp(1rem, 4vw, 2rem); background-color: rgba(70, 39, 33, 0.3)">
+          <div class="buttons" style="display: flex; align-items: center; justify-content: space-evenly; flex-grow: 1; flex-direction: row; padding-bottom: 1rem; padding-top: 0.2rem; width:100%">
+            <div class="image-button-container">
+              <button class="image-button">
+                About
+              </button>
+            </div>
+            <div class="image-button-container">
+              <button class="image-button">
+                Practice
+              </button>
+            </div>
+            <div class="image-button-container">
+              <button class="image-button">
+                Help
+              </button>
+            </div>
+          </div>
+          <div id="statsDiv"  style="font-size: clamp(1.25rem, 5vw, 1.5rem); text-align: center; margin-top: 0rem; border-style: solid; border-color: rgb(179, 120, 106); padding-left: clamp(1rem, 4vw, 2rem); padding-right: clamp(1rem, 4vw, 2rem); background-color: rgba(70, 39, 33, 0.3)">
             <h1 style="font-size: clamp(2rem, 8vw, 3rem); margin-top: 0; color: white; font-weight: normal;">Lifetime Stats:</h1>
             <p>Games Played: <span id="gamesPlayed"></span></p>
             <p>Wins: <span id="gamesWon"></span></p>
