@@ -215,7 +215,7 @@ function startGame() {
     curseLabyrinth = false;
     curseLost = false;
     if (Math.random() < 0.3) {
-        if (Math.random() < 0.5 && (levelnum % 2 != 0 || levelnum > 9)) { // Only labyrinth if first floor of chapter
+        if (Math.random() < 0.8 && (levelnum % 2 != 0 && levelnum < 9)) { // Only labyrinth if first floor of chapter
             curseLabyrinth = true;
         } else {
             curseLost = true;
@@ -246,7 +246,6 @@ function startGame() {
 
 // Draws the map, also accounting for which room is hovered over, and what the current game stage is
 async function drawMap(hoveredRoom = null) {
-    console.log("drawmap called");
     if (generator == null) {
         return;
     }
@@ -337,7 +336,6 @@ async function drawMap(hoveredRoom = null) {
                 }
             } 
         }
-        console.log("drawmap exited")
     }
 
     // Won or lost
@@ -412,7 +410,6 @@ function countdown() {
 }
 
 canvas.addEventListener("mousemove", event => {
-    console.log("moved");
     if (!gameover) {
         let transform = ctx.getTransform();
         let transformedX = (event.offsetX - transform.e) * (size/visualSize);
@@ -556,6 +553,10 @@ addEventListener("resize", (event) => {
 // Attempt at mobile chrome app fix
 addEventListener("load", (event) => {
     setScaling();
+    canvas.width = mapSize;
+    canvas.height = mapSize;
+    drawMap();
+
 })
 
 function setScaling() {
