@@ -550,7 +550,7 @@ addEventListener("resize", (event) => {
 });
 
 function setScaling() {
-    visualSize = Math.ceil(Math.min(window.innerWidth * 0.82, 616));
+    visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
     document.getElementById("gameCanvas").style.width = `${visualSize}px`;
     document.getElementById("gameCanvas").style.height = `${visualSize}px`;
     console.log(document.getElementById("gameCanvas").width);
