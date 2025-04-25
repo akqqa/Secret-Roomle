@@ -50,3 +50,14 @@ button:hover {
   background-color: transparent;
   outline: none;
 }
+
+@media (max-width: 480px) {
+  .image-button-container {
+    width: 100px;
+    height: 33.1px;
+  }
+  
+  .image-button {
+    font-size: 13px;
+  }
+}
