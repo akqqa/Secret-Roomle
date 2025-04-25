@@ -50,15 +50,3 @@ button:hover {
   background-color: transparent;
   outline: none;
 }
-
-/* Responsive styles */
-@media (max-width: 480px) {
-  .image-button-container {
-    width: 100px; /* Adjust width for smaller screens */
-    height: 30px; /* Adjust height for smaller screens */
-  }
-  
-  .image-button {
-    font-size: 12px; /* Smaller font size on mobile */
-  }
-}
