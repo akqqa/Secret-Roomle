@@ -5,6 +5,7 @@ import { Room, Generator } from './RoomGenerator.js';
 // infinite mode on diff page, general graphics changes. implement winstreaks, ultra secret? ((make larger floors easier?)?, general presentation. mgraphics on canvas eg rocks and sfx maybe
 // Make practice mode configurable - floor, curse, num of attempts (blank for infinite), or just random everything. Only make this mode once daily is finalised, and separate css sheet made
 // CONSIDER stage progressing every 2 bombs instead of every 1?. would require rock rebalancing and maybe more bombs. idk. feels a bit weird just having it affect the first few guesses  <add a flawless modifier to the end
+// OPTIMISATION - CHANGE IMAGES SO THEY ARE LOADED ON DEMAND BY CANVAS, NOT ALL AT START - not big deal tbh, but better practice than a stupid list lmao. just make a cachedDrawImage method, which takes a name, checks a cache. if not, load image to global cache and draw. (cache just uses cache[name])
 
 const floornames = [
     ["Basement I", "Burning Basement I", "Cellar I"],
@@ -53,25 +54,29 @@ console.log("js loaded");
 
 
 // ON PAGE LOAD LOAD IMAGES
-const imagePaths = ["images/emptyRoom.png", "images/bossRoom.png", "images/shopRoom.png", "images/itemRoom.png", "images/secretRoom.png", 
-    "images/superSecretRoom.png", "images/planetariumRoom.png", "images/diceRoom.png", "images/sacrificeRoom.png", "images/libraryRoom.png", 
-    "images/curseRoom.png", "images/minibossRoom.png", "images/challengeRoom.png", "images/bossChallengeRoom.png", "images/arcadeRoom.png", 
-    "images/vaultRoom.png", "images/bedroomRoom.png", "images/rock.png", "images/scorch.png", "images/bomb.png"];
-const images = [];  
-let imagesLoaded = 0; 
+const imageNames = ["emptyRoom", "bossRoom", "shopRoom", "itemRoom", "secretRoom", 
+    "superSecretRoom", "planetariumRoom", "diceRoom", "sacrificeRoom", "libraryRoom", 
+    "curseRoom", "minibossRoom", "challengeRoom", "bossChallengeRoom", "arcadeRoom", 
+    "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb"];
 
-let counter = 0;
-imagePaths.forEach((path, index) => {
-    const image = new Image();
-    image.src = path;
-    let asyncCounter = counter; // needed for callback to use the correct counter
-    counter++; 
-    image.onload = () => {
-        //asyncCounter 
-        images[asyncCounter] = image;
-        imagesLoaded++;
-    };
-});
+function cacheImages() {
+    const promises = imageNames.map(name => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+                imageCache[name] = img;
+                resolve();
+            };
+            img.onerror = (err) => reject(err);
+            img.src = `./images/${name}.png`;
+        });
+    });
+
+    return Promise.all(promises);
+}
+
+const imageCache = {};
+await cacheImages();
 
 // Variables
 var generator = null;
@@ -93,17 +98,9 @@ var lost = false;
 // Gets the stored data if any in storage
 var gamedata = localStorage.getItem("secretRoomleData");
 
-checkImagesLoaded(); // Checks if images are loaded. If so, starts the game.
-
-function checkImagesLoaded() {
-    if (imagesLoaded === imagePaths.length) {
-        startGame();
-        countdown();
-        setInterval(countdown, 1000);
-    } else {
-        requestAnimationFrame(checkImagesLoaded);
-    }
-}
+startGame();
+countdown();
+setInterval(countdown, 1000);
 
 function initializeGamedata() {
     // Once game starts, load localstorage gamedata and load in the data if relevant
@@ -243,10 +240,13 @@ function startGame() {
 }
 
 // Draws the map, also accounting for which room is hovered over, and what the current game stage is
-function drawMap(hoveredRoom = null) {
+async function drawMap(hoveredRoom = null) {
+    console.log("drawmap called");
     if (generator == null) {
         return;
     }
+
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
         for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
@@ -255,20 +255,20 @@ function drawMap(hoveredRoom = null) {
             // If room is undefined or a hidden secret room, then if the current hovered coordinates are this room, fill it grey.
             if (hoveredRoom && (!room || (room.type == "secret" && room.hidden) || (room.type == "supersecret" && room.hidden))) { // fiddly short circuiting
                 if ((y/roomSize) - 1 == (Math.floor(hoveredRoom[1]/roomSize)) - 1 && (x/roomSize) - 1 == (Math.floor(hoveredRoom[0]/roomSize)) - 1) {
-                    ctx.drawImage(images[19], x, y, roomSize, roomSize);
+                    drawCachedImage("bomb", x, y, roomSize, roomSize);
                 }
             }
 
             if (stage == 0) {
                 if (room) {
                     if (room.type == "wrong") {
-                        ctx.drawImage(images[7], x, y, roomSize, roomSize);
+                        drawCachedImage("scorch", x, y, roomSize, roomSize);
                     } else if (room.type == "secret" && !room.hidden) {
-                        ctx.drawImage(images[4], x, y, roomSize, roomSize);
+                        drawCachedImage("secretRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "supersecret" && !room.hidden) {
-                        ctx.drawImage(images[5], x, y, roomSize, roomSize);
+                        drawCachedImage("superSecretRoom", x, y, roomSize, roomSize);
                     } else if (!room.hidden) {
-                        ctx.drawImage(images[0], x, y, roomSize, roomSize);
+                        drawCachedImage("emptyRoom", x, y, roomSize, roomSize);
                     }
                 }
                 // Add condition for if exposed secret room should still draw the ?
@@ -276,41 +276,41 @@ function drawMap(hoveredRoom = null) {
             if (stage == 1 || stage == 2) {
                 if (room) { // Yes, i should have used a map or something. sue me.
                     if (room.type == "boss") {
-                        ctx.drawImage(images[1], x, y, roomSize, roomSize);
+                        drawCachedImage("bossRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "shop") {
-                        ctx.drawImage(images[2], x, y, roomSize, roomSize);
+                        drawCachedImage("shopRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "item") {
-                        ctx.drawImage(images[3], x, y, roomSize, roomSize);
+                        drawCachedImage("itemRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "wrong") {
-                        ctx.drawImage(images[18], x, y, roomSize, roomSize);
+                        drawCachedImage("scorch", x, y, roomSize, roomSize);
                     } else if (room.type == "secret" && !room.hidden) {
-                        ctx.drawImage(images[4], x, y, roomSize, roomSize);
+                        drawCachedImage("secretRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "supersecret" && !room.hidden) {
-                        ctx.drawImage(images[5], x, y, roomSize, roomSize);
+                        drawCachedImage("superSecretRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "planetarium" && !room.hidden) {
-                        ctx.drawImage(images[6], x, y, roomSize, roomSize);
+                        drawCachedImage("planetariumRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "dice" && !room.hidden) {
-                        ctx.drawImage(images[7], x, y, roomSize, roomSize);
+                        drawCachedImage("diceRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "sacrifice" && !room.hidden) {
-                        ctx.drawImage(images[8], x, y, roomSize, roomSize);
+                        drawCachedImage("sacrificeRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "library" && !room.hidden) {
-                        ctx.drawImage(images[9], x, y, roomSize, roomSize);
+                        drawCachedImage("libraryRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "curse" && !room.hidden) {
-                        ctx.drawImage(images[10], x, y, roomSize, roomSize);
+                        drawCachedImage("curseRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "miniboss" && !room.hidden) {
-                        ctx.drawImage(images[11], x, y, roomSize, roomSize);
+                        drawCachedImage("minibossRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "challenge" && !room.hidden) {
-                        ctx.drawImage(images[12], x, y, roomSize, roomSize);
+                        drawCachedImage("challengeRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "bosschallenge" && !room.hidden) {
-                        ctx.drawImage(images[13], x, y, roomSize, roomSize);
+                        drawCachedImage("bossChallengeRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "arcade" && !room.hidden) {
-                        ctx.drawImage(images[14], x, y, roomSize, roomSize);
+                        drawCachedImage("arcadeRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "vault" && !room.hidden) {
-                        ctx.drawImage(images[15], x, y, roomSize, roomSize);
+                        drawCachedImage("vaultRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "bedroom" && !room.hidden) {
-                        ctx.drawImage(images[16], x, y, roomSize, roomSize);
+                        drawCachedImage("bedroomRoom", x, y, roomSize, roomSize);
                     } else if (!room.hidden) { 
-                        ctx.drawImage(images[0], x, y, roomSize, roomSize); 
+                        drawCachedImage("emptyRoom", x, y, roomSize, roomSize); 
                     }
                 }
             }
@@ -318,28 +318,21 @@ function drawMap(hoveredRoom = null) {
                 // Draw rocks
                 if (room) {
                     if (room.rocks[0] == true) {
-                        ctx.beginPath();
-                        ctx.drawImage(images[17], x+halfCell, y, rockSize, rockSize);
-                        ctx.fill();
+                        drawCachedImage("rock", x+halfCell, y, rockSize, rockSize);
                     }
                     if (room.rocks[1] == true) {
-                        ctx.beginPath();
-                        ctx.drawImage(images[17], x+halfCell, y+(halfCell*2), rockSize, rockSize);
-                        ctx.fill();
+                        drawCachedImage("rock", x+halfCell, y+(halfCell*2), rockSize, rockSize);
                     }
                     if (room.rocks[2] == true) {
-                        ctx.beginPath();
-                        ctx.drawImage(images[17], x, y+halfCell, rockSize, rockSize);
-                        ctx.fill();
+                        drawCachedImage("rock", x, y+halfCell, rockSize, rockSize);
                     }
                     if (room.rocks[3] == true) {
-                        ctx.beginPath();
-                        ctx.drawImage(images[17], x+(halfCell*2), y+halfCell, rockSize, rockSize);
-                        ctx.fill();
+                        drawCachedImage("rock", x+(halfCell*2), y+halfCell, rockSize, rockSize);
                     }
                 }
             } 
         }
+        console.log("drawmap exited")
     }
 
     // Won or lost
@@ -568,7 +561,15 @@ function setScaling() {
     rockSize = roomSize / 3;
     console.log(visualSize);
     ctx.scale(size/visualSize, size/visualSize);
+}
 
+// Draw an image from the cache loaded when page loaded
+function drawCachedImage(imageName, x, y, width, height) {
+    if (imageCache[imageName]) {
+        ctx.drawImage(imageCache[imageName], x, y, width, height);
+    } else {
+        console.log("Uncached image error");
+    }
 }
 
 
