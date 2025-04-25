@@ -1,4 +1,23 @@
 @font-face {
     font-family: 'Upheaval';
     src: url('./fonts/upheavtt.ttf') format('truetype');
-  }
+}
+
+button {
+  display: inline-block;
+  padding: 10px 20px;
+  border: solid rgb(179, 120, 106); /* Solid border with the specified color */
+  background-color: rgba(70, 39, 33, 0.3); /* Semi-transparent background */
+  color: rgb(179, 120, 106); /* Text color to match the border */
+  font-size: 16px;
+  font-family: Upheaval;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button:hover {
+  background-color: rgba(70, 39, 33, 0.5); /* Slightly darker background on hover */
+  color: white; /* Text color changes on hover */
+}

@@ -1,11 +1,11 @@
 import { Room, Generator } from './RoomGenerator.js';
 //import seedrandom from 'seedrandom';
 
-// TODO - replace all stage, guesses etc. with just directly using gamedata!
+// TODO - replace all stage, guesses etc. with just directly using gamedata! (MAYBE NOT LOL)
 // infinite mode on diff page, general graphics changes. implement winstreaks, ultra secret? ((make larger floors easier?)?, general presentation. mgraphics on canvas eg rocks and sfx maybe
-// Make practice mode configurable - floor, curse, num of attempts (blank for infinite), or just random everything. Only make this mode once daily is finalised, and separate css sheet made
-// CONSIDER stage progressing every 2 bombs instead of every 1?. would require rock rebalancing and maybe more bombs. idk. feels a bit weird just having it affect the first few guesses  <add a flawless modifier to the end
-// OPTIMISATION - CHANGE IMAGES SO THEY ARE LOADED ON DEMAND BY CANVAS, NOT ALL AT START - not big deal tbh, but better practice than a stupid list lmao. just make a cachedDrawImage method, which takes a name, checks a cache. if not, load image to global cache and draw. (cache just uses cache[name])
+// Make practice mode configurable - floor, curse, num of attempts (blank for infinite), or just random everything. - NAH RANDOM EASIER AND LESS HASSLE Only make this mode once daily is finalised, and separate css sheet made
+// add a flawless modifier to the end
+// Tips and info tab, about and credits tab, win and loss screen rework, and finally infinite mode. then release!
 
 const floornames = [
     ["Basement I", "Burning Basement I", "Cellar I"],
@@ -46,6 +46,7 @@ let visualSize = 1;
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 ctx.scale(size/visualSize, size/visualSize);
+
 setScaling();
 canvas.width = mapSize;
 canvas.height = mapSize;
@@ -338,24 +339,24 @@ async function drawMap(hoveredRoom = null) {
     // Won or lost
     if (lost) {
         ctx.beginPath();
+        ctx.font = "200px Upheaval";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-        ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
+        ctx.rect(0, mapSize / 20, mapSize, mapSize * 2 / 20 );
         ctx.fill();
         ctx.fillStyle = "rgba(0, 0, 0, 1)";
-        ctx.font = "400px Upheaval";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "top";
-        ctx.fillText("You LOSE!", mapSize / 2, mapSize / 3);
+        ctx.fillText("You lose!", mapSize / 2, mapSize*1.8 / 20);
     } else if (won) {
         ctx.beginPath();
+        ctx.font = "200px Upheaval";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-        ctx.rect(0, mapSize / 3, mapSize, mapSize / 3);
+        ctx.rect(0, mapSize / 20, mapSize, mapSize * 2 / 20 );
         ctx.fill();
         ctx.fillStyle = "rgba(0, 0, 0, 1)";
-        ctx.font = "400px Upheaval";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "top";
-        ctx.fillText("You win!", mapSize / 2, mapSize / 3);
+        ctx.fillText("You win!", mapSize / 2, mapSize*1.8 / 20);
     }
 }
 
@@ -549,8 +550,7 @@ addEventListener("resize", (event) => {
 });
 
 function setScaling() {
-    //size = Math.ceil(Math.min(window.innerWidth, window.innerHeight) * 0.66); old formula
-    visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
+    visualSize = Math.ceil(Math.min(window.innerWidth * 0.82, 616));
     document.getElementById("gameCanvas").style.width = `${visualSize}px`;
     document.getElementById("gameCanvas").style.height = `${visualSize}px`;
     console.log(document.getElementById("gameCanvas").width);
