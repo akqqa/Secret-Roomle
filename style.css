@@ -22,7 +22,7 @@ body {
   display: flex; 
   justify-content: center;  
   align-items: center;
-  font-family: Upheaval; 
+  font-family: 'Upheaval'; 
   padding: 0.5rem;
   height: 90%;
 }
@@ -39,7 +39,7 @@ body {
   padding-bottom: 1rem; 
   border: 5px solid; 
   border-color: rgb(179, 120, 106);
-  font-family: Upheaval;
+  font-family: 'Upheaval';
 }
 
 #titleName {
@@ -94,7 +94,7 @@ button {
   background-color: rgba(70, 39, 33, 0.3); /* Semi-transparent background */
   color: rgb(179, 120, 106); /* Text color to match the border */
   font-size: 16px;
-  font-family: Upheaval;
+  font-family: 'Upheaval';
   color: black;
   text-align: center;
   cursor: pointer;
@@ -274,7 +274,7 @@ button:hover {
 
   body.endless .modal-content {
     font-size: 16px;
-    margin: 50% auto;
+    margin: 45% auto;
   }
 }
 
