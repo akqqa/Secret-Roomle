@@ -105,13 +105,12 @@ body{
  /* Modal background */
 .modal {
   display: none; /* Hidden by default */
-  /*position: fixed; /* Stay in place */
+  position: absolute; /* Stay in place */
   z-index: 1; /* Sit on top */
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: 15% auto; /* Enable scroll if needed */
   text-align: center;
-  position: fixed; 
 }
 
 /* Modal content box */
