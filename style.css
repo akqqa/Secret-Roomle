@@ -272,7 +272,7 @@ button:hover {
   }
 
   body.endless.modal-content {
-    font-size: 16px;
+    font-size: 1000px;
     margin: 30% auto;
   }
 }
