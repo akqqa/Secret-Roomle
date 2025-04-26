@@ -271,8 +271,8 @@ button:hover {
     font-size: 16px;
   }
 
-  body.endless.modal-content {
-    font-size: 1000px;
+  body.endless .modal-content {
+    font-size: 16px;
     margin: 30% auto;
   }
 }
