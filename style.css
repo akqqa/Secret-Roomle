@@ -80,25 +80,6 @@ button:hover {
   outline: none;
 }
 
-@media (max-width: 420px) {
-  .image-button-container {
-    width: 100px;
-    height: 33.1px;
-  }
-  
-  .image-button {
-    font-size: 13px;
-  }
-
-  .image-button-2 {
-    font-size: 13px;
-  }
-
-  .modal-content {
-    font-size: 8px;
-  }
-}
-
 body{
   min-height: 100vh;
   margin: 0; 
@@ -141,4 +122,23 @@ body{
   color: #000;
   text-decoration: none;
   cursor: pointer;
+}
+
+@media (max-width: 420px) {
+  .image-button-container {
+    width: 100px;
+    height: 33.1px;
+  }
+  
+  .image-button {
+    font-size: 13px;
+  }
+
+  .image-button-2 {
+    font-size: 13px;
+  }
+
+  .modal-content {
+    font-size: 14px;
+  }
 }
