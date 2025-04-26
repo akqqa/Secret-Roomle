@@ -48,7 +48,7 @@ canvas.height = mapSize;
 const imageNames = ["emptyRoom", "bossRoom", "shopRoom", "itemRoom", "secretRoom", 
     "superSecretRoom", "planetariumRoom", "diceRoom", "sacrificeRoom", "libraryRoom", 
     "curseRoom", "minibossRoom", "challengeRoom", "bossChallengeRoom", "arcadeRoom", 
-    "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb"];
+    "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb", "startRoom"];
 
 function cacheImages() {
     const promises = imageNames.map(name => {
@@ -258,6 +258,8 @@ async function drawMap(hoveredRoom = null) {
                 if (room) {
                     if (room.type == "wrong") {
                         drawCachedImage("scorch", x, y, roomSize, roomSize);
+                    } else if (room.type == "start") {
+                        drawCachedImage("startRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "secret" && !room.hidden) {
                         drawCachedImage("secretRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "supersecret" && !room.hidden) {
@@ -272,6 +274,8 @@ async function drawMap(hoveredRoom = null) {
                 if (room) { // Yes, i should have used a map or something. sue me.
                     if (room.type == "boss") {
                         drawCachedImage("bossRoom", x, y, roomSize, roomSize);
+                    } else if (room.type == "start") {
+                        drawCachedImage("startRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "shop") {
                         drawCachedImage("shopRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "item") {
