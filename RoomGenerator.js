@@ -7,7 +7,7 @@
 
 // Using https://bindingofisaacrebirth.fandom.com/wiki/Level_Generation and https://www.boristhebrave.com/2020/09/12/dungeon-generation-in-binding-of-isaac/ for algorithm
 
-const rockOdds = 0.3 // rockOdds chance of rock appearing in each valid space - INCREASE TOI MAKE EASIER, DECREASE TO MAKE HARDER
+const rockOdds = 0.35 // rockOdds chance of rock appearing in each valid space - INCREASE TOI MAKE EASIER, DECREASE TO MAKE HARDER
 
 // Can be boss, secret, shop, etc etc etc
 // Possibility for large rooms - each grid cell contains one room as usual, but can be duplicated in case of larger rooms with copies of the same object. hm. but then pos is weird. and so is getting neighbours. hm
@@ -365,7 +365,10 @@ export class Generator {
         let rockOddsAdjusted = rockOdds;
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
-                if (this.map[j][i] && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss") {
+                if (this.map[j][i] && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss" && this.map[j][i].type != "start" && this.map[j][i].type != "sacrifice" && this.map[j][i].type != "challenge" && this.map[j][i].type != "bosschallenge" && this.map[j][i].type != "planetarium" && this.map[j][i].type != "shop" && this.map[j][i].type != "curse" && this.map[j][i].type != "arcade") {
+                    if (this.map[j][i].type == "item") {
+                        rockOddsAdjusted = rockOdds / 3;
+                    }
                     if (j > 0 && !this.map[j-1][i]) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[0] = true;
