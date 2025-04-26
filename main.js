@@ -553,11 +553,14 @@ addEventListener("resize", (event) => {
 
 // Attempt at mobile chrome app fix
 addEventListener("load", (event) => {
-    setScaling();
-    canvas.width = mapSize;
-    canvas.height = mapSize;
-    drawMap();
-
+    setTimeout(() => {
+        setScaling();
+        canvas.width = mapSize;
+        canvas.height = mapSize;
+        drawMap();
+    }, 50);
+      
+    
 })
 
 function setScaling() {
