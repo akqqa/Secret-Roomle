@@ -20,7 +20,6 @@ html {
 #outerDiv {
   display: flex; 
   justify-content: center;  
-  align-items: center;
   font-family: 'Upheaval'; 
   padding: 0.5rem;
   height: 100%;
@@ -29,7 +28,7 @@ html {
 #mainDiv {
   display: flex; 
   align-items: center; 
-  justify-content: space; 
+  justify-content: center; 
   flex-direction: column; 
   box-sizing: border-box; 
   background-color: rgb(152, 94, 81); 
