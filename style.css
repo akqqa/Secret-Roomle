@@ -249,7 +249,7 @@ button:hover {
   cursor: pointer;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 450px) {
   .image-button-container {
     width: 100px;
     height: 33.1px;
@@ -274,7 +274,7 @@ button:hover {
 
   body.endless .modal-content {
     font-size: 16px;
-    margin: 40% auto;
+    margin: 50% auto;
   }
 }
 
