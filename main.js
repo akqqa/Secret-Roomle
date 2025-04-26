@@ -218,7 +218,7 @@ function startGame() {
     stage = 0; // stage = 1 is room types, stage = 2 is rocks
     guesses = (
         levelnum <= 6 ? startingGuesses :
-        levelnum <= 11 ? startingGuesses + 2 : // +2 as harder without rooms - more dead ends for super secret
+        levelnum <= 11 ? startingGuesses : // originally was +2 but actually now im good i can get them almost every time. so its balanced :)
         levelnum === 12 ? startingGuesses + 6 : // Void is nasty
         null); // Attempt at balance based on starting floor
     secretFound = false;
