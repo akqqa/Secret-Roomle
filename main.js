@@ -562,7 +562,7 @@ addEventListener("load", (event) => {
 })
 
 document.getElementById("copyButton").addEventListener("click", (event) => {
-    let text = document.getElementById('gameOverText').innerText;
+    let text = document.getElementById('gameOverText').innerHTML;
     text = text.replace(/\bYou\b/g, 'I') + "\nhttps://roomle.pages.dev";
     text = text.replace(/<br\s*\/?>/gi, '\n');
     navigator.clipboard.writeText(text);
