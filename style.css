@@ -110,6 +110,8 @@ body{
   color: black;
   font-size: 20px;
   font-family:'Upheaval';
+  overflow-y: auto;
+  max-height: 55%;
 }
 .close {
   color: rgb(179, 120, 106);
@@ -143,3 +145,4 @@ body{
     font-size: 16px;
   }
 }
+

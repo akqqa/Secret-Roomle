@@ -18,6 +18,7 @@
           <p>In Secret Roomle, your goal is to uncover the two secret rooms on today's floor! </p>
           <p>Click any empty space on the map to place a bomb where you think a secret room might be.</p>
           <p>If you find both the secret and the super secret room without running out of bombs, you win!</p>
+          <p>Missed bombs reveal new information about the map such as room types and rocks blocking walls.</p>
           <p>Come back every day for a new challenge, or try endless mode to practice your knowledge.</p>
           <h1 style="color:white;font-weight: normal;"> Tips </h1>
           <p>The secret room is likely to be surrounded by many other rooms</p>
@@ -105,20 +106,26 @@
       // Get the <span> element that closes the modal
       var span1 = modal1.getElementsByClassName("close")[0];
       var span2 = modal2.getElementsByClassName("close")[0];
+      const scrollTarget = window.innerHeight * 0.06;
       // When the user clicks the button, open the modal 
       btn1.onclick = function() {
         modal1.style.display = "block";
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
+        if (window.scrollY > scrollTarget) {
+          window.scrollTo({
+            top: scrollTarget,
+            behavior: "smooth"
+          });
+        }
+        
       }
       btn2.onclick = function() {
         modal2.style.display = "block";
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
+        if (window.scrollY > scrollTarget) {
+          window.scrollTo({
+            top: scrollTarget,
+            behavior: "smooth"
+          });
+        }
       }
       
       // When the user clicks on <span> (x), close the modal
