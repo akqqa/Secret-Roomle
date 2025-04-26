@@ -58,8 +58,8 @@
               </button>
             </div>
             <div class="image-button-container">
-              <button onclick="window.location.href='endless.html'" class="image-button-2">
-                Endless Mode
+              <button onclick="window.location.href='index.html'" class="image-button-2">
+                Daily Mode
               </button>
             </div>
             <div id="aboutButton" class="image-button-container">
@@ -67,26 +67,16 @@
                 About
               </button>
             </div>
-            
-
-          </div>
-          <div id="countdownDiv">
-            <p style="margin: 0">New floor in <span id="countdown" ></span></p>
-          </div>
-          <div id="statsDiv">
-            <h1 style="font-size: clamp(2rem, 8vw, 3rem); margin-top: 0; color: white; font-weight: normal;">Lifetime Stats:</h1>
-            <p>Games Played: <span id="gamesPlayed"></span></p>
-            <p>Wins: <span id="gamesWon"></span></p>
-            <p>Secret Rooms Found: <span id="secretRoomsFound"></span></p>
-            <p>Super Secret Rooms Found: <span id="superSecretRoomsFound"></span></p>
-            <p>Current Winstreak: <span id="currentWinstreak"></span></p>
-            <p>Best Winstreak: <span id="bestWinstreak"></span></p>
+            <div class="image-button-container-3">
+              <button id="resetButton" class="image-button-3">
+              </button>
+            </div>
           </div>
         </div> 
       </div>
     </div>
   
-    <script type="module" src="main.js"></script>
+    <script type="module" src="endless.js"></script>
     <!--Mobile detector script to fix bug with blurry background on mobile causing lag-->
     <script>
       const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

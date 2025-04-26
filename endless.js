@@ -30,8 +30,6 @@ var mapSize;
 var halfCell;
 var rockSize;
 let currentDate = new Date();
-let seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString(); //+ currentDate.getUTCMinutes().toString();
-Math.seedrandom(seed); 
 
 let visualSize = 1;
 // Create canvas and various variables
@@ -85,88 +83,15 @@ var gameover = false;
 var won = false;
 var lost = false;
 
-// Gets the stored data if any in storage
-var gamedata = localStorage.getItem("secretRoomleData");
-
 startGame();
-countdown();
-setInterval(countdown, 1000);
 
 function initializeGamedata() {
-    // Once game starts, load localstorage gamedata and load in the data if relevant
-    // Get game data
-    gamedata = localStorage.getItem("secretRoomleData");
-    let localStorageDate = new Date();
-    if (gamedata) {
-        let parsedData = JSON.parse(gamedata);
-        // If no longer the data in saved data, replace it with fresh data - FORGOT TO RESET THE MAP OOPS
-        if ( localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() /*+ localStorageDate.getUTCMinutes().toString() */!= parsedData.lastPlayedDate) {
-            parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(); //+ localStorageDate.getUTCMinutes().toString();
-            parsedData.currentMap = null;
-            parsedData.currentProgress = {stage: 0,
-                                        guesses: startingGuesses,
-                                        secretFound: false,
-                                        supersecretFound: false,
-                                        attempts: 0,
-                                        gameover: false,
-                                        won: false,
-                                        lost: false
-                                        };
-        } else { // Otherwise set the variables to continue todays progress
-            // Set generator variables to the saved ones
-            if (parsedData.currentMap != null) {
-                generator.map = parsedData.currentMap;
-            }
-            stage = parsedData.currentProgress.stage;
-            guesses = parsedData.currentProgress.guesses;
-
-            secretFound = parsedData.currentProgress.secretFound;
-            supersecretFound = parsedData.currentProgress.supersecretFound;
-            attempts = parsedData.currentProgress.attempts;
-            gameover = parsedData.currentProgress.gameover;
-            won = parsedData.currentProgress.won;
-            lost = parsedData.currentProgress.lost;
-        }
-        gamedata = parsedData;
-    } else {
-        gamedata = {
-            lastPlayedDate: localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(), // + localStorageDate.getUTCMinutes().toString(),
-            currentMap: null,
-            currentProgress: {
-                stage: 0,
-                guesses: startingGuesses,
-                secretFound: false,
-                supersecretFound: false,
-                attempts: 0,
-                gameover: false,
-                won: false,
-                lost: false
-            },
-            stats: {
-                totalGames: 0,
-                secretRoomsFound: 0,
-                superSecretRoomsFound: 0,
-                wins: 0,
-                winStreak: 0,
-                maxStreak: 0
-            }
-        };
-    }
-    localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
-
     // Set stats
     setElements();
 }
 
 // Sets the text of the page based on game data and current game
 function setElements() {
-    document.getElementById("gamesPlayed").textContent = gamedata.stats.totalGames; 
-    document.getElementById("gamesWon").textContent = gamedata.stats.wins; 
-    document.getElementById("secretRoomsFound").textContent = gamedata.stats.secretRoomsFound; 
-    document.getElementById("superSecretRoomsFound").textContent = gamedata.stats.superSecretRoomsFound; 
-    document.getElementById("currentWinstreak").textContent = gamedata.stats.winStreak; 
-    document.getElementById("bestWinstreak").textContent = gamedata.stats.maxStreak; 
-
     // Also set the guesses remaining for this current game
     document.getElementById("guessesremaining").textContent = guesses;
     document.getElementById("floorname").textContent = levelname;
@@ -232,7 +157,6 @@ async function drawMap(hoveredRoom = null) {
     if (generator == null) {
         return;
     }
-
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
@@ -345,47 +269,6 @@ async function drawMap(hoveredRoom = null) {
     }
 }
 
-// Function for timer, as well as updating the seed when a new date is rolled over to
-function countdown() {
-    const now = new Date();
-    const utcNow = new Date(now.toUTCString());
-    const tomorrow = new Date(utcNow);
-    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-    tomorrow.setUTCHours(0, 0, 0, 0);
-
-    const diff = tomorrow - utcNow;
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    document.getElementById("countdown").textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-
-    // Logic for changing seed and restarting game
-    let newDate = new Date();
-    let newSeed = newDate.getUTCDate().toString() + newDate.getUTCMonth().toString() + newDate.getUTCFullYear().toString();// + newDate.getUTCMinutes().toString();
-    //let newSeed = seed + 1; // for testing regeneration
-    if (seed != newSeed) {
-        // Update gamedata before changing seed
-        gamedata.lastPlayedDate = newSeed;
-        gamedata.currentMap = null,
-        gamedata.currentProgress = {
-            stage: 0,
-            guesses: startingGuesses,
-            secretFound: false,
-            supersecretFound: false,
-            attempts: 0,
-            gameover: false,
-            won: false,
-            lost: false
-        }
-        localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
-
-        seed = newSeed
-        Math.seedrandom(newSeed); 
-        startGame();
-    }
-}
-
 canvas.addEventListener("mousemove", event => {
     if (!gameover) {
         let transform = ctx.getTransform();
@@ -405,10 +288,6 @@ canvas.addEventListener("mouseout", event => {
 // Handles guesses by the player
 canvas.addEventListener("click", event => {
     if (!gameover) {
-        // If this is the first click of a new game, add to total games played in stats (so entering counts as a game played, as you can get secret rooms even if you dont "win")
-        if (stage == 0 && !secretFound && !supersecretFound) {
-            gamedata.stats.totalGames += 1;
-        }
 
         let transform = ctx.getTransform();
         let transformedX = (event.offsetX - transform.e) * (size/visualSize);
@@ -429,7 +308,6 @@ canvas.addEventListener("click", event => {
         } else if (room.type == "secret" && room.hidden) {
             room.hidden = false;
             secretFound = true;
-            gamedata.stats.secretRoomsFound += 1;
             guesses -= 1;
             bombSfx.pause();
             bombSfx.currentTime = 0;
@@ -440,7 +318,6 @@ canvas.addEventListener("click", event => {
         } else if (room.type == "supersecret" && room.hidden) {
             room.hidden = false;
             supersecretFound = true;
-            gamedata.stats.superSecretRoomsFound += 1;
             guesses -= 1;
             bombSfx.pause();
             bombSfx.currentTime = 0;
@@ -468,7 +345,6 @@ canvas.addEventListener("click", event => {
             }
             drawMap(null);
             // Modify users stats
-            gamedata.stats.winStreak = 0;
             loseSfx.play();
             deathSfx.play();
         } else if (secretFound && supersecretFound) {
@@ -477,30 +353,12 @@ canvas.addEventListener("click", event => {
             lost = false;
             stage = 2;
             drawMap(null);
-            // Modify users stats
-            gamedata.stats.wins += 1;
-            gamedata.stats.winStreak  += 1;
-            if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
-                gamedata.stats.maxStreak = gamedata.stats.winStreak;
-            }
             // Stop sounds and play win
             secretRoomSfx.pause();
             secretRoomSfx.currentTime = 0;
             winSfx.play();
         }
 
-        // After every valid click, update localstorage with info about todays game, overwriting it.
-        gamedata.currentMap = generator.map;
-        gamedata.currentProgress.stage = stage;
-        gamedata.currentProgress.guesses = guesses;
-        gamedata.currentProgress.secretFound = secretFound;
-        gamedata.currentProgress.supersecretFound = supersecretFound;
-        gamedata.currentProgress.attempts = attempts;
-        gamedata.currentProgress.gameover = gameover;
-        gamedata.currentProgress.won = won;
-        gamedata.currentProgress.lost = lost;
-
-        localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
         setElements();
 
         // DRAW THE DAMN MAP LOL
@@ -510,13 +368,14 @@ canvas.addEventListener("click", event => {
 
 addEventListener("keydown", (event) => {
     // Add for inifnite mode
-    if (event.key == "rlll") {
-        console.log("r key!")
-        seed = seed + 1;
-        Math.seedrandom(seed);
+    if (event.key == "r") {
         startGame();
     }
 });
+
+document.getElementById("resetButton").addEventListener("click", (event) => {
+    startGame();
+})
 
 addEventListener("resize", (event) => {
     setScaling();

@@ -252,7 +252,7 @@ export class Generator {
         }
         // Library
         if (this.deadEndQueue.length > 0) {
-            if (Math.random() < 1/20) { // I thiiiink they can spawn in all floors ? according to some post in 2015
+            if (Math.random() < 1/20 && this.stage < 11) { // I thiiiink they can spawn in all floors ? according to some post in 2015
                 this.deadEndQueue.pop().type = "library";
             }
         }
