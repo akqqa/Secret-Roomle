@@ -1,0 +1,4 @@
+TODO based on reddit feedback:
+Rock placements - cant appear in shops, sac rooms, challenge rooms etc. Quick fix should be fine but make sure to increase rock probability slightly to balance it out
+Chest and Dark room cant have rooms directly above spawn! hard code that in.
+Make scorch marks easier to see on dark backgrounds? 
