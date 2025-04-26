@@ -23,8 +23,8 @@ body {
   justify-content: center;  
   align-items: center;
   font-family: Upheaval; 
-  align-items: center; 
   padding: 0.5rem;
+  height: 90%;
 }
 
 #mainDiv {
@@ -257,7 +257,7 @@ button:hover {
 
   .image-button-container-3 {
     width: 30px;
-    height: 28.5px;
+    height: 35px;
   }
   
   .image-button {
