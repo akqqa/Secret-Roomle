@@ -131,7 +131,10 @@ function startGame() {
     deathSfx.pause();
     deathSfx.currentTime = 0;
 
-    levelnum = Math.floor(Math.random()*12 + 1)
+    do {
+        levelnum = Math.floor(Math.random()*12 + 1);
+    } while (levelnum == 9); // Prevents level from being 9 as that makes womb 2 more common!
+    console.log(levelnum);
     curseLabyrinth = false;
     curseLost = false;
     if (Math.random() < 0.3) {

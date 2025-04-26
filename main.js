@@ -200,8 +200,9 @@ function startGame() {
 
     document.getElementById("gameOverModal").style.display = "none"; // closes modal on refreshr
 
-    levelnum = Math.floor(Math.random()*12 + 1)
-    console.log(levelnum);
+    do {
+        levelnum = Math.floor(Math.random()*12 + 1);
+    } while (levelnum == 9); // Prevents level from being 9 as that makes womb 2 more common!
     curseLabyrinth = false;
     curseLost = false;
     if (Math.random() < 0.3) {
@@ -218,7 +219,7 @@ function startGame() {
     stage = 0; // stage = 1 is room types, stage = 2 is rocks
     guesses = (
         levelnum <= 6 ? startingGuesses :
-        levelnum <= 11 ? startingGuesses + 2 : // +2 as harder without rooms - more dead ends for super secret
+        levelnum <= 11 ? startingGuesses : // changed my mind again - womb above actually easy if youre skilled enough (lol)
         levelnum === 12 ? startingGuesses + 6 : // Void is nasty
         null); // Attempt at balance based on starting floor
     secretFound = false;
