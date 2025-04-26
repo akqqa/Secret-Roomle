@@ -561,6 +561,12 @@ addEventListener("load", (event) => {
     }, 50);
 })
 
+document.getElementById("copyButton").addEventListener("click", (event) => {
+    let text = document.getElementById('gameOverText').innerText;
+    text = text.replace(/\bYou\b/g, 'I') + "\nhttps://roomle.pages.dev";
+    navigator.clipboard.writeText(text);
+})
+
 function setScaling() {
     visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
     document.getElementById("gameCanvas").style.width = `${visualSize}px`;

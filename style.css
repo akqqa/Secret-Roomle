@@ -247,7 +247,7 @@ button:hover {
 /* Modal content box for game over */
 .modal-content-2 {
   background-color: rgb(152, 94, 81);
-  margin: 95% auto; /* Center vertically and horizontally */
+  margin: 95% auto; /* Center vertically and horizontally  THIS IS SCUFFED BUT IT WORKS?!*/
   padding: 10px;
   border: 5px solid rgb(179, 120, 106);
   max-width: 40%;
@@ -298,11 +298,14 @@ button:hover {
 
   .modal-content-2 {
     font-size: 16px;
+    margin: 80% auto;
   }
 
   body.endless .modal-content { /*only for endless so modal cntent 2 doesnt need it*/
     font-size: 16px;
     margin: 6% auto;
   }
+
+  
 }
 
