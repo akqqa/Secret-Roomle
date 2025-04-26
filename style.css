@@ -256,7 +256,7 @@ button:hover {
 
   .image-button-container-3 {
     width: 30px;
-    height: 27.5px;
+    height: 30px;
   }
   
   .image-button {
@@ -269,6 +269,11 @@ button:hover {
 
   .modal-content {
     font-size: 16px;
+  }
+
+  body.endless.modal-content {
+    font-size: 16px;
+    margin: 30% auto;
   }
 }
 

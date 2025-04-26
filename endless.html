@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
   </head>
-  <body id="body">
+  <body id="body" class="endless">
     <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script> 
     <div id="outerDiv"> <!-- Div to get everything vertically in the center  -->
       <div id="howToPlayModal" class="modal">
@@ -50,7 +50,7 @@
         <p id="floornamep"><span id="floorname"></span>, <span id="cursename">no curse</span></p>
         <div id="verticalContentDiv"> <!-- Div containing main vertical content -->
           <p id="bombsRemaining">Bombs Remaining: <span id="guessesremaining"></span></p>
-          <canvas id="gameCanvas" width="450" height="450"></canvas>
+          <canvas id="gameCanvas" width="300" height="300"></canvas>
           <div class="buttons" >
             <div class="image-button-container">
               <button id="howToPlayButton" class="image-button">
