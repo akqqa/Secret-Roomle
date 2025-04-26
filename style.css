@@ -248,6 +248,11 @@ button:hover {
     width: 100px;
     height: 33.1px;
   }
+
+  .image-button-container-3 {
+    width: 33.1px;
+    height: 31px;
+  }
   
   .image-button {
     font-size: 13px;
