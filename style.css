@@ -21,6 +21,7 @@ body {
 #outerDiv {
   display: flex; 
   justify-content: center;  
+  align-items: center;
   font-family: Upheaval; 
   align-items: center; 
   padding: 0.5rem;
@@ -256,7 +257,7 @@ button:hover {
 
   .image-button-container-3 {
     width: 30px;
-    height: 30px;
+    height: 28.5px;
   }
   
   .image-button {
@@ -273,7 +274,7 @@ button:hover {
 
   body.endless .modal-content {
     font-size: 16px;
-    margin: 30% auto;
+    margin: 40% auto;
   }
 }
 
