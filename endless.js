@@ -45,7 +45,7 @@ canvas.height = mapSize;
 const imageNames = ["emptyRoom", "bossRoom", "shopRoom", "itemRoom", "secretRoom", 
     "superSecretRoom", "planetariumRoom", "diceRoom", "sacrificeRoom", "libraryRoom", 
     "curseRoom", "minibossRoom", "challengeRoom", "bossChallengeRoom", "arcadeRoom", 
-    "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb"];
+    "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb", "startRoom"];
 
 function cacheImages() {
     const promises = imageNames.map(name => {
@@ -189,6 +189,8 @@ async function drawMap(hoveredRoom = null) {
                 if (room) {
                     if (room.type == "wrong") {
                         drawCachedImage("scorch", x, y, roomSize, roomSize);
+                    } else if (room.type == "start") {
+                        drawCachedImage("startRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "secret" && !room.hidden) {
                         drawCachedImage("secretRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "supersecret" && !room.hidden) {
@@ -199,10 +201,12 @@ async function drawMap(hoveredRoom = null) {
                 }
                 // Add condition for if exposed secret room should still draw the ?
             }
-            if (stage == 1 || stage == 2 || stage == 3) {
+            if (stage == 1 || stage == 2) {
                 if (room) { // Yes, i should have used a map or something. sue me.
                     if (room.type == "boss") {
                         drawCachedImage("bossRoom", x, y, roomSize, roomSize);
+                    } else if (room.type == "start") {
+                        drawCachedImage("startRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "shop") {
                         drawCachedImage("shopRoom", x, y, roomSize, roomSize);
                     } else if (room.type == "item") {
@@ -240,7 +244,7 @@ async function drawMap(hoveredRoom = null) {
                     }
                 }
             }
-            if (stage == 2 || stage == 3) {
+            if (stage == 2) {
                 // Draw rocks
                 if (room) {
                     if (room.rocks[0] == true) {
@@ -257,11 +261,6 @@ async function drawMap(hoveredRoom = null) {
                     }
                 }
             } 
-            if (stage == 3) {
-                if (room && room.type == "start") {
-                    drawCachedImage("startRoom", x, y, roomSize, roomSize); 
-                }
-            }
         }
     }
 
@@ -320,7 +319,7 @@ canvas.addEventListener("click", event => {
             let newRoom = new Room(y,x);
             newRoom.type = "wrong";
             generator.map[y][x] = newRoom;
-            stage = Math.min(3, stage+1);
+            stage = Math.min(2, stage+1);
             guesses -= 1;
             bombSfx.pause();
             bombSfx.currentTime = 0;
@@ -353,7 +352,7 @@ canvas.addEventListener("click", event => {
             gameover = true;
             won = false;
             lost = true;
-            stage = 3;
+            stage = 2;
             // Unhide secret rooms
             for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
                 for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
@@ -371,7 +370,7 @@ canvas.addEventListener("click", event => {
             gameover = true;
             won = true;
             lost = false;
-            stage = 3;
+            stage = 2;
             drawMap(null);
             // Stop sounds and play win
             secretRoomSfx.pause();
