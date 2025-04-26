@@ -191,6 +191,29 @@ button:hover {
   outline: none;
 }
 
+.image-button-4 {
+  background-image: url('images/button6.png');
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  border: none;
+  color: black;
+  font-size: 20px;
+  font-weight: normal;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  outline: none;
+}
+
+
 #countdownDiv {
   font-size: clamp(1.25rem, 5vw, 1.5rem); 
   text-align: center;
@@ -289,6 +312,10 @@ button:hover {
   }
 
   .image-button-2 {
+    font-size: 13px;
+  }
+
+  .image-button-4 {
     font-size: 13px;
   }
 
