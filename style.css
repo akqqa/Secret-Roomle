@@ -110,7 +110,6 @@ body{
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: 15% auto; /* Enable scroll if needed */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
   text-align: center;
   position: fixed; 
 }
@@ -118,16 +117,14 @@ body{
 /* Modal content box */
 .modal-content {
   background-color: rgb(152, 94, 81);
-  margin: 15% auto; /* Center vertically and horizontally */
+  margin: 6% auto; /* Center vertically and horizontally */
   padding: 20px;
   border: 5px solid rgb(179, 120, 106);
-  width: 90%;
+  width: 85%;
   max-width: 666px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   color: black;
   font-size: 20px;
-  /* text-align: center;
-  position: fixed; */
 }
 .close {
   color: rgb(179, 120, 106);
