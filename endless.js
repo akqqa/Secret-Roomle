@@ -119,6 +119,18 @@ function setElements() {
 
 // Sets variables, and generates map, starting the game
 function startGame() {
+    // Stop all sounds
+    secretRoomSfx.pause();
+    secretRoomSfx.currentTime = 0;
+    bombSfx.pause();
+    bombSfx.currentTime = 0;
+    winSfx.pause();
+    winSfx.currentTime = 0;
+    loseSfx.pause();
+    loseSfx.currentTime = 0;
+    deathSfx.pause();
+    deathSfx.currentTime = 0;
+
     levelnum = Math.floor(Math.random()*12 + 1)
     curseLabyrinth = false;
     curseLost = false;
