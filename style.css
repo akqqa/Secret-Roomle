@@ -80,7 +80,7 @@ button:hover {
   outline: none;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 420) {
   .image-button-container {
     width: 100px;
     height: 33.1px;
