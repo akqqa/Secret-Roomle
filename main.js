@@ -31,6 +31,7 @@ var halfCell;
 var rockSize;
 let currentDate = new Date();
 let seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString(); //+ currentDate.getUTCMinutes().toString();
+console.log(seed);
 Math.seedrandom(seed); 
 
 let visualSize = 1;
@@ -195,9 +196,12 @@ function setElements() {
 // Sets variables, and generates map, starting the game
 function startGame() {
 
+    Math.seedrandom(seed); // THERE WAS SOME WEIRD RACE CONDITION THAT MADE THE SEED SWITCH BETWEEN 2 !!! FIXED.
+
     document.getElementById("gameOverModal").style.display = "none"; // closes modal on refreshr
 
     levelnum = Math.floor(Math.random()*12 + 1)
+    console.log(levelnum);
     curseLabyrinth = false;
     curseLost = false;
     if (Math.random() < 0.3) {
