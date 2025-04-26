@@ -46,6 +46,12 @@
           </ul>
         </div>
       </div>
+      <div id="gameOverModal" class="modal-2">
+        <div class="modal-content-2">
+          <span class="close">&times;</span>
+          <p id="gameOverText" style="white-space: pre-line"></p>
+        </div>
+      </div>
       <div id="mainDiv"> <!-- Main Div  -->
         <h1 id="titleName">Secret Roomle</h1>
         <p id="floornamep"><span id="floorname"></span>, <span id="cursename">no curse</span></p>
@@ -101,12 +107,14 @@
       // Get the modal
       var modal1 = document.getElementById("howToPlayModal");
       var modal2 = document.getElementById("aboutModal");
+      var modal3 = document.getElementById("gameOverModal");
       // Get the button that opens the modal
       var btn1 = document.getElementById("howToPlayButton");
       var btn2 = document.getElementById("aboutButton");
       // Get the <span> element that closes the modal
       var span1 = modal1.getElementsByClassName("close")[0];
       var span2 = modal2.getElementsByClassName("close")[0];
+      var span3 = modal3.getElementsByClassName("close")[0];
       const scrollTarget = window.innerHeight * 0;
       // When the user clicks the button, open the modal 
       btn1.onclick = function() {
@@ -136,6 +144,9 @@
       span2.onclick = function() {
         modal2.style.display = "none";
       }
+      span3.onclick = function() {
+        modal3.style.display = "none";
+      }
       
       // When the user clicks anywhere outside of the modal, close it
       window.onclick = function(event) {
@@ -145,6 +156,9 @@
         if (event.target == modal2) {
           modal2.style.display = "none";
         }
+        // if (event.target == modal3) { not for game over screen!
+        //   modal3.style.display = "none";
+        // }
       }
       </script>
   </body>

@@ -194,6 +194,9 @@ function setElements() {
 
 // Sets variables, and generates map, starting the game
 function startGame() {
+
+    document.getElementById("gameOverModal").style.display = "none"; // closes modal on refreshr
+
     levelnum = Math.floor(Math.random()*12 + 1)
     curseLabyrinth = false;
     curseLost = false;
@@ -487,6 +490,29 @@ canvas.addEventListener("click", event => {
             secretRoomSfx.pause();
             secretRoomSfx.currentTime = 0;
             winSfx.play();
+        }
+
+        // Modal to display
+        if (gameover) {
+            let results = "";
+            let winOrLoss = won;
+            if (won) {
+                winOrLoss = "won";
+            } else {
+                winOrLoss = "lost";
+            }
+            if (secretFound) {
+                results += "Secret Room 🟩"
+            } else {
+                results += "Secret Room 🟥"
+            }
+            if (supersecretFound) {
+                results += "\nSuper Secret Room 🟩"
+            } else {
+                results += "\nSuper Secret Room 🟥"
+            }
+            document.getElementById("gameOverText").textContent = `You ${winOrLoss} today's Secret Roomle! \n${results}\nYou had ${guesses} bomb(s) remaining.`;
+            document.getElementById("gameOverModal").style.display = "block";
         }
 
         // After every valid click, update localstorage with info about todays game, overwriting it.

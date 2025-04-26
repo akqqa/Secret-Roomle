@@ -233,6 +233,32 @@ button:hover {
   overflow-y: auto;
   max-height: 65vh;
 }
+
+/* Modal background */
+.modal-2 {
+  display: none; /* Hidden by default */
+  position: absolute; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  height: 100%; /* Full height */
+  overflow: 15% auto; /* Enable scroll if needed */
+  text-align: center;
+}
+
+/* Modal content box for game over */
+.modal-content-2 {
+  background-color: rgb(152, 94, 81);
+  margin: 95% auto; /* Center vertically and horizontally */
+  padding: 10px;
+  border: 5px solid rgb(179, 120, 106);
+  max-width: 40%;
+  max-width: 666px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: black;
+  font-size: 20px;
+  font-family:'Upheaval';
+  overflow-y: auto;
+  max-height: 65vh;
+}
 .close {
   color: rgb(179, 120, 106);
   float: right;
@@ -270,7 +296,11 @@ button:hover {
     font-size: 16px;
   }
 
-  body.endless .modal-content {
+  .modal-content-2 {
+    font-size: 16px;
+  }
+
+  body.endless .modal-content { /*only for endless so modal cntent 2 doesnt need it*/
     font-size: 16px;
     margin: 6% auto;
   }
