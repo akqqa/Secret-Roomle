@@ -11,6 +11,11 @@ body {
   background-position: center; 
   overflow-x: hidden; 
   backdrop-filter: blur(2.4px);
+  min-height: 100vh;
+}
+
+html {
+  min-height: 100vh;
 }
 
 #outerDiv {
@@ -227,7 +232,7 @@ button:hover {
   font-size: 20px;
   font-family:'Upheaval';
   overflow-y: auto;
-  max-height: 60%;
+  max-height: 65vh;
 }
 .close {
   color: rgb(179, 120, 106);
