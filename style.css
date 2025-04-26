@@ -11,20 +11,19 @@ body {
   background-position: center; 
   overflow-x: hidden; 
   backdrop-filter: blur(2.4px);
-  /* min-height: 100vh; */
+  height: 100% /*TRY MIN HEIGHT FOR ALL ISNTEAD OF HEIGHT*/
 }
 
-/* html {
-  min-height: 100vh;
-} */
+html {
+  height: 100%;
+}
 
 #outerDiv {
   display: flex; 
   justify-content: center;  
-  align-items: center;
   font-family: 'Upheaval'; 
   padding: 0.5rem;
-  height: 90%;
+  height: 100%;
 }
 
 #mainDiv {
