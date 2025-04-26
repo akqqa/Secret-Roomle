@@ -9,6 +9,8 @@ import { Room, Generator } from './RoomGenerator.js';
 
 // Seems to be a bug currently with localstorage and it not resetting it if you hav e the page closed when it switches to new day. consider it not resetting storage to blank when loading on a new day, etc.
 // Fixed probably as just forgot to update currentmap but check next reset :)
+// I then realised thats not the issue - but i literally cant recreate it :///// tried both firefox and chrome with the seed resetting every minute and it worked perfectly. maybe i just chalk it up to glitches due to me changing the code a bunch between loads
+// The scenario is that the map stays yesterdays but stage and bombs and everything else doesnt? so it accidentally overwrites the map without overwriting anything else? but thats just not possible!?!??! idk. i couldnt recreate it and tried every combination of things so whatever
 
 const floornames = [
     ["Basement I", "Burning Basement I", "Cellar I"],
@@ -40,7 +42,7 @@ var mapSize;
 var halfCell;
 var rockSize;
 let currentDate = new Date();
-let seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString();
+let seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString(); //+ currentDate.getUTCMinutes().toString();
 console.log(seed);
 Math.seedrandom(seed); 
 
@@ -116,8 +118,8 @@ function initializeGamedata() {
         console.log("parsed data:")
         console.log(parsedData);
         // If no longer the data in saved data, replace it with fresh data - FORGOT TO RESET THE MAP OOPS
-        if ( localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() != parsedData.lastPlayedDate) {
-            parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString();
+        if ( localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() /*+ localStorageDate.getUTCMinutes().toString() */!= parsedData.lastPlayedDate) {
+            parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(); //+ localStorageDate.getUTCMinutes().toString();
             parsedData.currentMap = null;
             parsedData.currentProgress = {stage: 0,
                                         guesses: startingGuesses,
@@ -139,7 +141,6 @@ function initializeGamedata() {
             }
             stage = parsedData.currentProgress.stage;
             guesses = parsedData.currentProgress.guesses;
-            console.log(parsedData.currentProgress.guesses);
 
             secretFound = parsedData.currentProgress.secretFound;
             supersecretFound = parsedData.currentProgress.supersecretFound;
@@ -151,7 +152,7 @@ function initializeGamedata() {
         gamedata = parsedData;
     } else {
         gamedata = {
-            lastPlayedDate: localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(),
+            lastPlayedDate: localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(), // + localStorageDate.getUTCMinutes().toString(),
             currentMap: null,
             currentProgress: {
                 stage: 0,
@@ -383,7 +384,7 @@ function countdown() {
 
     // Logic for changing seed and restarting game
     let newDate = new Date();
-    let newSeed = newDate.getUTCDate().toString() + newDate.getUTCMonth().toString() + newDate.getUTCFullYear().toString();
+    let newSeed = newDate.getUTCDate().toString() + newDate.getUTCMonth().toString() + newDate.getUTCFullYear().toString();// + newDate.getUTCMinutes().toString();
     //let newSeed = seed + 1; // for testing regeneration
     if (seed != newSeed) {
         console.log("updating due to new seed");

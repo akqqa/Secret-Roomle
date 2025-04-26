@@ -118,9 +118,7 @@ export class Generator {
         let resetCounter = -1;
         while (roomQueue.length != 0) {
             resetCounter += 1;
-            // if (resetCounter != 0 && resetCounter % 16 == 0) {
-            //     roomQueue.unshift(startRoom);
-            // }
+            // r
             // ADD counter so that every 16 rooms the start room is reseeded into queue :)
             let currentRoom = roomQueue.shift();
             // For each coordinate left, up, down, right of this room, see if youll create a new room, and follow game logic to do so. Then add each new room to both the queue and the map
