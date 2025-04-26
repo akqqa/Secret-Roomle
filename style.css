@@ -11,12 +11,12 @@ body {
   background-position: center; 
   overflow-x: hidden; 
   backdrop-filter: blur(2.4px);
-  min-height: 100vh;
+  /* min-height: 100vh; */
 }
 
-html {
+/* html {
   min-height: 100vh;
-}
+} */
 
 #outerDiv {
   display: flex; 
