@@ -7,6 +7,9 @@ import { Room, Generator } from './RoomGenerator.js';
 // add a flawless modifier to the end
 // Tips and info tab, about and credits tab, win and loss screen rework, and finally infinite mode. then release!
 
+// Seems to be a bug currently with localstorage and it not resetting it if you hav e the page closed when it switches to new day. consider it not resetting storage to blank when loading on a new day, etc.
+// Fixed probably as just forgot to update currentmap but check next reset :)
+
 const floornames = [
     ["Basement I", "Burning Basement I", "Cellar I"],
     ["Basement II", "Burning Basement II", "Cellar II"],
@@ -112,9 +115,10 @@ function initializeGamedata() {
         let parsedData = JSON.parse(gamedata);
         console.log("parsed data:")
         console.log(parsedData);
-        // If no longer the data in saved data, replace it with fresh data
+        // If no longer the data in saved data, replace it with fresh data - FORGOT TO RESET THE MAP OOPS
         if ( localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() != parsedData.lastPlayedDate) {
             parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString();
+            parsedData.currentMap = null;
             parsedData.currentProgress = {stage: 0,
                                         guesses: startingGuesses,
                                         secretFound: false,
