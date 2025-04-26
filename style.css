@@ -298,7 +298,7 @@ button:hover {
 
   .modal-content-2 {
     font-size: 16px;
-    margin: 80% auto;
+    margin: 65% auto;
   }
 
   body.endless .modal-content { /*only for endless so modal cntent 2 doesnt need it*/
