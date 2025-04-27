@@ -365,7 +365,7 @@ export class Generator {
         let rockOddsAdjusted = rockOdds;
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
-                if (this.map[j][i] && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss" && this.map[j][i].type != "start" && this.map[j][i].type != "sacrifice" && this.map[j][i].type != "challenge" && this.map[j][i].type != "bosschallenge" && this.map[j][i].type != "planetarium" && this.map[j][i].type != "shop" && this.map[j][i].type != "curse" && this.map[j][i].type != "arcade") {
+                if (this.map[j][i] && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss" && this.map[j][i].type != "start" && this.map[j][i].type != "sacrifice" && this.map[j][i].type != "challenge" && this.map[j][i].type != "bosschallenge" && this.map[j][i].type != "planetarium" && this.map[j][i].type != "shop" && this.map[j][i].type != "curse" && this.map[j][i].type != "arcade" && this.map[j][i].type != "dice") {
                     if (this.map[j][i].type == "item") {
                         rockOddsAdjusted = rockOdds / 3;
                     }
