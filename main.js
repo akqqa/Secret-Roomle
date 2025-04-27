@@ -66,8 +66,13 @@ function cacheImages() {
     return Promise.all(promises);
 }
 
+var gameImagesLoaded = false;
+
 const imageCache = {};
-await cacheImages();
+cacheImages().then(() => {
+    gameImagesLoaded = true;
+    drawMap();
+});
 
 // Variables
 var generator = null;
@@ -240,7 +245,17 @@ async function drawMap(hoveredRoom = null) {
     if (generator == null) {
         return;
     }
-
+    if (!gameImagesLoaded) {
+        ctx.beginPath();
+        ctx.font = "200px Upheaval";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fill();
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        ctx.fillText("Loading...", mapSize / 2, mapSize / 2);
+        console.log("showing loading");
+        return;
+    }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
@@ -572,7 +587,7 @@ addEventListener("load", (event) => {
 
 document.getElementById("copyButton").addEventListener("click", (event) => {
     let text = document.getElementById('gameOverText').innerHTML;
-    text = text.replace(/\bYou\b/g, 'I') + "\nhttps://roomle.pages.dev";
+    text = text.replace(/\bYou\b/g, 'I') + "\nhttps://roomle.net";
     text = text.replace(/<br\s*\/?>/gi, '\n');
     navigator.clipboard.writeText(text);
 })

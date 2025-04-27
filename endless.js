@@ -63,8 +63,13 @@ function cacheImages() {
     return Promise.all(promises);
 }
 
+var gameImagesLoaded = false;
+
 const imageCache = {};
-await cacheImages();
+cacheImages().then(() => {
+    gameImagesLoaded = true;
+    drawMap();
+});
 
 // Variables
 var generator = null;
@@ -170,6 +175,18 @@ function startGame() {
 // Draws the map, also accounting for which room is hovered over, and what the current game stage is
 async function drawMap(hoveredRoom = null) {
     if (generator == null) {
+        return;
+    }
+
+    if (!gameImagesLoaded) {
+        ctx.beginPath();
+        ctx.font = "200px Upheaval";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fill();
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        ctx.fillText("Loading...", mapSize / 2, mapSize / 2);
+        console.log("showing loading");
         return;
     }
 
