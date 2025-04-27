@@ -613,4 +613,8 @@ function drawCachedImage(imageName, x, y, width, height) {
     }
 }
 
-
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        drawMap();
+    }
+});

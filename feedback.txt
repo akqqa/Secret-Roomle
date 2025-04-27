@@ -3,3 +3,7 @@ Rock placements - try to maybe follow likelihood of real room probabilities? - w
 Chest and Dark room cant have rooms directly above spawn! hard code that in.
 Make scorch marks easier to see on dark backgrounds? 
 LABYRINTH CAN HAVE (RARE) ROOMS NEXT TO EACH OTHER
+
+SO MAIN GOALS FOR NEXT UPDATE:
+accurate rock placements and do them before adding the secret rooms (will always be space for secret)
+after this, ultra secret is easy
