@@ -433,9 +433,6 @@ canvas.addEventListener("mouseout", event => {
 canvas.addEventListener("click", event => {
     if (!gameover) {
         // If this is the first click of a new game, add to total games played in stats (so entering counts as a game played, as you can get secret rooms even if you dont "win")
-        if (stage == 0 && !secretFound && !supersecretFound) {
-            gamedata.stats.totalGames += 1;
-        }
 
         let transform = ctx.getTransform();
         let transformedX = (event.offsetX - transform.e) * (size/visualSize);
@@ -445,6 +442,9 @@ canvas.addEventListener("click", event => {
         let room = generator.map[y][x];
         // If room is undefined, set it to a wrong room
         if (!room) {
+            if (stage == 0 && !secretFound && !supersecretFound) {
+                gamedata.stats.totalGames += 1;
+            }
             let newRoom = new Room(y,x);
             newRoom.type = "wrong";
             generator.map[y][x] = newRoom;
@@ -454,6 +454,9 @@ canvas.addEventListener("click", event => {
             bombSfx.currentTime = 0;
             bombSfx.play();
         } else if (room.type == "secret" && room.hidden) {
+            if (stage == 0 && !secretFound && !supersecretFound) {
+                gamedata.stats.totalGames += 1;
+            }
             room.hidden = false;
             secretFound = true;
             gamedata.stats.secretRoomsFound += 1;
@@ -465,6 +468,9 @@ canvas.addEventListener("click", event => {
             bombSfx.play();
             secretRoomSfx.play();
         } else if (room.type == "supersecret" && room.hidden) {
+            if (stage == 0 && !secretFound && !supersecretFound) {
+                gamedata.stats.totalGames += 1;
+            }
             room.hidden = false;
             supersecretFound = true;
             gamedata.stats.superSecretRoomsFound += 1;
