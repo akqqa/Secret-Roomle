@@ -2,3 +2,4 @@ TODO based on reddit feedback:
 Rock placements - try to maybe follow likelihood of real room probabilities? - would also fix issue of not having super rare spawns where rocks block most places
 Chest and Dark room cant have rooms directly above spawn! hard code that in.
 Make scorch marks easier to see on dark backgrounds? 
+LABYRINTH CAN HAVE (RARE) ROOMS NEXT TO EACH OTHER
