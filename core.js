@@ -21,6 +21,7 @@ export function runCore(gamemode) {
     var winSfx = new Audio("sfx/specialist.mp3");
     var loseSfx = new Audio("sfx/lose.ogg");
     var deathSfx = new Audio("sfx/death.wav");
+    var isMuted = false;
 
     const startingGuesses = 6;
 
@@ -103,9 +104,14 @@ export function runCore(gamemode) {
     if (gamemode == "daily") {
         var gamedata = localStorage.getItem("secretRoomleData");
     }
+    var settingsdata = localStorage.getItem("settingsData");
+    settingsdata = JSON.parse(settingsdata);
+    if (settingsdata.isMuted) {
+        setMute();
+    }
+
     startGame();
     if (gamemode == "daily") {
-        console.log("hiddd")
         countdown();
         setInterval(countdown, 1000);
     }
@@ -248,7 +254,8 @@ export function runCore(gamemode) {
                 curseLost = true;
             }
         }
-        hard =  Math.random() < 0.5;
+        Math.random() // Call to keep the rng consistent!!!!
+        hard =  true; // Always use hard mode - I mean no point randomly choosing normal (who plays that anyway am i right?)
         generator = new Generator(levelnum, curseLabyrinth, lost, hard);
         levelname = floornames[levelnum-1][Math.floor(Math.random() * floornames[levelnum-1].length)]
 
@@ -276,7 +283,7 @@ export function runCore(gamemode) {
         if (generator == null) {
             return;
         }
-        if (!gameImagesLoaded) {
+        if (!gameImagesLoaded && document.fonts.check('1em "Upheaval"')) { // only show loading when the font is loaded!!!!
             ctx.beginPath();
             ctx.font = "200px Upheaval";
             ctx.textAlign = "center";
@@ -284,7 +291,6 @@ export function runCore(gamemode) {
             ctx.fill();
             ctx.fillStyle = "rgba(0, 0, 0, 1)";
             ctx.fillText("Loading...", mapSize / 2, mapSize / 2);
-            console.log("showing loading");
             return;
         }
 
@@ -668,4 +674,29 @@ export function runCore(gamemode) {
             }
         });
     }
+
+    // Mute button functionality
+    document.getElementById("muteButton").addEventListener("click", (event) => {
+        setMute();
+    })
+
+    function setMute() {
+        isMuted = !isMuted;
+
+        bombSfx.muted = isMuted;
+        secretRoomSfx.muted = isMuted;
+        winSfx.muted = isMuted;
+        loseSfx.muted = isMuted;
+        deathSfx.muted = isMuted;
+
+        if (isMuted) {
+            document.getElementById("muteButton").style.backgroundImage = "url('images/volume-mute-fill.svg')";
+        } else {
+            document.getElementById("muteButton").style.backgroundImage = "url('images/volume-up-fill.svg')";
+        }
+
+        settingsdata.isMuted = isMuted;
+        localStorage.setItem("settingsData", JSON.stringify(settingsdata));
+    }
+
 }
