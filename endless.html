@@ -58,7 +58,12 @@
         <h1 id="titleName">Secret Roomle</h1>
         <p id="floornamep"><span id="floorname"></span>, <span id="cursename">no curse</span></p>
         <div id="verticalContentDiv"> <!-- Div containing main vertical content -->
-          <p id="bombsRemaining">Bombs Remaining: <span id="guessesremaining"></span></p>
+          <div class="topbar">
+            <p id="bombsRemaining">Bombs Remaining: <span id="guessesremaining"></span></p>
+            <div class="mute-button-container">
+              <button id=muteButton class="mute-button"></button>
+            </div>
+          </div>
           <canvas id="gameCanvas" width="300" height="300"></canvas>
           <div class="buttons" >
             <div class="image-button-container">

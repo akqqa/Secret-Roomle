@@ -59,16 +59,55 @@ html {
   justify-content: center; 
   flex-direction: column; 
   gap: 1.25rem;
+  position: relative;
+}
+
+#topbar {
+  width:100%;
 }
 
 #bombsRemaining {
   font-size: clamp(1.25rem, 5vw, 1.5rem); 
   white-space: pre-line; 
-  align-self: flex-start;
-  margin: 0 0 -1rem;
+  position: absolute;
+  top: 0;  /* Stick it to the top of the parent container */
+  left: 0; /* Stick it to the left side of the parent container */
+}
+
+.mute-button-container {
+  position: absolute;
+  top: 0.6rem; /* Stick it to the top */
+  right: 0; /* Stick it to the right */
+  display: inline-block;
+  height: 42px;
+  width: 36px;
+}
+
+.mute-button {
+  background-image: url('images/volume-up-fill.svg');
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  border: none;
+  color: black;
+  font-size: 20px;
+  font-weight: normal;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  outline: none;
 }
 
 #gameCanvas {
+  margin-top: 2.5rem;
+  position: relative;
   border: 5px solid; 
   border-color: rgba(179, 120, 106); 
   background-color: rgba(70, 39, 33, 0.3); 
