@@ -695,7 +695,11 @@ export function runCore(gamemode) {
             document.getElementById("muteButton").style.backgroundImage = "url('images/volume-up-fill.svg')";
         }
 
-        settingsdata.isMuted = isMuted;
+        if (settingsdata) {
+            settingsdata.isMuted = isMuted;
+        } else {
+            settingsdata = {isMuted: isMuted};
+        }
         localStorage.setItem("settingsData", JSON.stringify(settingsdata));
     }
 
