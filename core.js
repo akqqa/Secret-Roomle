@@ -106,7 +106,7 @@ export function runCore(gamemode) {
     }
     var settingsdata = localStorage.getItem("settingsData");
     settingsdata = JSON.parse(settingsdata);
-    if (settingsdata.isMuted) {
+    if (settingsdata && settingsdata.isMuted) {
         setMute();
     }
 
