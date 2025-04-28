@@ -8,4 +8,8 @@ weird bug with games played: 13 - ask more abt that
 
 SO MAIN GOALS FOR NEXT UPDATE:
 accurate rock placements and do them before adding the secret rooms (will always be space for secret)
-after this, ultra secret is easy
+after this, ultra secret is easy ( can add this before rock changes at it should always be done last anyway )
+ultra secret will be an optional hard mode toggle - only togglable if before any other changes on a day
+MAKE there be at least 2 entrances to the starter room! force this during generation
+mega satan block
+labyrinth 2 bosses
