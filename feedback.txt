@@ -17,3 +17,5 @@ honestly maybe deprioritise the rock placements. its fun enough with them as the
 ^ mayeb just leave them as they are, try putting rock spawning before secret room placement, then see if that feels too unfair. if so can tweak - thats what the dev branch is for!
 
 MOVE CODE TO CORE.JS AND MAKE MAIN AND ENDLESS JUST HAVE DIFFERENT FLAGS SET - PUT ALL MAIN ONLY STUFF IN AN IF (DAILY) BLOCK LOL
+
+add a number to the secret roomle copy paste - note that sat 26th april was day 1
