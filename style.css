@@ -274,7 +274,7 @@ button:hover {
   font-size: clamp(1.25rem, 5vw, 1.5rem); 
   text-align: center; 
   margin-top: 1rem; 
-
+  transform: scale(0.8);
 }
 
  /* Modal background */
