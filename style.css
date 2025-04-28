@@ -76,7 +76,7 @@ html {
 
 .mute-button-container {
   position: absolute;
-  top: 0.6rem; /* Stick it to the top */
+  top: 1rem; /* Stick it to the top */
   right: 0; /* Stick it to the right */
   display: inline-block;
   height: 42px;
@@ -267,6 +267,14 @@ button:hover {
   padding-left: clamp(1rem, 4vw, 2rem); 
   padding-right: clamp(1rem, 4vw, 2rem); 
   background-color: rgba(70, 39, 33, 0.3);
+  margin-bottom: 0rem;
+}
+
+#kofiDiv {
+  font-size: clamp(1.25rem, 5vw, 1.5rem); 
+  text-align: center; 
+  margin-top: 1rem; 
+
 }
 
  /* Modal background */
@@ -335,7 +343,7 @@ button:hover {
   cursor: pointer;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 600px) {
   .image-button-container {
     width: 100px;
     height: 33.1px;
