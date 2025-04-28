@@ -108,6 +108,8 @@ export function runCore(gamemode) {
     settingsdata = JSON.parse(settingsdata);
     if (settingsdata && settingsdata.isMuted) {
         setMute();
+    } else if (!settingsdata) {
+        settingsdata = {isMuted: false};
     }
 
     startGame();
@@ -697,8 +699,6 @@ export function runCore(gamemode) {
 
         if (settingsdata) {
             settingsdata.isMuted = isMuted;
-        } else {
-            settingsdata = {isMuted: isMuted};
         }
         localStorage.setItem("settingsData", JSON.stringify(settingsdata));
     }
