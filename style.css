@@ -72,9 +72,6 @@ html {
   border: 5px solid; 
   border-color: rgba(179, 120, 106); 
   background-color: rgba(70, 39, 33, 0.3); 
-  background-position: "center";
-  background-size: 100% 100%;
-  background-repeat: "no-repeat";
 }
 
 .buttons {
