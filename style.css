@@ -76,7 +76,7 @@ html {
 
 .mute-button-container {
   position: absolute;
-  top: 0.6rem; /* Stick it to the top */
+  top: 0.8rem; /* Stick it to the top */
   right: 0; /* Stick it to the right */
   display: inline-block;
   height: 42px;
@@ -370,6 +370,11 @@ button:hover {
   body.endless .modal-content { /*only for endless so modal cntent 2 doesnt need it*/
     font-size: 16px;
     margin: 6% auto;
+  }
+
+  .mute-button-container {
+    width: 36px;
+    height: 30px;
   }
 
   
