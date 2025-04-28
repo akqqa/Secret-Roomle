@@ -65,6 +65,8 @@ function cacheImages() {
 
 var gameImagesLoaded = false;
 
+drawMap();
+
 const imageCache = {};
 cacheImages().then(() => {
     gameImagesLoaded = true;
@@ -117,7 +119,9 @@ function setElements() {
     let backgroundPath = "./images/Backgrounds/" + levelnameTrimmed + ".png";
     document.getElementById("body").style.backgroundImage = `url("${backgroundPath}")`;
     document.getElementById("gameCanvas").style.backgroundImage = `url("${backgroundPath}")`;
+    document.getElementById("gameCanvas").style.backgroundPosition = "center"; // Center the image
     document.getElementById("gameCanvas").style.backgroundSize = "100% 100%"; // Stretch the image to fit the canvas
+    document.getElementById("gameCanvas").style.backgroundRepeat = "no-repeat"; // Prevent image repetition
 }
 
 // Sets variables, and generates map, starting the game
