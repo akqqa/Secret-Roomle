@@ -76,7 +76,7 @@ html {
 
 .mute-button-container {
   position: absolute;
-  top: 0.8rem; /* Stick it to the top */
+  top: 1rem; /* Stick it to the top */
   right: 0; /* Stick it to the right */
   display: inline-block;
   height: 42px;
