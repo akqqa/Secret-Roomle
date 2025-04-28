@@ -195,6 +195,7 @@ function setElements() {
     let backgroundPath = "./images/Backgrounds/" + levelnameTrimmed + ".png";
     document.getElementById("body").style.backgroundImage = `url("${backgroundPath}")`;
     document.getElementById("gameCanvas").style.backgroundImage = `url("${backgroundPath}")`;
+    document.getElementById("gameCanvas").style.backgroundSize = "100% 100%"; // Stretch the image to fit the canvas
 }
 
 // Sets variables, and generates map, starting the game
