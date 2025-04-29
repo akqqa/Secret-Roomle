@@ -47,7 +47,13 @@ export function runCore(gamemode) {
     const ctx = canvas.getContext('2d');
     ctx.scale(size/visualSize, size/visualSize);
 
-    setScaling();
+
+    // https://stackoverflow.com/questions/44484547/screen-width-screen-height-not-updating-after-screen-rotation iphones dont change screen.width when rotating, but the ability to zoom + fix on chrome and others when rotating is worth this minor flaw. still fully usable.
+    if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        setScaling(screen.width); 
+    } else {
+        setScaling(window.innerWidth);
+    }
     canvas.width = mapSize;
     canvas.height = mapSize;
 
@@ -614,17 +620,31 @@ export function runCore(gamemode) {
         }
     })
 
+    // On resize, if mobile then resize based on screen width (as innerwidth is weirrrdd on chrome mobile) otherwise use innerwidth on desktop
+    //  Caveat that on some phone models it seems screen.width is always the physical width - doesnt change on rotation. altho that could be due to the emulator. regardless, its better to be 
+    // too small (with zoom) than off screen. oh did I mention using screen.width fixes the zoom as it doesnt resize on zoom? yeah :) its not PERFECT but its a huge win imo.
     addEventListener("resize", (event) => {
-        setScaling();
-        canvas.width = mapSize;
-        canvas.height = mapSize;
-        drawMap();
+        setTimeout(() => {
+            console.log(navigator.userAgent);
+            if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                setScaling(screen.width); 
+            } else {
+                setScaling(window.innerWidth);
+            }
+            canvas.width = mapSize;
+            canvas.height = mapSize;
+            drawMap();
+        }, 50);
     });
 
     // Attempt at mobile chrome app fix
     addEventListener("load", (event) => {
         setTimeout(() => {
-            setScaling();
+            if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                setScaling(screen.width); 
+            } else {
+                setScaling(window.innerWidth);
+            }
             canvas.width = mapSize;
             canvas.height = mapSize;
             drawMap();
@@ -640,8 +660,8 @@ export function runCore(gamemode) {
         })
     }
 
-    function setScaling() {
-        visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
+    function setScaling(newWidth) {
+        visualSize = Math.ceil(Math.min(newWidth * 0.85, 616));
         document.getElementById("gameCanvas").style.width = `${visualSize}px`;
         document.getElementById("gameCanvas").style.height = `${visualSize}px`;
         size = 2000; // Now scaled with css and ctx
