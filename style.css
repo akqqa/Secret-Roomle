@@ -273,7 +273,7 @@ button:hover {
 #kofiDiv {
   font-size: clamp(1.25rem, 5vw, 1.5rem); 
   text-align: center; 
-  margin-top: 1rem; 
+  margin-top: 0rem; 
   transform: scale(0.8);
 }
 
@@ -343,7 +343,7 @@ button:hover {
   cursor: pointer;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 570px) {
   .image-button-container {
     width: 100px;
     height: 33.1px;
@@ -378,6 +378,10 @@ button:hover {
   body.endless .modal-content { /*only for endless so modal cntent 2 doesnt need it*/
     font-size: 16px;
     margin: 6% auto;
+  }
+
+  #kofiDiv {
+    transform: scale(0.6);
   }
 
   
