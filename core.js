@@ -629,19 +629,23 @@ export function runCore(gamemode) {
         } else {
             // Fallback if screen.orientation not available
             window.addEventListener("resize", () => {
-                setScaling();
-                canvas.width = mapSize;
-                canvas.height = mapSize;
-                drawMap();
+                setTimeout(() => {
+                    setScaling();
+                    canvas.width = mapSize;
+                    canvas.height = mapSize;
+                    drawMap();
+                },200);
             });
         }
     } else {
         // Desktop: handle resize normally
         window.addEventListener("resize", () => {
-            setScaling();
-            canvas.width = mapSize;
-            canvas.height = mapSize;
-            drawMap();
+            setTimeout(() => {
+                setScaling();
+                canvas.width = mapSize;
+                canvas.height = mapSize;
+                drawMap();
+            },200);
         });
     }
 
