@@ -672,7 +672,8 @@ export function runCore(gamemode) {
     }
 
     function setScaling() {
-        visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
+        let width = window.visualViewport?.width || window.innerWidth;
+        visualSize = Math.ceil(Math.min(width * 0.85, 616));
         document.getElementById("gameCanvas").style.width = `${visualSize}px`;
         document.getElementById("gameCanvas").style.height = `${visualSize}px`;
         size = 2000; // Now scaled with css and ctx
