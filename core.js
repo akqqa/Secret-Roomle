@@ -493,8 +493,10 @@ export function runCore(gamemode) {
                 bombSfx.currentTime = 0;
                 bombSfx.play();
             } else if (room.type == "secret" && room.hidden) {
-                if (stage == 0 && !secretFound && !supersecretFound && gamemode == "daily") {
-                    gamedata.stats.totalGames += 1;
+                if (gamemode == "daily") {
+                    if (stage == 0 && !secretFound && !supersecretFound) {
+                        gamedata.stats.totalGames += 1;
+                    }
                     gamedata.stats.secretRoomsFound += 1;
                 }
                 room.hidden = false;
@@ -507,8 +509,10 @@ export function runCore(gamemode) {
                 bombSfx.play();
                 secretRoomSfx.play();
             } else if (room.type == "supersecret" && room.hidden) {
-                if (stage == 0 && !secretFound && !supersecretFound && gamemode == "daily") {
-                    gamedata.stats.totalGames += 1;
+                if (gamemode == "daily") {
+                    if (stage == 0 && !secretFound && !supersecretFound) {
+                        gamedata.stats.totalGames += 1;
+                    }
                     gamedata.stats.superSecretRoomsFound += 1;
                 }
                 room.hidden = false;
