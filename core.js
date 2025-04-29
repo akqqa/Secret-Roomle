@@ -48,15 +48,6 @@ export function runCore(gamemode) {
     ctx.scale(size/visualSize, size/visualSize);
 
     setScaling();
-    visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
-        document.getElementById("gameCanvas").style.width = `${visualSize}px`;
-        document.getElementById("gameCanvas").style.height = `${visualSize}px`;
-        size = 2000; // Now scaled with css and ctx
-        mapSize = size;
-        roomSize = Math.ceil(mapSize / 15);
-        halfCell = roomSize / 3;
-        rockSize = roomSize / 3;
-        ctx.scale(size/visualSize, size/visualSize);
     canvas.width = mapSize;
     canvas.height = mapSize;
 
@@ -625,8 +616,8 @@ export function runCore(gamemode) {
 
     addEventListener("resize", (event) => {
         setScaling();
-        // canvas.width = mapSize;
-        // canvas.height = mapSize;
+        canvas.width = mapSize;
+        canvas.height = mapSize;
         drawMap();
     });
 
@@ -653,12 +644,13 @@ export function runCore(gamemode) {
         visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
         document.getElementById("gameCanvas").style.width = `${visualSize}px`;
         document.getElementById("gameCanvas").style.height = `${visualSize}px`;
+        // THIS update might not be necessary every time, but it works regardless
         size = 2000; // Now scaled with css and ctx
-        // mapSize = size;
-        // roomSize = Math.ceil(mapSize / 15);
-        // halfCell = roomSize / 3;
-        // rockSize = roomSize / 3;
-        // ctx.scale(size/visualSize, size/visualSize);
+        mapSize = size;
+        roomSize = Math.ceil(mapSize / 15);
+        halfCell = roomSize / 3;
+        rockSize = roomSize / 3;
+        ctx.scale(size/visualSize, size/visualSize);
     }
 
     // Draw an image from the cache loaded when page loaded
