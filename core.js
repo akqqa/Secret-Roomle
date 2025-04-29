@@ -614,9 +614,9 @@ export function runCore(gamemode) {
         }
     })
 
-    //const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    if (false) { 
+    if (isMobile) { 
         if (screen.orientation?.addEventListener) {
             screen.orientation.addEventListener("change", () => {
                 setTimeout(() => {
@@ -624,7 +624,7 @@ export function runCore(gamemode) {
                     canvas.width = mapSize;
                     canvas.height = mapSize;
                     drawMap();
-                }, 200);
+                }, 400);
             });
         } else {
             // Fallback if screen.orientation not available
