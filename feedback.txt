@@ -19,3 +19,5 @@ honestly maybe deprioritise the rock placements. its fun enough with them as the
 MOVE CODE TO CORE.JS AND MAKE MAIN AND ENDLESS JUST HAVE DIFFERENT FLAGS SET - PUT ALL MAIN ONLY STUFF IN AN IF (DAILY) BLOCK LOL
 
 add a number to the secret roomle copy paste - note that sat 26th april was day 1
+
+labyrinth - will have to spawn normally with 1 less room in the calc, then add to the boss room in a random directional order (e.g check udlr or rdlu randomly ) - if none fit on the grid where there are no neighbouring rooms, then restart the whole level gen

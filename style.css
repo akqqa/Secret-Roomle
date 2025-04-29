@@ -380,8 +380,14 @@ button:hover {
     margin: 6% auto;
   }
 
+
   #kofiDiv {
     transform: scale(0.6);
+  }
+
+  .mute-button-container {
+    width: 36px;
+    height: 30px;
   }
 
   
