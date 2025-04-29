@@ -623,14 +623,20 @@ export function runCore(gamemode) {
             canvas.height = mapSize;
             drawMap();
         });
+    } else {
+        let previousOrientation = screen.orientation?.type;
+        addEventListener("resize", (event) => {
+            if (screen.orientation?.type !== previousOrientation) {
+                // Rotated
+                setScaling();
+                canvas.width = mapSize;
+                canvas.height = mapSize;
+                drawMap();
+            }
+            previousOrientation = screen.orientation?.type;
+            
+        });
     }
-
-    screen.orientation.addEventListener("change", (event) => {
-        setScaling();
-        canvas.width = mapSize;
-        canvas.height = mapSize;
-        drawMap();
-    });
 
     // Attempt at mobile chrome app fix
     addEventListener("load", (event) => {
@@ -652,15 +658,16 @@ export function runCore(gamemode) {
     }
 
     function setScaling() {
-        visualSize = Math.ceil(Math.min(window.innerHeight * 0.85, 616));
+        visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
         document.getElementById("gameCanvas").style.width = `${visualSize}px`;
         document.getElementById("gameCanvas").style.height = `${visualSize}px`;
-        // THIS update might not be necessary every time, but it works regardless
+        // THIS update might noIt be necessary every time, but it works regardless
         size = 2000; // Now scaled with css and ctx
         mapSize = size;
         roomSize = Math.ceil(mapSize / 15);
         halfCell = roomSize / 3;
         rockSize = roomSize / 3;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(size/visualSize, size/visualSize);
     }
 
