@@ -614,34 +614,12 @@ export function runCore(gamemode) {
         }
     })
 
-    const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (!isMobile) { // Only dynamically resize when on desktop! otherwise, orientation handles it
-        addEventListener("resize", (event) => {
-            setScaling();
-            canvas.width = mapSize;
-            canvas.height = mapSize;
-            drawMap();
-        });
-    } else {
-        let previousOrientation = false;
-        addEventListener("resize", (event) => {
-            // if (screen.orientation?.type !== previousOrientation) {
-            //     // Rotated
-            //     setScalingOrientation();
-            //     canvas.width = mapSize;
-            //     canvas.height = mapSize;
-            //     drawMap();
-            // }
-            // Rotated
-            setScaling();
-            canvas.width = mapSize;
-            canvas.height = mapSize;
-            drawMap();
-            previousOrientation = screen.orientation?.type;
-            
-        });
-    }
+    addEventListener("resize", (event) => {
+        setScaling();
+        canvas.width = mapSize;
+        canvas.height = mapSize;
+        drawMap();
+    });
 
     // Attempt at mobile chrome app fix
     addEventListener("load", (event) => {
@@ -666,20 +644,12 @@ export function runCore(gamemode) {
         visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
         document.getElementById("gameCanvas").style.width = `${visualSize}px`;
         document.getElementById("gameCanvas").style.height = `${visualSize}px`;
-        // THIS update might noIt be necessary every time, but it works regardless
         size = 2000; // Now scaled with css and ctx
         mapSize = size;
         roomSize = Math.ceil(mapSize / 15);
         halfCell = roomSize / 3;
         rockSize = roomSize / 3;
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(size/visualSize, size/visualSize);
-    }
-
-    function setScalingOrientation() {
-        visualSize = Math.ceil(Math.min(window.innerHeight * 0.85, 616));
-        document.getElementById("gameCanvas").style.width = `${visualSize}px`;
-        document.getElementById("gameCanvas").style.height = `${visualSize}px`;
     }
 
     // Draw an image from the cache loaded when page loaded
