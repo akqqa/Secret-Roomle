@@ -47,7 +47,7 @@ export function runCore(gamemode) {
     const ctx = canvas.getContext('2d');
     ctx.scale(size/visualSize, size/visualSize);
 
-    setScaling();
+    setScaling(window.innerWidth);
     canvas.width = mapSize;
     canvas.height = mapSize;
 
@@ -619,17 +619,20 @@ export function runCore(gamemode) {
         console.log(window.innerWidth);
         console.log(window.innerWidth * 0.85);
         console.log(screen.width)
-        setScaling();
+        if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            setScaling(screen.width);
+        } else {
+            setScaling(window.innerWidth);
+        }
         canvas.width = mapSize;
         canvas.height = mapSize;
         drawMap();
-
     });
 
     // Attempt at mobile chrome app fix
     addEventListener("load", (event) => {
         setTimeout(() => {
-            setScaling();
+            setScaling(window.innerWidth);
             canvas.width = mapSize;
             canvas.height = mapSize;
             drawMap();
@@ -645,8 +648,8 @@ export function runCore(gamemode) {
         })
     }
 
-    function setScaling() {
-        visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
+    function setScaling(newWidth) {
+        visualSize = Math.ceil(Math.min(newWidth * 0.85, 616));
         document.getElementById("gameCanvas").style.width = `${visualSize}px`;
         document.getElementById("gameCanvas").style.height = `${visualSize}px`;
         size = 2000; // Now scaled with css and ctx
