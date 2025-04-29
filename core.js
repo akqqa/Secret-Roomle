@@ -624,7 +624,7 @@ export function runCore(gamemode) {
             drawMap();
         });
     } else {
-        let previousOrientation = screen.orientation?.type;
+        let previousOrientation = false;
         addEventListener("resize", (event) => {
             if (screen.orientation?.type !== previousOrientation) {
                 // Rotated
