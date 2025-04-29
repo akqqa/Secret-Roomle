@@ -615,10 +615,12 @@ export function runCore(gamemode) {
     })
 
     addEventListener("resize", (event) => {
-        setScaling();
-        canvas.width = mapSize;
-        canvas.height = mapSize;
-        drawMap();
+        setTimeout(() => {
+            setScaling();
+            canvas.width = mapSize;
+            canvas.height = mapSize;
+            drawMap();
+        }, 50);
     });
 
     // Attempt at mobile chrome app fix
