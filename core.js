@@ -614,9 +614,9 @@ export function runCore(gamemode) {
         }
     })
 
-    const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isMobile2 = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    if (isMobile) { 
+    if (isMobile2) { 
         if (screen.orientation?.addEventListener) {
             screen.orientation.addEventListener("change", () => {
                 setTimeout(() => {
@@ -644,13 +644,6 @@ export function runCore(gamemode) {
             drawMap();
         });
     }
-
-    // window.addEventListener("resize", () => {
-    //     setScaling();
-    //     canvas.width = mapSize;
-    //     canvas.height = mapSize;
-    //     drawMap();
-    // });
 
     // Attempt at mobile chrome app fix
     addEventListener("load", (event) => {
