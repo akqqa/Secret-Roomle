@@ -614,9 +614,9 @@ export function runCore(gamemode) {
         }
     })
 
-    const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    //const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    if (isMobile) { 
+    if (false) { 
         if (screen.orientation?.addEventListener) {
             screen.orientation.addEventListener("change", () => {
                 setTimeout(() => {
