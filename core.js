@@ -652,7 +652,7 @@ export function runCore(gamemode) {
     }
 
     function setScaling() {
-        visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
+        visualSize = Math.ceil(Math.min(window.innerHeight * 0.85, 616));
         document.getElementById("gameCanvas").style.width = `${visualSize}px`;
         document.getElementById("gameCanvas").style.height = `${visualSize}px`;
         // THIS update might not be necessary every time, but it works regardless
