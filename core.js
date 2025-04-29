@@ -615,6 +615,7 @@ export function runCore(gamemode) {
     })
 
     addEventListener("resize", (event) => {
+        if (window.visualViewport?.scale !== 1) return;
         setScaling();
         canvas.width = mapSize;
         canvas.height = mapSize;
