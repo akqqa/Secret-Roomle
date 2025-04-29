@@ -614,7 +614,18 @@ export function runCore(gamemode) {
         }
     })
 
-    addEventListener("resize", (event) => {
+    const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (!isMobile) { // Only dynamically resize when on desktop! otherwise, orientation handles it
+        addEventListener("resize", (event) => {
+            setScaling();
+            canvas.width = mapSize;
+            canvas.height = mapSize;
+            drawMap();
+        });
+    }
+
+    screen.orientation.addEventListener("change", (event) => {
         setScaling();
         canvas.width = mapSize;
         canvas.height = mapSize;
