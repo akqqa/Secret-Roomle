@@ -1,27 +1,22 @@
 TODO based on reddit feedback:
 Rock placements - try to maybe follow likelihood of real room probabilities? - would also fix issue of not having super rare spawns where rocks block most places
-Chest and Dark room cant have rooms directly above spawn! hard code that in.
 Make scorch marks easier to see on dark backgrounds? 
 LABYRINTH CAN HAVE (RARE) ROOMS NEXT TO EACH OTHER
-labyrinth should have 2 boss rooms whoops
-weird bug with games played: 13 - ask more abt that
 
 SO MAIN GOALS FOR NEXT UPDATE:
 accurate rock placements and do them before adding the secret rooms (will always be space for secret)
 after this, ultra secret is easy ( can add this before rock changes at it should always be done last anyway )
 ultra secret will be an optional hard mode toggle - only togglable if before any other changes on a day
-MAKE there be at least 2 entrances to the starter room! force this during generation
-mega satan block
-labyrinth 2 bosses
 honestly maybe deprioritise the rock placements. its fun enough with them as they are - too accurate and itd become less of a fair game! still adheres to the rules so good for learning, just doesnt give bs scenarios often.
 ^ mayeb just leave them as they are, try putting rock spawning before secret room placement, then see if that feels too unfair. if so can tweak - thats what the dev branch is for!
 
-MOVE CODE TO CORE.JS AND MAKE MAIN AND ENDLESS JUST HAVE DIFFERENT FLAGS SET - PUT ALL MAIN ONLY STUFF IN AN IF (DAILY) BLOCK LOL
 
 add a number to the secret roomle copy paste - note that sat 26th april was day 1
 
-labyrinth - will have to spawn normally with 1 less room in the calc, then add to the boss room in a random directional order (e.g check udlr or rdlu randomly ) - if none fit on the grid where there are no neighbouring rooms, then restart the whole level gen
 
+
+
+maybe one day fix the landscape being too small on iphones. maybe. one day. its so insignificant and its so much work to get it done. phones are really inconsistent 
 
 <div id="kofiDiv">
         <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#c9b09a', 'C0C21E7T74');kofiwidget2.draw();</script>           </div>
