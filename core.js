@@ -47,6 +47,8 @@ export function runCore(gamemode) {
     const ctx = canvas.getContext('2d');
     ctx.scale(size/visualSize, size/visualSize);
 
+
+    // https://stackoverflow.com/questions/44484547/screen-width-screen-height-not-updating-after-screen-rotation iphones dont change screen.width when rotating, but the ability to zoom + fix on chrome and others when rotating is worth this minor flaw. still fully usable.
     if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         setScaling(screen.width); 
     } else {
