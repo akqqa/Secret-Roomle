@@ -42,7 +42,7 @@ export class Generator {
         let numRooms = Math.min(21, Math.floor(Math.random(1,2)*3) + 5 + Math.floor(this.stage * (10 / 3)));
         //let numRooms = Math.min(24, Math.floor(Math.random()*8) + 5 + Math.floor(this.stage * 3.35));
         if (this.labyrinth) {
-            numRooms = Math.min(45, Math.floor(numRooms * 1.8));
+            numRooms = Math.min(45, Math.floor(numRooms * 1.8)) - 1; // Minus one because gonna add a boss room to the boss room!
         } else if (this.lost) {
             numRooms += 4;
         }
@@ -139,13 +139,13 @@ export class Generator {
                     if (this.map[neighbourSquared.posY][neighbourSquared.posX]) {
                         neighbourCounter += 1;
                     }
-                })
+                });
                 if (neighbourCounter > 1) {
                     // Add a random chance to stop, random to continue. BECAUSE isaac room generation does seem to support multiple adjacent rooms, just rarer..
-                    if (this.stage != 12) { //   from manual testing looks like only void allows loops
+                    if (this.stage != 12 && !this.labyrinth) { //   from manual testing looks like only void allows loops - labyrinth does also but rarer¬!!
                         return;
                     }
-                    if (neighbour > 2 || Math.random() < 0.9) {
+                    if (neighbour > 2 || (this.stage == 12 && Math.random() < 0.9) || (this.labyrinth && Math.random() < 0.98)) {
                         return;
                     }
                 }
@@ -155,6 +155,10 @@ export class Generator {
                 }
                 // Check 4: 50% chance
                 if (Math.floor(Math.random(0,1)*2) == 0) {
+                    return;
+                }
+                // Check 5: In mega satan spot?
+                if (this.stage == 11 && neighbour.posY == 5 && neighbour.posX == 6) {
                     return;
                 }
                 // Create room here
@@ -167,11 +171,16 @@ export class Generator {
             if (roomCounter == 0) {
                 this.deadEndQueue.push(currentRoom);
             }
+
+            // DEFINITELY a better way of doing this but I'm lazy so - if the currentRoom is StartRoom and room counter is smaller than 2, that means there are not at least 2 rooms from the start room. so just abort the map here.
+            if (currentRoom == startRoom && roomCounter < 2) {
+                return;
+            }
         }
     }
 
     generateMap() {
-        while(1 == 1) {
+        while(true) {
             this.map = [...Array(13)].map(e => Array(13));
             this.deadEndQueue = [];
             this.numRooms = this.generateNumRooms();
@@ -212,11 +221,40 @@ export class Generator {
             if (this.deadEndQueue.length < this.minDeadEnds) {
                 continue;
             }
+
+            // Handle the boss room here, as if curse of labyrinth and no valid positions, must restart THIS IS COMPLEX LOL
+            let bossroom = this.deadEndQueue.pop();
+            bossroom.type = "boss";
+            if (this.labyrinth) { // If labyrinth, try adding another boss room in a valid space next to the existing one
+                let bossNeighbours = this.generateNeighbours(bossroom);
+                let secondBossFound = false;
+                let candidateNeighbourCounter = 0;
+                // Get all neighbours to the boss (and search in random order)
+                bossNeighbours = bossNeighbours.sort(() => Math.random() - 0.5); // thanks https://medium.com/@priyanshuahir01/const-shuffledarray-gamearray-sort-math-random-0-5-3f0f30bb38ba
+                bossNeighbours.forEach(bossCandidate => {
+                    // For each possible second boss, get all of its neighbours
+                    let candidateNeighbours = this.generateNeighbours(bossCandidate);
+                    candidateNeighbours.forEach(candidateNeighbour => { // Count how many neighbours this possible second boss has
+                        if (this.map[candidateNeighbour.posY][candidateNeighbour.posX]) {
+                            candidateNeighbourCounter += 1;
+                        }
+                    });
+                    // If the candidate second boss only has 1 neighbour, it is only connected to the first boss, so is valid !
+                    if (candidateNeighbourCounter == 1) {
+                        this.map[bossCandidate.posY][bossCandidate.posX] = bossCandidate;
+                        bossCandidate.type = "boss";
+                        secondBossFound = true;
+                        return;
+                    }
+                });
+                if (!secondBossFound) { // If no valid second boss placed, then restart map gen.
+                    continue;
+                }
+            }
             break;
         }
 
-        // Now a valid layout has been generated, place rooms in dead ends (for now just do boss, super secret, shop, item) - altho implement more to reduce amount of dead ends!!
-        this.deadEndQueue.pop().type = "boss";
+        // Now a valid layout has been generated and boss rooms placed, place rooms in dead ends
         let supersecret = this.deadEndQueue.pop();
         supersecret.type = "supersecret";
         supersecret.hidden = true;
@@ -362,7 +400,11 @@ export class Generator {
         // Impossible to get accurate odds so just do 50/50 and see how it feels from there lol
         // make it so if rock generates on one side, much more liekly to alkso geenrate on opposite side?
         // CURRENT IMPLEMENTATION is biased as always goes in order. to fix, randomise order rocks are populated :)
+        // Its actually basically good enough now - dont fix what aint broke
         let rockOddsAdjusted = rockOdds;
+        if (this.stage == 11) {
+            rockOddsAdjusted = 0; // No rocks on chest or dark room!
+        }
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
                 if (this.map[j][i] && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss" && this.map[j][i].type != "start" && this.map[j][i].type != "sacrifice" && this.map[j][i].type != "challenge" && this.map[j][i].type != "bosschallenge" && this.map[j][i].type != "planetarium" && this.map[j][i].type != "shop" && this.map[j][i].type != "curse" && this.map[j][i].type != "arcade" && this.map[j][i].type != "dice") {
@@ -429,6 +471,5 @@ export class Generator {
 // let generator = new Generator(4, false, false, false);
 // generator.generateMap();
 // generator.printMap();
-
 
 

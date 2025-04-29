@@ -255,7 +255,7 @@ export function runCore(gamemode) {
         } while (levelnum == 9); // Prevents level from being 9 as that makes womb 2 more common!
         curseLabyrinth = false;
         curseLost = false;
-        if (Math.random() < 0.3) {
+        if (Math.random() < 0.33) {
             if (Math.random() < 0.8 && (levelnum % 2 != 0 && levelnum < 9)) { // Only labyrinth if first floor of chapter
                 curseLabyrinth = true;
             } else {
@@ -269,8 +269,8 @@ export function runCore(gamemode) {
 
         stage = 0; // stage = 1 is room types, stage = 2 is rocks
         guesses = (
-            levelnum <= 6 ? startingGuesses :
-            levelnum <= 11 ? startingGuesses : // changed my mind again - womb above actually easy if youre skilled enough (lol)
+            levelnum <= 10 ? startingGuesses :
+            levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
             levelnum === 12 ? startingGuesses + 6 : // Void is nasty
             null); // Attempt at balance based on starting floor
         secretFound = false;
