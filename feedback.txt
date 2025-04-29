@@ -21,3 +21,13 @@ MOVE CODE TO CORE.JS AND MAKE MAIN AND ENDLESS JUST HAVE DIFFERENT FLAGS SET - P
 add a number to the secret roomle copy paste - note that sat 26th april was day 1
 
 labyrinth - will have to spawn normally with 1 less room in the calc, then add to the boss room in a random directional order (e.g check udlr or rdlu randomly ) - if none fit on the grid where there are no neighbouring rooms, then restart the whole level gen
+
+kofi html here if i ever wanna add it back properly with a reddit and github image at the bottom:
+<div id="kofiDiv">
+            <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#c9b09a', 'C0C21E7T74');kofiwidget2.draw();</script>           </div>
+            <style>
+              span.kofitext, .kofitext a {
+                color: #000 !important; /* black */
+              }
+            </style>
+          </div> 
