@@ -620,9 +620,12 @@ export function runCore(gamemode) {
         console.log(window.innerWidth * 0.85);
         console.log(screen.width)
         setTimeout(() => {
+            console.log(navigator.userAgent);
             if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                console.log("mobile");
                 setScaling(screen.width);
             } else {
+                console.log("desktop");
                 setScaling(window.innerWidth);
             }
             canvas.width = mapSize;
