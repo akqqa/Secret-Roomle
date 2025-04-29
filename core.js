@@ -614,43 +614,36 @@ export function runCore(gamemode) {
         }
     })
 
-    // const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    // if (isMobile) { 
-    //     if (screen.orientation?.addEventListener) {
-    //         screen.orientation.addEventListener("change", () => {
-    //             setTimeout(() => {
-    //                 setScaling();
-    //                 canvas.width = mapSize;
-    //                 canvas.height = mapSize;
-    //                 drawMap();
-    //             }, 800);
-    //         });
-    //     } else {
-    //         // Fallback if screen.orientation not available
-    //         window.addEventListener("resize", () => {
-    //             setScaling();
-    //             canvas.width = mapSize;
-    //             canvas.height = mapSize;
-    //             drawMap();
-    //         });
-    //     }
-    // } else {
-    //     // Desktop: handle resize normally
-    //     window.addEventListener("resize", () => {
-    //         setScaling();
-    //         canvas.width = mapSize;
-    //         canvas.height = mapSize;
-    //         drawMap();
-    //     });
-    // }
-
-    window.addEventListener("resize", () => {
-        setScaling();
-        canvas.width = mapSize;
-        canvas.height = mapSize;
-        drawMap();
-    });
+    if (isMobile) { 
+        if (screen.orientation?.addEventListener) {
+            screen.orientation.addEventListener("change", () => {
+                setTimeout(() => {
+                    setScaling();
+                    canvas.width = mapSize;
+                    canvas.height = mapSize;
+                    drawMap();
+                }, 200);
+            });
+        } else {
+            // Fallback if screen.orientation not available
+            window.addEventListener("resize", () => {
+                setScaling();
+                canvas.width = mapSize;
+                canvas.height = mapSize;
+                drawMap();
+            });
+        }
+    } else {
+        // Desktop: handle resize normally
+        window.addEventListener("resize", () => {
+            setScaling();
+            canvas.width = mapSize;
+            canvas.height = mapSize;
+            drawMap();
+        });
+    }
 
     // Attempt at mobile chrome app fix
     addEventListener("load", (event) => {
@@ -672,7 +665,7 @@ export function runCore(gamemode) {
     }
 
     function setScaling() {
-        visualSize = Math.ceil(Math.min(Math.min(screen.width,window.innerWidth) * 0.85, 616));
+        visualSize = Math.ceil(Math.min(screen.width * 0.85, 616));
         document.getElementById("gameCanvas").style.width = `${visualSize}px`;
         document.getElementById("gameCanvas").style.height = `${visualSize}px`;
         size = 2000; // Now scaled with css and ctx
