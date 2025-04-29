@@ -626,13 +626,13 @@ export function runCore(gamemode) {
     } else {
         let previousOrientation = false;
         addEventListener("resize", (event) => {
-            if (screen.orientation?.type !== previousOrientation) {
-                // Rotated
-                setScalingOrientation();
-                canvas.width = mapSize;
-                canvas.height = mapSize;
-                drawMap();
-            }
+            // if (screen.orientation?.type !== previousOrientation) {
+            //     // Rotated
+            //     setScalingOrientation();
+            //     canvas.width = mapSize;
+            //     canvas.height = mapSize;
+            //     drawMap();
+            // }
             // Rotated
             setScaling();
             canvas.width = mapSize;
