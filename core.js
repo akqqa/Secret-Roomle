@@ -624,7 +624,7 @@ export function runCore(gamemode) {
                     canvas.width = mapSize;
                     canvas.height = mapSize;
                     drawMap();
-                }, 100);
+                }, 300);
             });
         } else {
             // Fallback if screen.orientation not available
