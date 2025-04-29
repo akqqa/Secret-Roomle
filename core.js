@@ -614,16 +614,15 @@ export function runCore(gamemode) {
         }
     })
 
+    // On resize, if mobile then resize based on screen width (as innerwidth is weirrrdd on chrome mobile) otherwise use innerwidth on desktop
+    //  Caveat that on some phone models it seems screen.width is always the physical width - doesnt change on rotation. altho that could be due to the emulator. regardless, its better to be 
+    // too small (with zoom) than off screen. oh did I mention using screen.width fixes the zoom as it doesnt resize on zoom? yeah :) its not PERFECT but its a huge win imo.
     addEventListener("resize", (event) => {
-        console.log("resize event");
-        console.log(window.innerWidth);
-        console.log(window.innerWidth * 0.85);
-        console.log(screen.width)
         setTimeout(() => {
             console.log(navigator.userAgent);
             if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                 console.log("mobile");
-                setScaling(screen.width);
+                setScaling(screen.width); 
             } else {
                 console.log("desktop");
                 setScaling(window.innerWidth);
