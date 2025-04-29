@@ -614,8 +614,10 @@ export function runCore(gamemode) {
         }
     })
 
+    var lastWidth = window.innerWidth;
     addEventListener("resize", (event) => {
-        if (window.visualViewport?.scale !== 1) return;
+        if (window.visualViewport?.scale !== 1 && window.innerWidth) return;
+        lastWidth = window.innerWidth;
         setScaling();
         canvas.width = mapSize;
         canvas.height = mapSize;
