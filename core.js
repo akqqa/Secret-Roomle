@@ -615,8 +615,10 @@ export function runCore(gamemode) {
     })
 
     addEventListener("resize", (event) => {
-        document.getElementById("gameCanvas").style.width = window.innerWidth * 0.5;
-        document.getElementById("gameCanvas").style.height = window.innerWidth * 0.5;
+        console.log("resize event");
+        console.log(window.innerWidth);
+        console.log(window.innerWidth * 0.85);
+        console.log(screen.width)
         setScaling();
         canvas.width = mapSize;
         canvas.height = mapSize;
