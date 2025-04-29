@@ -619,14 +619,16 @@ export function runCore(gamemode) {
         console.log(window.innerWidth);
         console.log(window.innerWidth * 0.85);
         console.log(screen.width)
-        if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            setScaling(screen.width);
-        } else {
-            setScaling(window.innerWidth);
-        }
-        canvas.width = mapSize;
-        canvas.height = mapSize;
-        drawMap();
+        setTimeout(() => {
+            if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                setScaling(screen.width);
+            } else {
+                setScaling(window.innerWidth);
+            }
+            canvas.width = mapSize;
+            canvas.height = mapSize;
+            drawMap();
+        }, 50);
     });
 
     // Attempt at mobile chrome app fix
