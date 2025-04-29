@@ -645,14 +645,6 @@ export function runCore(gamemode) {
         });
     }
 
-
-    addEventListener("resize", (event) => {
-        setScaling();
-        canvas.width = mapSize;
-        canvas.height = mapSize;
-        drawMap();
-    });
-
     // Attempt at mobile chrome app fix
     addEventListener("load", (event) => {
         setTimeout(() => {
