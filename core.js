@@ -628,11 +628,16 @@ export function runCore(gamemode) {
         addEventListener("resize", (event) => {
             if (screen.orientation?.type !== previousOrientation) {
                 // Rotated
-                setScaling();
+                setScalingOrientation();
                 canvas.width = mapSize;
                 canvas.height = mapSize;
                 drawMap();
             }
+            // Rotated
+            setScaling();
+            canvas.width = mapSize;
+            canvas.height = mapSize;
+            drawMap();
             previousOrientation = screen.orientation?.type;
             
         });
@@ -669,6 +674,12 @@ export function runCore(gamemode) {
         rockSize = roomSize / 3;
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(size/visualSize, size/visualSize);
+    }
+
+    function setScalingOrientation() {
+        visualSize = Math.ceil(Math.min(window.innerHeight * 0.85, 616));
+        document.getElementById("gameCanvas").style.width = `${visualSize}px`;
+        document.getElementById("gameCanvas").style.height = `${visualSize}px`;
     }
 
     // Draw an image from the cache loaded when page loaded
