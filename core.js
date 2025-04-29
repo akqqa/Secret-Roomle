@@ -621,10 +621,8 @@ export function runCore(gamemode) {
         setTimeout(() => {
             console.log(navigator.userAgent);
             if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                console.log("mobile");
                 setScaling(screen.width); 
             } else {
-                console.log("desktop");
                 setScaling(window.innerWidth);
             }
             canvas.width = mapSize;
@@ -636,7 +634,11 @@ export function runCore(gamemode) {
     // Attempt at mobile chrome app fix
     addEventListener("load", (event) => {
         setTimeout(() => {
-            setScaling(window.innerWidth);
+            if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                setScaling(screen.width); 
+            } else {
+                setScaling(window.innerWidth);
+            }
             canvas.width = mapSize;
             canvas.height = mapSize;
             drawMap();
