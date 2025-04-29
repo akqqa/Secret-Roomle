@@ -614,6 +614,38 @@ export function runCore(gamemode) {
         }
     })
 
+    const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) { 
+        if (screen.orientation?.addEventListener) {
+            screen.orientation.addEventListener("change", () => {
+                setTimeout(() => {
+                    setScaling();
+                    canvas.width = mapSize;
+                    canvas.height = mapSize;
+                    drawMap();
+                }, 100);
+            });
+        } else {
+            // Fallback if screen.orientation not available
+            window.addEventListener("resize", () => {
+                setScaling();
+                canvas.width = mapSize;
+                canvas.height = mapSize;
+                drawMap();
+            });
+        }
+    } else {
+        // Desktop: handle resize normally
+        window.addEventListener("resize", () => {
+            setScaling();
+            canvas.width = mapSize;
+            canvas.height = mapSize;
+            drawMap();
+        });
+    }
+
+
     addEventListener("resize", (event) => {
         setScaling();
         canvas.width = mapSize;
