@@ -645,6 +645,13 @@ export function runCore(gamemode) {
         });
     }
 
+    // window.addEventListener("resize", () => {
+    //     setScaling();
+    //     canvas.width = mapSize;
+    //     canvas.height = mapSize;
+    //     drawMap();
+    // });
+
     // Attempt at mobile chrome app fix
     addEventListener("load", (event) => {
         setTimeout(() => {
@@ -665,7 +672,7 @@ export function runCore(gamemode) {
     }
 
     function setScaling() {
-        visualSize = Math.ceil(Math.min(screen.width * 0.85, 616));
+        visualSize = Math.ceil(Math.min(window.innerWidth * 0.85, 616));
         document.getElementById("gameCanvas").style.width = `${visualSize}px`;
         document.getElementById("gameCanvas").style.height = `${visualSize}px`;
         size = 2000; // Now scaled with css and ctx
