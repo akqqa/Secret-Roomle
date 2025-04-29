@@ -618,8 +618,6 @@ export function runCore(gamemode) {
         setScaling();
         canvas.width = mapSize;
         canvas.height = mapSize;
-        document.getElementById("gameCanvas").style.width = mapSize;
-        document.getElementById("gameCanvas").style.height = mapSize;
         drawMap();
     });
 
