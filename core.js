@@ -47,7 +47,11 @@ export function runCore(gamemode) {
     const ctx = canvas.getContext('2d');
     ctx.scale(size/visualSize, size/visualSize);
 
-    setScaling(window.innerWidth);
+    if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        setScaling(screen.width); 
+    } else {
+        setScaling(window.innerWidth);
+    }
     canvas.width = mapSize;
     canvas.height = mapSize;
 
