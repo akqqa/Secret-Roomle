@@ -591,16 +591,17 @@ export function runCore(gamemode) {
                     winOrLoss = "lost";
                 }
                 if (secretFound) {
-                    results += "Secret Room 🟩"
+                    results += "🟩 Secret Room"
                 } else {
-                    results += "Secret Room 🟥"
+                    results += "🟥 Secret Room"
                 }
                 if (supersecretFound) {
-                    results += "\nSuper Secret Room 🟩"
+                    results += "\n🟩 Super Secret Room "
                 } else {
-                    results += "\nSuper Secret Room 🟥"
+                    results += "\n🟥 Super Secret Room"
                 }
-                document.getElementById("gameOverText").textContent = `You ${winOrLoss} today's Secret Roomle! \n${results}\nYou had ${guesses} bomb(s) remaining.`;
+                results += `\n💣 ${guesses} bomb(s) remaining`
+                document.getElementById("gameOverText").textContent = `You ${winOrLoss} today's Secret Roomle! \n${results}`;
                 document.getElementById("gameOverModal").style.display = "block";
             }
 
