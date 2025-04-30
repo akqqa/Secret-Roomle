@@ -17,10 +17,15 @@ export function runCore(gamemode) {
     ]
 
     var bombSfx = new Audio("sfx/explosion.wav");
+    bombSfx.volume = 0.1;
     var secretRoomSfx = new Audio("sfx/secret.ogg");
+    secretRoomSfx.volume = 0.2;
     var winSfx = new Audio("sfx/specialist.mp3");
+    winSfx.volume = 0.2;
     var loseSfx = new Audio("sfx/lose.ogg");
+    loseSfx.volume = 0.2;
     var deathSfx = new Audio("sfx/death.wav");
+    deathSfx.volume = 0.2;
     var isMuted = false;
 
     const startingGuesses = 6;
