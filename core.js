@@ -124,7 +124,7 @@ export function runCore(gamemode) {
         setInterval(countdown, 1000);
     }
 
-    function initializeGamedata() {
+    function initializeGamedata(levelGuesses) {
         // Once game starts, load localstorage gamedata and load in the data if relevant
         // Get game data
         if (gamemode == "daily") {
@@ -138,7 +138,7 @@ export function runCore(gamemode) {
                     parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(); //+ localStorageDate.getUTCMinutes().toString();
                     parsedData.currentMap = null;
                     parsedData.currentProgress = {stage: 0,
-                                                guesses: startingGuesses,
+                                                guesses: levelGuesses,
                                                 secretFound: false,
                                                 supersecretFound: false,
                                                 attempts: 0,
@@ -168,7 +168,7 @@ export function runCore(gamemode) {
                     currentMap: null,
                     currentProgress: {
                         stage: 0,
-                        guesses: startingGuesses,
+                        guesses: levelGuesses,
                         secretFound: false,
                         supersecretFound: false,
                         attempts: 0,
@@ -281,7 +281,7 @@ export function runCore(gamemode) {
         lost = false;
         generator.generateMap();
 
-        initializeGamedata();
+        initializeGamedata(guesses);
 
         drawMap();
     }
@@ -437,20 +437,21 @@ export function runCore(gamemode) {
         let newSeed = newDate.getUTCDate().toString() + newDate.getUTCMonth().toString() + newDate.getUTCFullYear().toString();// + newDate.getUTCMinutes().toString();
         //let newSeed = seed + 1; // for testing regeneration
         if (seed != newSeed) {
-            // Update gamedata before changing seed
-            gamedata.lastPlayedDate = newSeed;
-            gamedata.currentMap = null,
-            gamedata.currentProgress = {
-                stage: 0,
-                guesses: startingGuesses,
-                secretFound: false,
-                supersecretFound: false,
-                attempts: 0,
-                gameover: false,
-                won: false,
-                lost: false
-            }
-            localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
+            
+            // // Update gamedata before changing seed - dont set the gamedata here, do it in the startgame!
+            // gamedata.lastPlayedDate = newSeed;
+            // gamedata.currentMap = null,
+            // gamedata.currentProgress = {
+            //     stage: 0,
+            //     guesses: startingGuesses,
+            //     secretFound: false,
+            //     supersecretFound: false,
+            //     attempts: 0,
+            //     gameover: false,
+            //     won: false,
+            //     lost: false
+            // }
+            // localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
 
             seed = newSeed
             Math.seedrandom(newSeed); 
