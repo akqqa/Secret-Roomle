@@ -39,8 +39,9 @@ export function runCore(gamemode) {
     let currentDate = new Date();
 
     let seed = null;
+    var seedIncrement = 0; // For debugging purposes set this to the number of days in the future you want the puzzle to be 
     if (gamemode == "daily") {
-        seed = currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString(); //+ currentDate.getUTCMinutes().toString();
+        seed = getPuzzleNumber();
         console.log(seed);
         Math.seedrandom(seed); 
     }
@@ -123,6 +124,7 @@ export function runCore(gamemode) {
         settingsdata = {isMuted: false};
     }
 
+    console.log("startinggame")
     startGame();
     if (gamemode == "daily") {
         countdown();
@@ -135,12 +137,11 @@ export function runCore(gamemode) {
         if (gamemode == "daily") {
 
             gamedata = localStorage.getItem("secretRoomleData");
-            let localStorageDate = new Date();
             if (gamedata) {
                 let parsedData = JSON.parse(gamedata);
                 // If no longer the data in saved data, replace it with fresh data - FORGOT TO RESET THE MAP OOPS
-                if ( localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() /*+ localStorageDate.getUTCMinutes().toString() */!= parsedData.lastPlayedDate) {
-                    parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(); //+ localStorageDate.getUTCMinutes().toString();
+                if ( getPuzzleNumber()!= parsedData.lastPlayedDate) {
+                    parsedData.lastPlayedDate = getPuzzleNumber();
                     parsedData.currentMap = null;
                     parsedData.currentProgress = {stage: 0,
                                                 guesses: levelGuesses,
@@ -169,7 +170,7 @@ export function runCore(gamemode) {
                 gamedata = parsedData;
             } else {
                 gamedata = {
-                    lastPlayedDate: localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(), // + localStorageDate.getUTCMinutes().toString(),
+                    lastPlayedDate: getPuzzleNumber(),
                     currentMap: null,
                     currentProgress: {
                         stage: 0,
@@ -287,6 +288,8 @@ export function runCore(gamemode) {
         generator.generateMap();
 
         initializeGamedata(guesses);
+        console.log("guesses");
+        console.log(guesses);
 
         drawMap();
     }
@@ -439,7 +442,7 @@ export function runCore(gamemode) {
 
         // Logic for changing seed and restarting game
         let newDate = new Date();
-        let newSeed = newDate.getUTCDate().toString() + newDate.getUTCMonth().toString() + newDate.getUTCFullYear().toString();// + newDate.getUTCMinutes().toString();
+        let newSeed = getPuzzleNumber();
         //let newSeed = seed + 1; // for testing regeneration
         if (seed != newSeed) {
             
@@ -600,8 +603,15 @@ export function runCore(gamemode) {
                 } else {
                     results += "\n🟥 Super Secret Room"
                 }
-                results += `\n💣 ${guesses} bomb(s) remaining`
-                document.getElementById("gameOverText").textContent = `You ${winOrLoss} today's Secret Roomle! \n${results}`;
+                let totalBombs = (
+                    levelnum <= 10 ? startingGuesses :
+                    levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
+                    levelnum === 12 ? startingGuesses + 6 : // Void is nasty
+                    null); // Attempt at balance based on starting floor
+                results += `\n💣 ${guesses}/${totalBombs} bomb(s) remaining`
+
+                let roomleNumber = getPuzzleNumber();
+                document.getElementById("gameOverText").textContent = `You ${winOrLoss} Secret Roomle #${roomleNumber} \n${results}`;
                 document.getElementById("gameOverModal").style.display = "block";
             }
 
@@ -700,13 +710,16 @@ export function runCore(gamemode) {
         })
     }
 
-    if (gamemode == "endless") {
-        addEventListener("keydown", (event) => {
-            if (event.key == "r") {
-                startGame();
-            }
-        });
-    }
+    addEventListener("keydown", (event) => {
+        if (event.key == "r" && gamemode == "endless") {
+            startGame();
+        }
+        if (event.key == "p" && gamemode == "daily" && false) {
+            console.log("debug")
+            // Debug option for incrementing seed
+            seedIncrement += 1;
+        }
+    });
 
     // Mute button functionality
     document.getElementById("muteButton").addEventListener("click", (event) => {
@@ -732,6 +745,18 @@ export function runCore(gamemode) {
             settingsdata.isMuted = isMuted;
         }
         localStorage.setItem("settingsData", JSON.stringify(settingsdata));
+    }
+
+    function getPuzzleNumber() {
+        let startDate = new Date(Date.UTC(2025,3,26));
+        let today = new Date();
+        let todayUTC = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+
+        let timeDiff = todayUTC - startDate;
+        let diffDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        diffDays += seedIncrement;
+
+        return String(diffDays).padStart(3, '0');
     }
 
 }
