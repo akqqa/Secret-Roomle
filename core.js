@@ -39,12 +39,12 @@ export function runCore(gamemode) {
     let currentDate = new Date();
 
     let seed = null;
+    var seedIncrement = 0; // For debugging purposes set this to the number of days in the future you want the puzzle to be 
     if (gamemode == "daily") {
-        seed = getPuzzleNumber(); //currentDate.getUTCDate().toString() + currentDate.getUTCMonth().toString() + currentDate.getUTCFullYear().toString(); //+ currentDate.getUTCMinutes().toString();
+        seed = getPuzzleNumber();
         console.log(seed);
         Math.seedrandom(seed); 
     }
-    var seedIncrement = 0;
 
 
     let visualSize = 1;
@@ -124,6 +124,7 @@ export function runCore(gamemode) {
         settingsdata = {isMuted: false};
     }
 
+    console.log("startinggame")
     startGame();
     if (gamemode == "daily") {
         countdown();
@@ -136,12 +137,11 @@ export function runCore(gamemode) {
         if (gamemode == "daily") {
 
             gamedata = localStorage.getItem("secretRoomleData");
-            let localStorageDate = new Date();
             if (gamedata) {
                 let parsedData = JSON.parse(gamedata);
                 // If no longer the data in saved data, replace it with fresh data - FORGOT TO RESET THE MAP OOPS
-                if ( localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString() /*+ localStorageDate.getUTCMinutes().toString() */!= parsedData.lastPlayedDate) {
-                    parsedData.lastPlayedDate = localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(); //+ localStorageDate.getUTCMinutes().toString();
+                if ( getPuzzleNumber()!= parsedData.lastPlayedDate) {
+                    parsedData.lastPlayedDate = getPuzzleNumber();
                     parsedData.currentMap = null;
                     parsedData.currentProgress = {stage: 0,
                                                 guesses: levelGuesses,
@@ -170,7 +170,7 @@ export function runCore(gamemode) {
                 gamedata = parsedData;
             } else {
                 gamedata = {
-                    lastPlayedDate: localStorageDate.getUTCDate().toString() + localStorageDate.getUTCMonth().toString() + localStorageDate.getUTCFullYear().toString(), // + localStorageDate.getUTCMinutes().toString(),
+                    lastPlayedDate: getPuzzleNumber(),
                     currentMap: null,
                     currentProgress: {
                         stage: 0,
@@ -288,6 +288,8 @@ export function runCore(gamemode) {
         generator.generateMap();
 
         initializeGamedata(guesses);
+        console.log("guesses");
+        console.log(guesses);
 
         drawMap();
     }
@@ -440,7 +442,7 @@ export function runCore(gamemode) {
 
         // Logic for changing seed and restarting game
         let newDate = new Date();
-        let newSeed = getPuzzleNumber();//newDate.getUTCDate().toString() + newDate.getUTCMonth().toString() + newDate.getUTCFullYear().toString();// + newDate.getUTCMinutes().toString();
+        let newSeed = getPuzzleNumber();
         //let newSeed = seed + 1; // for testing regeneration
         if (seed != newSeed) {
             
