@@ -607,7 +607,13 @@ export function runCore(gamemode) {
                     levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
                     levelnum === 12 ? startingGuesses + 6 : // Void is nasty
                     null); // Attempt at balance based on starting floor
-                results += `\n💣 ${guesses}/${totalBombs} bomb(s) remaining`
+                let bombPerformance = (
+                    won == false ? "🟥":
+                    guesses/totalBombs < 1/3 ? "🟧" :
+                    guesses/totalBombs < 2/3 ? "🟨":
+                    guesses/totalBombs <= 1 ? "🟩": 
+                    null); // Attempt at balance based on starting floor
+                results += `\n${bombPerformance} ${guesses}/${totalBombs} bomb(s) remaining`
 
                 let roomleNumber = getPuzzleNumber();
                 document.getElementById("gameOverText").textContent = `You ${winOrLoss} Secret Roomle #${roomleNumber} \n${results}`;
