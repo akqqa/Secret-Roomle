@@ -42,7 +42,6 @@ export function runCore(gamemode) {
     var seedIncrement = 0; // For debugging purposes set this to the number of days in the future you want the puzzle to be 
     if (gamemode == "daily") {
         seed = getPuzzleNumber();
-        console.log(seed);
         Math.seedrandom(seed); 
     }
 
@@ -124,7 +123,6 @@ export function runCore(gamemode) {
         settingsdata = {isMuted: false};
     }
 
-    console.log("startinggame")
     startGame();
     if (gamemode == "daily") {
         countdown();
@@ -288,8 +286,6 @@ export function runCore(gamemode) {
         generator.generateMap();
 
         initializeGamedata(guesses);
-        console.log("guesses");
-        console.log(guesses);
 
         drawMap();
     }
@@ -493,6 +489,9 @@ export function runCore(gamemode) {
             let transformedY = (event.offsetY - transform.f) * (size/visualSize);
             let y = Math.floor(transformedY/roomSize) - 1;
             let x = Math.floor(transformedX/roomSize) - 1;
+            if (x < 0 || x > 12 || y < 0 || y > 12) { // Cant place bombs out of 13x13 grid
+                return;
+            }
             let room = generator.map[y][x];
             // If room is undefined, set it to a wrong room
             if (!room) {
@@ -642,7 +641,6 @@ export function runCore(gamemode) {
     // too small (with zoom) than off screen. oh did I mention using screen.width fixes the zoom as it doesnt resize on zoom? yeah :) its not PERFECT but its a huge win imo.
     addEventListener("resize", (event) => {
         setTimeout(() => {
-            console.log(navigator.userAgent);
             if (/iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                 setScaling(screen.width); 
             } else {
