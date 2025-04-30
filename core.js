@@ -594,7 +594,12 @@ export function runCore(gamemode) {
                 } else {
                     results += "\n🟥 Super Secret Room"
                 }
-                results += `\n💣 ${guesses} bomb(s) remaining`
+                let totalBombs = (
+                    levelnum <= 10 ? startingGuesses :
+                    levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
+                    levelnum === 12 ? startingGuesses + 6 : // Void is nasty
+                    null); // Attempt at balance based on starting floor
+                results += `\n💣 ${guesses}/${totalBombs} bomb(s) remaining`
                 document.getElementById("gameOverText").textContent = `You ${winOrLoss} today's Secret Roomle! \n${results}`;
                 document.getElementById("gameOverModal").style.display = "block";
             }
