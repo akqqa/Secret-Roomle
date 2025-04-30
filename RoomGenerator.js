@@ -366,6 +366,9 @@ export class Generator {
                 } 
                 numNeighbours += 1;
             });
+            if (this.stage == 11 && candidate.posY == 5 && candidate.posX == 6) { // ensures no secret room can be placed where mega satan is
+                invalidFlag = true;
+            }
             if (invalidFlag) {
                 candidate.secretWeight = 0;
             } else if (numNeighbours == 2) {
