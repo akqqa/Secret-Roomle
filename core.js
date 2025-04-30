@@ -275,7 +275,7 @@ export function runCore(gamemode) {
         guesses = (
             levelnum <= 10 ? startingGuesses :
             levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
-            levelnum === 12 ? startingGuesses + 6 : // Void is nasty
+            levelnum === 12 ? startingGuesses + 4 : // Void is nasty
             null); // Attempt at balance based on starting floor
         secretFound = false;
         supersecretFound = false;
@@ -605,7 +605,7 @@ export function runCore(gamemode) {
                 let totalBombs = (
                     levelnum <= 10 ? startingGuesses :
                     levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
-                    levelnum === 12 ? startingGuesses + 6 : // Void is nasty
+                    levelnum === 12 ? startingGuesses + 4 : // Void is nasty
                     null); // Attempt at balance based on starting floor
                 results += `\n💣 ${guesses}/${totalBombs} bomb(s) remaining`
 
