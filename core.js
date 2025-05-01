@@ -675,7 +675,8 @@ export function runCore(gamemode) {
     if (gamemode == "daily") {
         document.getElementById("copyButton").addEventListener("click", (event) => {
             let text = document.getElementById('gameOverText').innerHTML;
-            text = text.replace(/\bYou\b/g, 'I') + "\nhttps://roomle.net";
+            text = text.split(" ").slice(2).join(" ");
+            text = text + "\nhttps://roomle.net/";
             text = text.replace(/<br\s*\/?>/gi, '\n');
             navigator.clipboard.writeText(text);
         })
