@@ -15,6 +15,7 @@ add a number to the secret roomle copy paste - note that sat 26th april was day 
 weird potential bug not allowing players to plcae bombs in certain spots? may just be device issue
 music doesnt loop lol
 
+BALANCE - rocks before rooms should make a bit harder, currently everyone is getting voids easily in 12. i can consistneyl get it all. but if its skill based should it be easy? its tricky. ask for feedback in comments abt difficulty on next post?
 
 maybe one day fix the landscape being too small on iphones. maybe. one day. its so insignificant and its so much work to get it done. phones are really inconsistent 
 

@@ -40,6 +40,7 @@ export class Generator {
     generateNumRooms() {
         // Create number of rooms on stage
         let numRooms = Math.min(21, Math.floor(Math.random(1,2)*3) + 5 + Math.floor(this.stage * (10 / 3)));
+
         //let numRooms = Math.min(24, Math.floor(Math.random()*8) + 5 + Math.floor(this.stage * 3.35));
         if (this.labyrinth) {
             numRooms = Math.min(45, Math.floor(numRooms * 1.8)) - 1; // Minus one because gonna add a boss room to the boss room!
@@ -54,6 +55,7 @@ export class Generator {
         if (this.hard) {
             numRooms += 2 + Math.floor(Math.random(0,1)*2);
         }
+
         return numRooms;
     }
 
@@ -149,6 +151,7 @@ export class Generator {
                         return;
                     }
                 }
+
                 // Check 3: Rooms left?
                 if (roomsRemaining == 0) {
                     return;
@@ -166,6 +169,7 @@ export class Generator {
                 roomQueue.push(neighbour);
                 roomsRemaining -= 1;
                 roomCounter += 1;
+
             });
             // Blog post says a room is a dead end if it creates no neighbours, but is this true? say one doesnt create any, but later on it loops around and tries to put a room there from the other side. it can do this because no more than 2 already filled neighbours (does allow some loops see void). Therefore must wait till end, manually calculate dead ends, create list, sort by manhattan distance to start room (manhattan? no.. cause could loop around . hm. is there a way of doing it so they loop et it writes dead ends as it goes? AH write them as it goes then do a final pass of them and remove any that dont meet the criteria :) tht keeps it in order !!) - actually basically unnecceesary except for void so do it anyway lol
             if (roomCounter == 0) {
@@ -230,7 +234,7 @@ export class Generator {
                 let secondBossFound = false;
                 let candidateNeighbourCounter = 0;
                 // Get all neighbours to the boss (and search in random order)
-                bossNeighbours = bossNeighbours.sort(() => Math.random() - 0.5); // thanks https://medium.com/@priyanshuahir01/const-shuffledarray-gamearray-sort-math-random-0-5-3f0f30bb38ba
+                bossNeighbours = shuffleArray(bossNeighbours); // thanks https://medium.com/@priyanshuahir01/const-shuffledarray-gamearray-sort-math-random-0-5-3f0f30bb38ba
                 bossNeighbours.forEach(bossCandidate => {
                     // For each possible second boss, get all of its neighbours
                     let candidateNeighbours = this.generateNeighbours(bossCandidate);
@@ -469,6 +473,15 @@ export class Generator {
         }
     }
  
+}
+
+function shuffleArray(array) {
+    const a = array.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
 }
 
 // let generator = new Generator(4, false, false, false);
