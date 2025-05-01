@@ -147,7 +147,7 @@ export class Generator {
                     if (this.stage != 12 && !this.labyrinth) { //   from manual testing looks like only void allows loops - labyrinth does also but rarer¬!!
                         return;
                     }
-                    if (neighbour > 2 || (this.stage == 12 && Math.random() < 0.9) || (this.labyrinth && Math.random() < 0.98)) {
+                    if (neighbour > 2 || (this.stage == 12 && Math.random() < 0.93) || (this.labyrinth && Math.random() < 0.98)) {
                         return;
                     }
                 }

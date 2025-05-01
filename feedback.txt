@@ -17,6 +17,15 @@ music doesnt loop lol
 
 BALANCE - rocks before rooms should make a bit harder, currently everyone is getting voids easily in 12. i can consistneyl get it all. but if its skill based should it be easy? its tricky. ask for feedback in comments abt difficulty on next post?
 
+
+considering how hard ultra secrets will be, might be worth it to just make it a separate mode, with red keys and stuff.
+daily mode
+ultra daily mode
+and then endless, where you can just toggle between modes
+actually, could probably just add the toggle and make it switch between "daily" and "ultra daily", and redraw the map on the main screen. hm. think if thats possible
+should generate a diff map ont he same floor and curse and show both secret rooms as to now reveal info abt the regulra daily
+
+
 maybe one day fix the landscape being too small on iphones. maybe. one day. its so insignificant and its so much work to get it done. phones are really inconsistent 
 
 <div id="kofiDiv">
