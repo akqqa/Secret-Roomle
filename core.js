@@ -275,7 +275,7 @@ export function runCore(gamemode) {
         guesses = (
             levelnum <= 10 ? startingGuesses :
             levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
-            levelnum === 12 ? startingGuesses + 6 : // Void is nasty
+            levelnum === 12 ? startingGuesses + 4 : // Void is nasty
             null); // Attempt at balance based on starting floor
         secretFound = false;
         supersecretFound = false;
@@ -605,14 +605,22 @@ export function runCore(gamemode) {
                 let totalBombs = (
                     levelnum <= 10 ? startingGuesses :
                     levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
-                    levelnum === 12 ? startingGuesses + 6 : // Void is nasty
+                    levelnum === 12 ? startingGuesses + 4 : // Void is nasty
                     null); // Attempt at balance based on starting floor
                 let bombPerformance = (
                     won == false ? "🟥":
-                    guesses/totalBombs < 1/3 ? "🟧" :
-                    guesses/totalBombs < 2/3 ? "🟨":
-                    guesses/totalBombs <= 1 ? "🟩": 
-                    null); // Attempt at balance based on starting floor
+                    levelnum == 12 && guesses <= 2 ? "🟧" :
+                    levelnum == 12 && guesses <= 5 ? "🟨" :
+                    levelnum == 12 && guesses <= 10 ? "🟩" :
+                    levelnum == 11 && guesses <= 1 ? "🟧" :
+                    levelnum == 11 && guesses <= 4 ? "🟨" :
+                    levelnum == 11 && guesses <= 8 ? "🟩" :
+                    levelnum <= 10 && guesses <= 0 ? "🟧" :
+                    levelnum <= 10 && guesses <= 2 ? "🟨" :
+                    levelnum <= 10 && guesses <= 4 ? "🟩" :
+
+                    null); // Attempt at balance based on starting floor - now hard coded to give a roughly even spread for each floor!
+                    // Spread for normal (6 guesses) 2 green 2 yellow 1 orange, stage 10 (8 guesses) is 2 green 3 yellow 2 orange, stage 12 (10 guesses) is 3 green 3 yellow 3 orange!
                 results += `\n${bombPerformance} ${guesses}/${totalBombs} bomb(s) remaining`
 
                 let roomleNumber = getPuzzleNumber();
@@ -675,7 +683,8 @@ export function runCore(gamemode) {
     if (gamemode == "daily") {
         document.getElementById("copyButton").addEventListener("click", (event) => {
             let text = document.getElementById('gameOverText').innerHTML;
-            text = text.replace(/\bYou\b/g, 'I') + "\nhttps://roomle.net";
+            text = text.split(" ").slice(2).join(" ");
+            text = text + "\nhttps://roomle.net/";
             text = text.replace(/<br\s*\/?>/gi, '\n');
             navigator.clipboard.writeText(text);
         })
