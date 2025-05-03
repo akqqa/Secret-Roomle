@@ -19,6 +19,15 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1312088545912422"
      crossorigin="anonymous"></script>
     <div id="outerDiv"> <!-- Div to get everything vertically in the center  -->
+      <div id="pollModal" class="modal-2">
+        <div class="modal-content-2" style="margin-top: 30%";>
+          <span class="close">&times;</span>
+          <h2 style="color:white;font-weight: normal;">Message</h2>
+          <p>Please fill out the following poll for feedback on the direction of Secret Roomle!</p>
+          <a href="https://strawpoll.com/NMnQN9DpBg6">https://strawpoll.com/NMnQN9DpBg6</a>
+          <p>Thank you for your continued support! With your feedback I can make the game the best it can be : )</p>
+        </div>
+      </div>
       <div id="howToPlayModal" class="modal">
         <div class="modal-content">
           <span class="close">&times;</span>
@@ -125,6 +134,7 @@
       var modal1 = document.getElementById("howToPlayModal");
       var modal2 = document.getElementById("aboutModal");
       var modal3 = document.getElementById("gameOverModal");
+      var modal4 = document.getElementById("pollModal");
       // Get the button that opens the modal
       var btn1 = document.getElementById("howToPlayButton");
       var btn2 = document.getElementById("aboutButton");
@@ -132,6 +142,7 @@
       var span1 = modal1.getElementsByClassName("close")[0];
       var span2 = modal2.getElementsByClassName("close")[0];
       var span3 = modal3.getElementsByClassName("close")[0];
+      var span4 = modal4.getElementsByClassName("close")[0];
       const scrollTarget = window.innerHeight * 0;
       // When the user clicks the button, open the modal 
       btn1.onclick = function() {
@@ -153,6 +164,10 @@
           });
         }
       }
+
+      window.onload = function () {
+        document.getElementById('pollModal').style.display = 'block';
+      };
       
       // When the user clicks on <span> (x), close the modal
       span1.onclick = function() {
@@ -164,6 +179,9 @@
       span3.onclick = function() {
         modal3.style.display = "none";
       }
+      span4.onclick = function() {
+        modal4.style.display = "none";
+      }
       
       // When the user clicks anywhere outside of the modal, close it
       window.onclick = function(event) {
@@ -172,6 +190,9 @@
         }
         if (event.target == modal2) {
           modal2.style.display = "none";
+        }
+        if (event.target == modal4) {
+          modal4.style.display = "none";
         }
       }
       </script>
