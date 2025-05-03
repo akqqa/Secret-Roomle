@@ -16,6 +16,8 @@ export function runCore(gamemode) {
         ["Void"]
     ]
 
+    var debugmode = true;
+
     var bombSfx = new Audio("sfx/explosion.wav");
     bombSfx.volume = 0.1;
     var secretRoomSfx = new Audio("sfx/secret.ogg");
@@ -66,7 +68,7 @@ export function runCore(gamemode) {
     const imageNames = ["emptyRoom", "bossRoom", "shopRoom", "itemRoom", "secretRoom", 
         "superSecretRoom", "planetariumRoom", "diceRoom", "sacrificeRoom", "libraryRoom", 
         "curseRoom", "minibossRoom", "challengeRoom", "bossChallengeRoom", "arcadeRoom", 
-        "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb", "startRoom"];
+        "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb", "startRoom", "redRoom", "blueRoom", "ultraSecretRoom"];
 
     function cacheImages() {
         const promises = imageNames.map(name => {
@@ -337,6 +339,8 @@ export function runCore(gamemode) {
                     }
                 }
 
+ 
+
                 if (stage == 0) {
                     if (room) {
                         if (room.type == "wrong") {
@@ -347,6 +351,12 @@ export function runCore(gamemode) {
                             drawCachedImage("secretRoom", x, y, roomSize, roomSize);
                         } else if (room.type == "supersecret" && !room.hidden) {
                             drawCachedImage("superSecretRoom", x, y, roomSize, roomSize);
+                        } else if (room.type == "red" && debugmode) { //DEBUG
+                            drawCachedImage("redRoom", x, y, roomSize, roomSize);
+                        } else if (room.type == "blue" && debugmode) { //DEBUG
+                            drawCachedImage("blueRoom", x, y, roomSize, roomSize);
+                        } else if (room.type == "ultrasecret" && debugmode) { //DEBUG
+                            drawCachedImage("ultraSecretRoom", x, y, roomSize, roomSize);
                         } else if (!room.hidden) {
                             drawCachedImage("emptyRoom", x, y, roomSize, roomSize);
                         }
@@ -391,6 +401,12 @@ export function runCore(gamemode) {
                             drawCachedImage("vaultRoom", x, y, roomSize, roomSize);
                         } else if (room.type == "bedroom" && !room.hidden) {
                             drawCachedImage("bedroomRoom", x, y, roomSize, roomSize);
+                        } else if (room.type == "red" && debugmode) { //DEBUG
+                            drawCachedImage("redRoom", x, y, roomSize, roomSize);
+                        } else if (room.type == "blue" && debugmode) { //DEBUG
+                            drawCachedImage("blueRoom", x, y, roomSize, roomSize);
+                        } else if (room.type == "ultrasecret" && debugmode) { //DEBUG
+                            drawCachedImage("ultraSecretRoom", x, y, roomSize, roomSize);
                         } else if (!room.hidden) { 
                             drawCachedImage("emptyRoom", x, y, roomSize, roomSize); 
                         }
@@ -750,7 +766,7 @@ export function runCore(gamemode) {
         if (event.key == "r" && gamemode == "endless") {
             startGame();
         }
-        if (event.key == "p" && gamemode == "daily" && false) {
+        if (event.key == "p" && gamemode == "daily" && true) {
             console.log("debug")
             // Debug option for incrementing seed
             seedIncrement += 1;

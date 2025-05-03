@@ -258,6 +258,17 @@ export class Generator {
             break;
         }
 
+        this.placeSpecialRooms();
+
+        this.placeSecretRoom();
+
+        this.placeUltraSecretRoom();
+
+        this.placeRocks();
+        
+    }
+
+    placeSpecialRooms() {
         // Now a valid layout has been generated and boss rooms placed, place rooms in dead ends
         let supersecret = this.deadEndQueue.pop();
         supersecret.type = "supersecret";
@@ -340,11 +351,9 @@ export class Generator {
                 }
             }
         }
+    }
 
-        console.log("stage:")
-        console.log(this.stage);
-
-
+    placeSecretRoom() {
         // Place the secret room.
         // 1. loop through each undefined and create a room for it
         // 2. assign each room a weight based on number of neighbours that are not candidates, or boss rooms, or secret rooms (if boss or secret room, weight = 0)
@@ -402,41 +411,128 @@ export class Generator {
         bestCandidate.type = "secret";
         bestCandidate.hidden = true;
         this.map[bestCandidate.posY][bestCandidate.posX] = bestCandidate;
+    }
 
-        // Final step - generate rock positions for rooms - to inform the player more about where the secret rooms could be 
-        // Impossible to get accurate odds so just do 50/50 and see how it feels from there lol
-        // make it so if rock generates on one side, much more liekly to alkso geenrate on opposite side?
-        // CURRENT IMPLEMENTATION is biased as always goes in order. to fix, randomise order rocks are populated :)
-        // Its actually basically good enough now - dont fix what aint broke
+    // method: spawn red rooms in all free adjacent spaces to rooms
+    // iterate through all red rooms. if any are adjacent to secret rooms, boss rooms, or curse rooms, delete them
+    // iterate through all spots that are adjacent to an existing red room.
+    //     for each spot iterate its red room neighbours
+    //         for each neighbour, add to a unique map the coordinate pairs of every regular room adjacent to it (non red)
+    //     get the count of the map. this gives the number of unqiue roosm connecting to. weight this spot accordingly
+    // select from the weighted list and place accordingly
+    // delete all red rooms except for the ones adjacent ! for rock logic!
+    // WANT TO RETURN IF IT WAS SUCCESSFUL OR NOT IN CASE LOOP SHOULD B RESTARTED
+    placeUltraSecretRoom() {
+        // Welcome to for loop hell my friends
+        // Loop over all spaces on the map
+        for(let i = 0; i < 13; i++) {
+            for(let j = 0; j < 13; j++) {
+                // if undefined, create a room here, generate neighbours, if neighbours list contains a room, place red room here. if neighbours list contains boss, curse or secret, dont place here.
+                if (!this.map[j][i]) {
+                    let redRoomCandidate = new Room(j, i);
+                    let redRoomCandidateNeighbours = this.findNeighbours(redRoomCandidate);
+                    let valid = true;
+                    let redCounter = 0
+                    let blue = false;
+                    if (redRoomCandidateNeighbours.length > 0) {
+                        redRoomCandidateNeighbours.forEach(redRoomCandidateNeighbour => {
+                            if (redRoomCandidateNeighbour.type == "boss" || redRoomCandidateNeighbour.type == "curse" || redRoomCandidateNeighbour.type == "secret" || redRoomCandidateNeighbour.type == "supersecret") {
+                                blue = true;
+                            }
+                            // checking that at least one neighbour isnt also a red room!
+                            if (redRoomCandidateNeighbour.type == "red" || redRoomCandidateNeighbour.type == "blue") {
+                                redCounter +=1;
+                            }
+                        });
+                    } else {
+                        valid = false;
+                    }
+                    if (redCounter == redRoomCandidateNeighbours.length) {
+                        valid = false;
+                    }
+                    if (valid) {
+                        if (blue) {
+                            redRoomCandidate.type = "blue";
+                        } else {
+                            redRoomCandidate.type = "red";
+                        }
+                        redRoomCandidate.hidden = true;
+                        this.map[j][i] = redRoomCandidate;
+                    }
+                }
+            }
+        }
+        
+        // Now that red and blue rooms are placed, go through all rooms and if a red room neighbour +  doesnt touch any non-red rooms , add to ultraCandidates list
+        let ultraCandidates = [];
+        for(let i = 0; i < 13; i++) {
+            for(let j = 0; j < 13; j++) {
+                if (this.map[j][i]) {
+                    continue;
+                }
+                let ultraCandidate = new Room(j, i);
+                ultraCandidate.type = "ultrasecret";
+                ultraCandidate.hidden = true;
+                let ultraCandidateNeighbours = this.findNeighbours(ultraCandidate);
+                if (ultraCandidateNeighbours.length == 0) {
+                    continue;
+                }
+                let valid = true;
+                ultraCandidateNeighbours.forEach(ultraCandidateNeighbour => {
+                    if (ultraCandidateNeighbour.type != "red") {
+                        valid = false;
+                    } 
+                });
+                if (valid) {
+                    ultraCandidates.push(ultraCandidate);
+                }
+            }
+        }        
+
+        // ultraCandidates.forEach(ultraCandidate => {
+        //     this.map[ultraCandidate.posY][ultraCandidate.posX] = ultraCandidate;
+        // });
+
+
+
+    }
+
+    // Final step - generate rock positions for rooms - to inform the player more about where the secret rooms could be 
+    // Impossible to get accurate odds so just do 50/50 and see how it feels from there lol
+    // make it so if rock generates on one side, much more liekly to alkso geenrate on opposite side?
+    // CURRENT IMPLEMENTATION is biased as always goes in order. to fix, randomise order rocks are populated :)
+    // Its actually basically good enough now - dont fix what aint broke
+    placeRocks() {
         let rockOddsAdjusted = rockOdds;
         if (this.stage == 11) {
             rockOddsAdjusted = 0; // No rocks on chest or dark room!
         }
+        // NEEDS TO BE ADJUSTED - EXISTING RED ROOMS SHOULDNT BE BLOCKED
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
-                if (this.map[j][i] && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "boss" && this.map[j][i].type != "start" && this.map[j][i].type != "sacrifice" && this.map[j][i].type != "challenge" && this.map[j][i].type != "bosschallenge" && this.map[j][i].type != "planetarium" && this.map[j][i].type != "shop" && this.map[j][i].type != "curse" && this.map[j][i].type != "arcade" && this.map[j][i].type != "dice") {
+                if (this.map[j][i] && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "ultrasecret" && this.map[j][i].type != "red" && this.map[j][i].type != "blue" && this.map[j][i].type != "boss" && this.map[j][i].type != "start" && this.map[j][i].type != "sacrifice" && this.map[j][i].type != "challenge" && this.map[j][i].type != "bosschallenge" && this.map[j][i].type != "planetarium" && this.map[j][i].type != "shop" && this.map[j][i].type != "curse" && this.map[j][i].type != "arcade" && this.map[j][i].type != "dice") {
                     if (this.map[j][i].type == "item") {
                         rockOddsAdjusted = rockOdds / 3;
                     }
-                    if (j > 0 && !this.map[j-1][i]) {
+                    if (j > 0 && (!this.map[j-1][i] || this.map[j-1][i].type == "blue" || this.map[j-1][i].type == "red" )) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[0] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    if (j < 12 && !this.map[j+1][i]) {
+                    if (j < 12 && (!this.map[j+1][i] || this.map[j+1][i].type == "blue" || this.map[j+1][i].type == "red" )) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[1] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    if (i > 0 && !this.map[j][i-1]) {
+                    if (i > 0 && (!this.map[j][i-1] || this.map[j][i-1].type == "blue" || this.map[j][i-1].type == "red" )) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[2] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    if (i < 12 && !this.map[j][i+1]) {
+                    if (i < 12 && (!this.map[j][i+1] || this.map[j][i+1].type == "blue" || this.map[j][i+1].type == "red" )) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[3] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
@@ -445,7 +541,6 @@ export class Generator {
                 }
             }
         }
-        
     }
 
     printMap() {
