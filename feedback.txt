@@ -78,3 +78,17 @@ then once its alllll done, add a toggle in endless for "true generation" that al
 
 FIX WINSTREAK - SHOULD RESET IF YOU MISS A DAY!! EVERY REFRESH AND PAGE LOAD CHECK IF LAST WIN WAS OVER A DAY AGO 
 ^THEREFRE NEED A LAST WON COUNTER
+ADD A TIMER!! - this is super easy. on page load if no timer saved for today, immediately start timer. if timer saved for today continue from that. (this is done in initialize auto called from startgame). timer method checks if gameover and if so dont increment . display it as results !
+
+goddamn efboe had a genius idea of going up each floor every day untila  fail, giving a wordle style grid. fml thats good.
+but its just so much effort and ultra and everything is already too much. idik
+but its such a good damn idea
+Secret Roomle #006
+I reached Womb 2 with 2 bombs remaining!
+https://roomle.next
+ughhh
+
+
+honestly. once you get rid of the worry about it being popular or liekd etc. the idea of it being a whole thing is fun
+implement ultra secret rooms first
+then, rework the game logic so that in daily mode, after a floor is beaten, 
