@@ -91,4 +91,20 @@ ughhh
 
 honestly. once you get rid of the worry about it being popular or liekd etc. the idea of it being a whole thing is fun
 implement ultra secret rooms first
-then, rework the game logic so that in daily mode, after a floor is beaten, 
+then, rework the game logic so that in daily mode, after a floor is beaten, it starts the game with a new map
+^ when the page is loaded, it generates 11 floors for the whole day based on the seed.
+when the player quits, it saves the map and stats as normal, as well as the levelnum
+when the player returns it puts the map in, and since it knows the level num if the player wins that floor, can just serve the next levelnum like normal
+when loses, loss screen, no more levels
+when win, dont do win screen, add a modal that says continue - press continue - next map generated. win only on compelteing void (hard to do)
+idk though. cause like. itll be a pain and way harder to win? idkkkk
+
+let the users decide !
+and ultimately, just do what you find fun, dont worry too much. this is for fun dude
+
+PLAN:
+implement ultra secrets, make post aout it. if you feel like you need to in the future, then rework the gameplay to be a run. simple. also post to hutts server
+WAIT - YOU CAN LITERALLY JUST ADD THE DAILY RUN AS A THIRD MODE LOL THATS LITERALLY, FINE. make a MAIN MENU!!!! three options - daily floor, daily run, and endless!
+consider updating the rock stuff, or just the odds so that can spawn in 2 room more likely even if three (actually dont its not fun or fair)
+so. first add ultra secret and a main menu. and a timer?
+then add daily run page. 
