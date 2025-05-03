@@ -372,7 +372,7 @@ export class Generator {
             if (invalidFlag) {
                 candidate.secretWeight = 0;
             } else if (numNeighbours == 2) {
-                candidate.secretWeight -= 3;
+                candidate.secretWeight -= 3; // Consider making this -2 to make 2s more common - actualy makes lnly basement have them and its just a pain and feels unfair
             } else if (numNeighbours == 1) {
                 candidate.secretWeight -= 6
             } else if (numNeighbours == 0) {
