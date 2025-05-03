@@ -91,6 +91,7 @@ export function runCore(gamemode) {
     const imageCache = {};
     cacheImages().then(() => {
         gameImagesLoaded = true;
+        startTime = Date.now(); // SET START TIME TO BE THE TIME WHERE THE GAME ACTUALLY LOADS
         drawMap();
     });
 
@@ -111,6 +112,9 @@ export function runCore(gamemode) {
     var won = false;
     var lost = false;
 
+    var startTime = Date.now();
+    var gameTime = 0; // Timer works by taking gametime and adding to it the num of ms since timer restarted
+
     // Gets the stored data if any in storage
     if (gamemode == "daily") {
         var gamedata = localStorage.getItem("secretRoomleData");
@@ -127,6 +131,7 @@ export function runCore(gamemode) {
     if (gamemode == "daily") {
         countdown();
         setInterval(countdown, 1000);
+        setInterval(timer, 10);
     }
 
     function initializeGamedata(levelGuesses) {
@@ -137,7 +142,7 @@ export function runCore(gamemode) {
             gamedata = localStorage.getItem("secretRoomleData");
             if (gamedata) {
                 let parsedData = JSON.parse(gamedata);
-                // If no longer the data in saved data, replace it with fresh data - FORGOT TO RESET THE MAP OOPS
+                // If no longer the data in saved data, replace it with fresh data
                 if ( getPuzzleNumber()!= parsedData.lastPlayedDate) {
                     parsedData.lastPlayedDate = getPuzzleNumber();
                     parsedData.currentMap = null;
@@ -148,7 +153,8 @@ export function runCore(gamemode) {
                                                 attempts: 0,
                                                 gameover: false,
                                                 won: false,
-                                                lost: false
+                                                lost: false,
+                                                time: 0
                                                 };
                 } else { // Otherwise set the variables to continue todays progress
                     // Set generator variables to the saved ones
@@ -164,6 +170,11 @@ export function runCore(gamemode) {
                     gameover = parsedData.currentProgress.gameover;
                     won = parsedData.currentProgress.won;
                     lost = parsedData.currentProgress.lost;
+                    if (parsedData.currentProgress.time) {
+                        gameTime = parsedData.currentProgress.time;
+                    } else {
+                        gameTime = 0;
+                    }
                 }
                 gamedata = parsedData;
             } else {
@@ -178,7 +189,8 @@ export function runCore(gamemode) {
                         attempts: 0,
                         gameover: false,
                         won: false,
-                        lost: false
+                        lost: false,
+                        time: 0
                     },
                     stats: {
                         totalGames: 0,
@@ -191,9 +203,16 @@ export function runCore(gamemode) {
                 };
             }
             localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
+            // Set timer
+            let elapsed = Date.now() - startTime;
+            let seconds = gameTime + (elapsed/1000);
+            let formatted = new Date(seconds * 1000).toISOString().substring(14, 22);
+            document.getElementById("timerSpan").innerHTML = formatted;
+            startTime = Date.now(); // Sets start time for timer to reference
         }
         // Set stats
         setElements();
+        
     }
 
     // Sets the text of the page based on game data and current game
@@ -441,25 +460,21 @@ export function runCore(gamemode) {
         let newSeed = getPuzzleNumber();
         //let newSeed = seed + 1; // for testing regeneration
         if (seed != newSeed) {
-            
-            // // Update gamedata before changing seed - dont set the gamedata here, do it in the startgame!
-            // gamedata.lastPlayedDate = newSeed;
-            // gamedata.currentMap = null,
-            // gamedata.currentProgress = {
-            //     stage: 0,
-            //     guesses: startingGuesses,
-            //     secretFound: false,
-            //     supersecretFound: false,
-            //     attempts: 0,
-            //     gameover: false,
-            //     won: false,
-            //     lost: false
-            // }
-            // localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
-
-            seed = newSeed
+            seed = newSeed;
+            gameTime = 0;
             Math.seedrandom(newSeed); 
             startGame();
+        }
+    }
+
+    function timer() {
+        if (!gameover && gameImagesLoaded) {
+            let elapsed = Date.now() - startTime;
+            let seconds = gameTime + (elapsed/1000);
+            let formatted = new Date(seconds * 1000).toISOString().substring(14, 22);
+            document.getElementById("timerSpan").innerHTML = formatted;
+            gamedata.currentProgress.time = seconds;
+            localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
         }
     }
 
@@ -623,8 +638,12 @@ export function runCore(gamemode) {
                     // Spread for normal (6 guesses) 2 green 2 yellow 1 orange, stage 10 (8 guesses) is 2 green 3 yellow 2 orange, stage 12 (10 guesses) is 3 green 3 yellow 3 orange!
                 results += `\n${bombPerformance} ${guesses}/${totalBombs} bomb(s) remaining`
 
+                let elapsed = Date.now() - startTime;
+                let seconds = gameTime + (elapsed/1000);
+                let formatted = new Date(seconds * 1000).toISOString().substring(14, 22);
+
                 let roomleNumber = getPuzzleNumber();
-                document.getElementById("gameOverText").textContent = `You ${winOrLoss} Secret Roomle #${roomleNumber} \n${results}`;
+                document.getElementById("gameOverText").textContent = `You ${winOrLoss} Secret Roomle #${roomleNumber} \n${results}\nTime: ${formatted}`;
                 document.getElementById("gameOverModal").style.display = "block";
             }
 
@@ -639,6 +658,9 @@ export function runCore(gamemode) {
                 gamedata.currentProgress.gameover = gameover;
                 gamedata.currentProgress.won = won;
                 gamedata.currentProgress.lost = lost;
+                let elapsed = Date.now() - startTime;
+                let seconds = gameTime + (elapsed/1000);
+                gamedata.currentProgress.time = seconds;
                 localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
             }
             
