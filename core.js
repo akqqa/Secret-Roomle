@@ -112,7 +112,7 @@ export function runCore(gamemode) {
     var won = false;
     var lost = false;
 
-    var startTime = Date.now();
+    var startTime = Date.now(); // The time the puzzle was loaded, to get an accurate time diff
     var gameTime = 0; // Timer works by taking gametime and adding to it the num of ms since timer restarted
 
     // Gets the stored data if any in storage
@@ -170,7 +170,7 @@ export function runCore(gamemode) {
                     gameover = parsedData.currentProgress.gameover;
                     won = parsedData.currentProgress.won;
                     lost = parsedData.currentProgress.lost;
-                    if (parsedData.currentProgress.time) {
+                    if (parsedData.currentProgress.time) { // Enables pushing without breaking page for today if users have already played
                         gameTime = parsedData.currentProgress.time;
                     } else {
                         gameTime = 0;
@@ -203,7 +203,7 @@ export function runCore(gamemode) {
                 };
             }
             localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
-            // Set timer
+            // Set timer (separate from setelements as setelements is called elsewhere where you dont want to set the timer)
             let elapsed = Date.now() - startTime;
             let seconds = gameTime + (elapsed/1000);
             let formatted = new Date(seconds * 1000).toISOString().substring(14, 22);
@@ -658,9 +658,10 @@ export function runCore(gamemode) {
                 gamedata.currentProgress.gameover = gameover;
                 gamedata.currentProgress.won = won;
                 gamedata.currentProgress.lost = lost;
-                let elapsed = Date.now() - startTime;
-                let seconds = gameTime + (elapsed/1000);
-                gamedata.currentProgress.time = seconds;
+                // I dont think this is actually necessary - was an attempt to fix a bug that was caused by something else, but leaving it here just in case
+                // let elapsed = Date.now() - startTime;
+                // let seconds = gameTime + (elapsed/1000);
+                // gamedata.currentProgress.time = seconds;
                 localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
             }
             
@@ -749,7 +750,7 @@ export function runCore(gamemode) {
         if (event.key == "r" && gamemode == "endless") {
             startGame();
         }
-        if (event.key == "p" && gamemode == "daily" && false) {
+        if (event.key == "p" && gamemode == "daily") {
             console.log("debug")
             // Debug option for incrementing seed
             seedIncrement += 1;

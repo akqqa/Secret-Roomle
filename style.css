@@ -117,7 +117,7 @@ html {
 .timerDiv {
   margin: 0px;
   padding: 0px;
-  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-size: clamp(1rem, 5vw, 1.3rem);
   text-align: center;
 }
 
