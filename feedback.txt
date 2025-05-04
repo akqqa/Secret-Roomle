@@ -20,3 +20,4 @@ i think just maybe, button on page. doesnt reset timer? but is remembered. timin
 todo: wrong room mark disappears on normal mode when finished
       stats page
       any bug fixes? idk
+      add +2 bombs per, and rework the colours for hard mode

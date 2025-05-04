@@ -619,6 +619,7 @@ export function runCore(gamemode) {
 
             // Loss logic
             if (guesses == 0 && !(secretFound && supersecretFound) && !hardMode) {
+                console.log("1");
                 gameover = true;
                 won = false;
                 lost = true;
@@ -639,7 +640,8 @@ export function runCore(gamemode) {
                 }
                 loseSfx.play();
                 deathSfx.play();
-            } else if (guesses == 0 && !(secretFound && supersecretFound && !ultrasecretFound) && hardMode) {
+            } else if (guesses == 0 && !(secretFound && supersecretFound && ultrasecretFound) && hardMode) {
+                console.log("2");
                 gameover = true;
                 won = false;
                 lost = true;
@@ -661,6 +663,7 @@ export function runCore(gamemode) {
                 loseSfx.play();
                 deathSfx.play();
             } else if (secretFound && supersecretFound && !hardMode) {
+                console.log("3");
                 gameover = true;
                 won = true;
                 lost = false;
@@ -688,6 +691,7 @@ export function runCore(gamemode) {
                 secretRoomSfx.currentTime = 0;
                 winSfx.play();
             } else if (secretFound && supersecretFound && ultrasecretFound && hardMode) {
+                console.log("4");
                 gameover = true;
                 won = true;
                 lost = false;
@@ -877,7 +881,7 @@ export function runCore(gamemode) {
         if (event.key == "r" && gamemode == "endless") {
             startGame();
         }
-        if (event.key == "p" && gamemode == "daily" && false) {
+        if (event.key == "p" && gamemode == "daily" && true) {
             console.log("debug")
             // Debug option for incrementing seed
             seedIncrement += 1;
