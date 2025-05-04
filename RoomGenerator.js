@@ -440,7 +440,7 @@ export class Generator {
                     if (redRoomCandidateNeighbours.length > 0) {
                         redRoomCandidateNeighbours.forEach(redRoomCandidateNeighbour => {
                             if (redRoomCandidateNeighbour.type == "boss" || redRoomCandidateNeighbour.type == "curse" || redRoomCandidateNeighbour.type == "secret" || redRoomCandidateNeighbour.type == "supersecret") {
-                                blue = true;
+                                blue = true; // Blue rooms are red rooms but next to an invalid room so EXCLUDE an ultra secret room from spawning next to them, as per the wiki
                             }
                             // checking that at least one neighbour isnt also a red room!
                             if (redRoomCandidateNeighbour.type == "red" || redRoomCandidateNeighbour.type == "blue") {

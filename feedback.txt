@@ -17,7 +17,9 @@ timer complicates ultra secret design. um. main menu isnt rly an option consider
 i think just maybe, button on page. doesnt reset timer? but is remembered. timing isnt a big deal, 
 
 
-todo: wrong room mark disappears on normal mode when finished
-      stats page
-      any bug fixes? idk
-      add +2 bombs per, and rework the colours for hard mode
+todo: wrong room mark disappears on normal mode when finished FIXED
+      stats page - still need to add ultra secret tracking and maybe the code in core
+      any bug fixes?  DONE for the winstreak stuff
+      add +2 bombs per, and rework the colours for hard mode DONE
+      about and tips update, etc. maybe welcome message idk
+      no rule i have to release it on weekend! jusut do it when ready

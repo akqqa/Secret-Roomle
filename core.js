@@ -185,10 +185,15 @@ export function runCore(gamemode) {
                         gameTime = 0;
                     }
                 }
+                // IF upon initialising gamedata, it is found the the last win was over 1 puzzle ago, reset the winstreak!
+                if (parsedData.lastWonDate && getPuzzleNumber() - parsedData.lastWonDate > 1) {
+                    parsedData.stats.winStreak = 0;
+                }
                 gamedata = parsedData;
             } else {
                 gamedata = {
                     lastPlayedDate: getPuzzleNumber(),
+                    lastWonDate: null,
                     currentMap: null,
                     currentProgress: {
                         stage: 0,
@@ -305,7 +310,8 @@ export function runCore(gamemode) {
             levelnum <= 10 ? startingGuesses :
             levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
             levelnum === 12 ? startingGuesses + 4 : // Void is nasty
-            null); // Attempt at balance based on starting floor
+            null)
+            + (hardMode ? 2 : 0); // Attempt at balance based on starting floor
         secretFound = false;
         supersecretFound = false;
         ultrasecretFound = false;
@@ -382,7 +388,7 @@ export function runCore(gamemode) {
                             drawCachedImage("shopRoom", x, y, roomSize, roomSize);
                         } else if (room.type == "item") {
                             drawCachedImage("itemRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "wrong" || (room.type == "redwrong" && room.hidden && !gameover)) {
+                        } else if (room.type == "wrong" || (room.type == "redwrong" && room.hidden && !gameover && hardMode) || (room.type == "redwrong" && !hardMode)) { // If wrong, or redwrong and hidden and not gameover and hard, or redwrong and not hard. god redwrong is convoluted but whatever
                             drawCachedImage("scorch", x, y, roomSize, roomSize);
                         } else if (room.type == "secret" && !room.hidden) {
                             drawCachedImage("secretRoom", x, y, roomSize, roomSize);
@@ -619,7 +625,6 @@ export function runCore(gamemode) {
 
             // Loss logic
             if (guesses == 0 && !(secretFound && supersecretFound) && !hardMode) {
-                console.log("1");
                 gameover = true;
                 won = false;
                 lost = true;
@@ -682,6 +687,8 @@ export function runCore(gamemode) {
                     // Modify users stats
                     gamedata.stats.wins += 1;
                     gamedata.stats.winStreak  += 1;
+                    gamedata.lastWonDate = getPuzzleNumber();
+                    console.log(gamedata.lastWonDate);
                     if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
                         gamedata.stats.maxStreak = gamedata.stats.winStreak;
                     }
@@ -710,6 +717,7 @@ export function runCore(gamemode) {
                     // Modify users stats
                     gamedata.stats.wins += 1;
                     gamedata.stats.winStreak  += 1;
+                    gamedata.lastWonDate = getPuzzleNumber();
                     if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
                         gamedata.stats.maxStreak = gamedata.stats.winStreak;
                     }
@@ -748,21 +756,32 @@ export function runCore(gamemode) {
                     levelnum <= 10 ? startingGuesses :
                     levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
                     levelnum === 12 ? startingGuesses + 4 : // Void is nasty
-                    null); // Attempt at balance based on starting floor
+                    null)
+                    + (hardMode ? 2 : 0); // hard mode gives 2 extra bombs!
                 let bombPerformance = (
                     won == false ? "🟥":
-                    levelnum == 12 && guesses <= 2 ? "🟧" :
-                    levelnum == 12 && guesses <= 5 ? "🟨" :
-                    levelnum == 12 && guesses <= 10 ? "🟩" :
-                    levelnum == 11 && guesses <= 1 ? "🟧" :
-                    levelnum == 11 && guesses <= 4 ? "🟨" :
-                    levelnum == 11 && guesses <= 8 ? "🟩" :
-                    levelnum <= 10 && guesses <= 0 ? "🟧" :
-                    levelnum <= 10 && guesses <= 2 ? "🟨" :
-                    levelnum <= 10 && guesses <= 4 ? "🟩" :
+                    levelnum == 12 && guesses <= 2 && !hardMode ? "🟧" :
+                    levelnum == 12 && guesses <= 5 && !hardMode ? "🟨" :
+                    levelnum == 12 && guesses <= 10 && !hardMode ? "🟩" :
+                    levelnum == 11 && guesses <= 1 && !hardMode ? "🟧" :
+                    levelnum == 11 && guesses <= 4 && !hardMode ? "🟨" :
+                    levelnum == 11 && guesses <= 8 && !hardMode ? "🟩" :
+                    levelnum <= 10 && guesses <= 0 && !hardMode ? "🟧" :
+                    levelnum <= 10 && guesses <= 2 && !hardMode ? "🟨" :
+                    levelnum <= 10 && guesses <= 4 && !hardMode ? "🟩" :
+                    levelnum == 12 && guesses <= 2 && hardMode ? "🟧" :
+                    levelnum == 12 && guesses <= 6 && hardMode ? "🟨" :
+                    levelnum == 12 && guesses <= 9 && hardMode ? "🟩" :
+                    levelnum == 11 && guesses <= 1 && hardMode ? "🟧" :
+                    levelnum == 11 && guesses <= 4 && hardMode ? "🟨" :
+                    levelnum == 11 && guesses <= 7 && hardMode ? "🟩" :
+                    levelnum <= 10 && guesses <= 1 && hardMode ? "🟧" :
+                    levelnum <= 10 && guesses <= 3 && hardMode ? "🟨" :
+                    levelnum <= 10 && guesses <= 5 && hardMode ? "🟩" :
 
                     null); // Attempt at balance based on starting floor - now hard coded to give a roughly even spread for each floor!
                     // Spread for normal (6 guesses) 2 green 2 yellow 1 orange, stage 10 (8 guesses) is 2 green 3 yellow 2 orange, stage 12 (10 guesses) is 3 green 3 yellow 3 orange!
+                    // Spread for hard: (8 guesses) 2 green 2 yellow 2 orange (1 less cause takes 1 more bomb), stage 11 (10 guesses) 3 green 3 yellow 2 orange, stage 12 (12 gueses) green 3 yellow 4 orange 3
                 results += `\n${bombPerformance} ${guesses}/${totalBombs} bomb(s) remaining`
 
                 let elapsed = Date.now() - startTime;
@@ -926,9 +945,14 @@ export function runCore(gamemode) {
 
         if (hardMode) {
             document.getElementById("ultraButton").style.backgroundImage = "url('images/redKey.png')";
+            // If hard, add two bombs. 
+            guesses += 2;
         } else {
             document.getElementById("ultraButton").style.backgroundImage = "url('images/key.png')";
+            // If switched back, remove two bombs. 
+            guesses -= 2;
         }
+        document.getElementById("guessesremaining").textContent = guesses; // Set new guesses
 
         if (settingsdata && gamemode == "daily") {
             settingsdata.hardModeDaily = hardMode;
