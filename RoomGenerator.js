@@ -255,16 +255,19 @@ export class Generator {
                     continue;
                 }
             }
+
+            this.placeSpecialRooms();
+
+            this.placeSecretRoom();
+
+            if (!this.placeUltraSecretRoom()) {
+                continue; // Fails if no places for ultra secret where there are 2+ connected normal rooms, for fairness
+            }
+
+            this.placeRocks();
+
             break;
         }
-
-        this.placeSpecialRooms();
-
-        this.placeSecretRoom();
-
-        this.placeUltraSecretRoom();
-
-        this.placeRocks();
         
     }
 
@@ -493,8 +496,81 @@ export class Generator {
         //     this.map[ultraCandidate.posY][ultraCandidate.posX] = ultraCandidate;
         // });
 
+        // Assign each ultraCandidate its weight
+        let weightedCandidates = []
+        ultraCandidates.forEach(ultraCandidate => {
+            console.log("Hi")
+            let ultraCandidateNeighbours = this.findNeighbours(ultraCandidate); // Guarenteed to only be red rooms
+            // For eachr adjacent red room to a candidate position, find what normal rooms are adjacent to these and add to a unique list 
+            let roomSet = new Set();
+            ultraCandidateNeighbours.forEach(ultraCandidateNeighbour => {
+                let ultraCandidateNeighboursSquared = this.findNeighbours(ultraCandidateNeighbour); // List of normal rooms adjacent to the red room
+                ultraCandidateNeighboursSquared.forEach(ultraCandidateNeighboursSquare => {
+                    if (ultraCandidateNeighboursSquare.type != "red" && ultraCandidateNeighboursSquare.type != "blue") {
+                        roomSet.add(`${ultraCandidateNeighboursSquare.posY}|${ultraCandidateNeighboursSquare.posX}`)
+                    }
+                });
+            });
+            if (roomSet.size >= 3){
+                console.log(roomSet.size);
+                console.log(roomSet);
+                console.log(ultraCandidate.posX)
+                console.log(ultraCandidate.posY)
+            }
+            
+            // Based on size of roomSet, weight values
+            let weight;
+            if (roomSet.size >= 3) {
+                weight = 11.5; // 11.5x more likely than 2 room
+                weightedCandidates.push({room: ultraCandidate, weight: weight});
+            } else if (roomSet.size == 2) {
+                weight = 1;
+                weightedCandidates.push({room: ultraCandidate, weight: weight});
+            } else {
+                // DO NOT ALLOW ONE ADJACENT ROOMS - UNFUN AND UNFAIR FOR A DAILY GAME. IF THE MAP ONLY HAS 1,S THEN JUST REGENERATE
+            }
+        });
 
+        // If no options wiht 2+ adjacent rooms, fail
+        if (weightedCandidates.length == 0) {
+            return false;
+        }
 
+        // Select a candidate and set as the ultra secret room
+        let totalWeight = weightedCandidates.reduce((sum, entry) => sum + entry.weight, 0); // Calcs total weight for random range
+        let selected = Math.random() * totalWeight;
+        let ultraSecretRoom = null;
+        weightedCandidates.forEach(candidate => {
+            selected -= candidate.weight;
+            if (selected <= 0 && !ultraSecretRoom) {
+                ultraSecretRoom = candidate.room;
+            }
+        });
+
+        this.map[ultraSecretRoom.posY][ultraSecretRoom.posX] = ultraSecretRoom;
+
+        // Cleanup - remove all red and blue rooms except those bordering the ultra secret
+        for(let i = 0; i < 13; i++) {
+            for(let j = 0; j < 13; j++) {
+                if (this.map[j][i] && this.map[j][i].type == "blue") {
+                    this.map[j][i] = null;
+                }
+                if (this.map[j][i] && this.map[j][i].type == "red") { // If red, only set to null if doesnt border the ultra secret
+                    let redNeighbours = this.findNeighbours(this.map[j][i]);
+                    let del = true;
+                    redNeighbours.forEach(redNeighbour => {
+                        if (redNeighbour.type == "ultrasecret") {
+                            del = false;
+                        }
+                    });
+                    if (del) {
+                        this.map[j][i] = null;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     // Final step - generate rock positions for rooms - to inform the player more about where the secret rooms could be 
@@ -514,25 +590,25 @@ export class Generator {
                     if (this.map[j][i].type == "item") {
                         rockOddsAdjusted = rockOdds / 3;
                     }
-                    if (j > 0 && (!this.map[j-1][i] || this.map[j-1][i].type == "blue" || this.map[j-1][i].type == "red" )) {
+                    if (j > 0 && !this.map[j-1][i]) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[0] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    if (j < 12 && (!this.map[j+1][i] || this.map[j+1][i].type == "blue" || this.map[j+1][i].type == "red" )) {
+                    if (j < 12 && !this.map[j+1][i]) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[1] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    if (i > 0 && (!this.map[j][i-1] || this.map[j][i-1].type == "blue" || this.map[j][i-1].type == "red" )) {
+                    if (i > 0 && !this.map[j][i-1]) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[2] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
                         }
                     }
-                    if (i < 12 && (!this.map[j][i+1] || this.map[j][i+1].type == "blue" || this.map[j][i+1].type == "red" )) {
+                    if (i < 12 && !this.map[j][i+1]) {
                         if (Math.random() < rockOddsAdjusted) {
                             this.map[j][i].rocks[3] = true;
                             rockOddsAdjusted =  rockOdds * 1.5;
