@@ -15,3 +15,8 @@ so. first add ultra secret and a main menu. and a timer?
 then add daily run page. 
 timer complicates ultra secret design. um. main menu isnt rly an option considering 2 different pages will have diff stats, and would have to be different maps or theyd both be playable
 i think just maybe, button on page. doesnt reset timer? but is remembered. timing isnt a big deal, 
+
+
+todo: wrong room mark disappears on normal mode when finished
+      stats page
+      any bug fixes? idk

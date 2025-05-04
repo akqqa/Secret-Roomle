@@ -583,7 +583,6 @@ export class Generator {
         if (this.stage == 11) {
             rockOddsAdjusted = 0; // No rocks on chest or dark room!
         }
-        // NEEDS TO BE ADJUSTED - EXISTING RED ROOMS SHOULDNT BE BLOCKED
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
                 if (this.map[j][i] && this.map[j][i].type != "secret" && this.map[j][i].type != "supersecret" && this.map[j][i].type != "ultrasecret" && this.map[j][i].type != "red" && this.map[j][i].type != "blue" && this.map[j][i].type != "boss" && this.map[j][i].type != "start" && this.map[j][i].type != "sacrifice" && this.map[j][i].type != "challenge" && this.map[j][i].type != "bosschallenge" && this.map[j][i].type != "planetarium" && this.map[j][i].type != "shop" && this.map[j][i].type != "curse" && this.map[j][i].type != "arcade" && this.map[j][i].type != "dice") {
