@@ -877,7 +877,7 @@ export function runCore(gamemode) {
         if (event.key == "r" && gamemode == "endless") {
             startGame();
         }
-        if (event.key == "p" && gamemode == "daily" && true) {
+        if (event.key == "p" && gamemode == "daily" && false) {
             console.log("debug")
             // Debug option for incrementing seed
             seedIncrement += 1;
