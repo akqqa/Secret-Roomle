@@ -3,104 +3,9 @@ Rock placements - try to maybe follow likelihood of real room probabilities? - w
 Make scorch marks easier to see on dark backgrounds? 
 LABYRINTH CAN HAVE (RARE) ROOMS NEXT TO EACH OTHER
 
-SO MAIN GOALS FOR NEXT UPDATE:
-accurate rock placements and do them before adding the secret rooms (will always be space for secret)
-after this, ultra secret is easy ( can add this before rock changes at it should always be done last anyway )
-ultra secret will be an optional hard mode toggle - only togglable if before any other changes on a day
-honestly maybe deprioritise the rock placements. its fun enough with them as they are - too accurate and itd become less of a fair game! still adheres to the rules so good for learning, just doesnt give bs scenarios often.
-^ mayeb just leave them as they are, try putting rock spawning before secret room placement, then see if that feels too unfair. if so can tweak - thats what the dev branch is for!
+Bugs:
+can place bombs while loading oops
 
-add a number to the secret roomle copy paste - note that sat 26th april was day 1
-
-weird potential bug not allowing players to plcae bombs in certain spots? may just be device issue
-music doesnt loop lol
-
-BALANCE - rocks before rooms should make a bit harder, currently everyone is getting voids easily in 12. i can consistneyl get it all. but if its skill based should it be easy? its tricky. ask for feedback in comments abt difficulty on next post?
-
-
-considering how hard ultra secrets will be, might be worth it to just make it a separate mode, with red keys and stuff.
-daily mode
-ultra daily mode
-and then endless, where you can just toggle between modes
-actually, could probably just add the toggle and make it switch between "daily" and "ultra daily", and redraw the map on the main screen. hm. think if thats possible
-should generate a diff map ont he same floor and curse and show both secret rooms as to now reveal info abt the regulra daily
-
-idea for display:
-show all rooms on map, aswell as outlines of red rooms. clicking a red room unlocks it, reveals ultra secret if connected. thats how you guess.
-implement this first to acc see where ultra secrets spawn, and how many valid spaces there are. tune accordingly
-potentially prune for maps where the ultra secret isnt 
-for gameplay purposes maybe fuzz it so that it can only pikc a 1 connection if literally no 2 or 3's as otherwise theres 11.5 chance its just impossible
-with rock gen it may be super obvious to guess, so idk
-actually red rooms cna spawn even if blocked by rock so requires player knowledge!
-can do reveal rooms then reveal rocks as well! like base game!
-this is rly fun actually and a good tool
-so gen all surrounding 1 layer red rooms, show outlines, fill in if guessed, if connecting show usr. spawn if only spawn in a 1 connection if no 2 available
-CONSIDER SPAWNING BEFORE ROCKS, TO MAKE IT MORE INTERESTING. IDK. BUT THEN AGAIN THATLL MEAN ITS ALMOST ALWAYS THE 3+ LOC. IF EXISTS. SO FIRST TRIES ARE EASY., IDK PLAY WITH IT
-rocks do block red rooms. so idk what sbest to do. maybe show them as potentially possible anywya? idk. mayeb show them and remove them when rocks revealed? or just dont. give them a fake flag. once rocks on, all fake flag ones are disabled?
-ya that might be good then actually
-due to this noticed a flaw that due to rocks spawning after secret rooms will almost always be in the 3+ spots. except occasionaly. but thast fine. blocked by rocks would just make ti more common and annoying
-
-in endless you could have a toglle for "true" generation, which is noted to spawn rocks before with a warning its more accurate but more frustrating which is why its not done that way in the daily cause it could lead to unfair losses
-could it? test it one day.
-but not till next week!
-will make it more like teh actual game tbf, and it alreayd can happen. just makes it more likely. so less greens ig. idk. idk what to prioritise
-
-rocks before and revealing later for usr seems better.
-DEFINITELY ROCKS FIRST - otherwise too inconsistent
-as people said, better to have a good user experience than be super accurate.
-the one worry is u can just get it in one go. if thats not too hard then its fine. altho one go isnt terrible if youre very skilled
-
-BETTER IDEA: SHOW ALL RED ROOMS, WITH ICON REVEAL REVMOVE INVALID DUE TO SECRET ROOM AND BOSS. ON ROCK REVEAL REMOVE ALL BLOCKED
-YOU CANT CLIKCON THE RED ROOMS, YOU CLICK WHERE YOU THINK THE USR IS. MAKES IT WAY EASIER TO SHOW AND HIDE THEM, AND THEYRE NEVER valid
-rocks before or after? just test it lol.
-
-
-
-consider. okay. consider that you dont know if a dedicated mode would be way too easy. 
-so, once you do the first step which is generating one in the map,
-simply add it to the main mode! and see how that feels! see if its doable, if its too hard, etc.
-the toggle is easy, only allow it when at stage 0 and no rooms guessed. it simply enables the logic for the ultra secret, doesnt change the map or anything.
-if on, ultra secret needed to win, otherwise off. but thats not important! first just put it on a separate page that has the logic and test it manually. esp with rocks second it should be easier
-no need to add red room outlines etc, can be deduced. better to just add on to what exists. no need to radically change and confuse ppl
-just from cursory looking, takes about 3-4 guesses with perfect map knowledge and no bomb knowledge. so yea
-simplify things by making sure maps always generate with an ultra secret room, doing rocks second, and adding 2-3 extra guesses on hard mode. its not acc that hard to find once you get used to it! very consistent!
-hardest on sheol etc but eh that can be whatever
-ALL THE STUFF YOU NEED IS toggle available when start of game,
-toggling calls startgame with ultra=true
-once game starts, no way to toggle
-ultra = true or ultra = false stored in localstorage so on refresh it knows and applies
-needs to account for: win and loss conditions including ultra, map drawing ultra if enabled, clicking on ultra doing something vs not, extra bombs given, i think thats it? 
-simply set type="ultraSecret" to type="wrong" if clicked on ultra secret and its not enabled!
-
-do rocks first for fair dailies
-then once its alllll done, add a toggle in endless for "true generation" that allows proper practice but chances of failing more - that can be for the final update lol
-
-
-FIX WINSTREAK - SHOULD RESET IF YOU MISS A DAY!! EVERY REFRESH AND PAGE LOAD CHECK IF LAST WIN WAS OVER A DAY AGO 
-^THEREFRE NEED A LAST WON COUNTER
-ADD A TIMER!! - this is super easy. on page load if no timer saved for today, immediately start timer. if timer saved for today continue from that. (this is done in initialize auto called from startgame). timer method checks if gameover and if so dont increment . display it as results !
-
-goddamn efboe had a genius idea of going up each floor every day untila  fail, giving a wordle style grid. fml thats good.
-but its just so much effort and ultra and everything is already too much. idik
-but its such a good damn idea
-Secret Roomle #006
-I reached Womb 2 with 2 bombs remaining!
-https://roomle.next
-ughhh
-
-
-honestly. once you get rid of the worry about it being popular or liekd etc. the idea of it being a whole thing is fun
-implement ultra secret rooms first
-then, rework the game logic so that in daily mode, after a floor is beaten, it starts the game with a new map
-^ when the page is loaded, it generates 11 floors for the whole day based on the seed.
-when the player quits, it saves the map and stats as normal, as well as the levelnum
-when the player returns it puts the map in, and since it knows the level num if the player wins that floor, can just serve the next levelnum like normal
-when loses, loss screen, no more levels
-when win, dont do win screen, add a modal that says continue - press continue - next map generated. win only on compelteing void (hard to do)
-idk though. cause like. itll be a pain and way harder to win? idkkkk
-
-let the users decide !
-and ultimately, just do what you find fun, dont worry too much. this is for fun dude
 
 PLAN:
 implement ultra secrets, make post aout it. if you feel like you need to in the future, then rework the gameplay to be a run. simple. also post to hutts server
@@ -108,3 +13,13 @@ WAIT - YOU CAN LITERALLY JUST ADD THE DAILY RUN AS A THIRD MODE LOL THATS LITERA
 consider updating the rock stuff, or just the odds so that can spawn in 2 room more likely even if three (actually dont its not fun or fair)
 so. first add ultra secret and a main menu. and a timer?
 then add daily run page. 
+timer complicates ultra secret design. um. main menu isnt rly an option considering 2 different pages will have diff stats, and would have to be different maps or theyd both be playable
+i think just maybe, button on page. doesnt reset timer? but is remembered. timing isnt a big deal, 
+
+
+todo: wrong room mark disappears on normal mode when finished FIXED
+      stats page - still need to add ultra secret tracking and maybe the code in core DONE
+      any bug fixes?  DONE for the winstreak stuff
+      add +2 bombs per, and rework the colours for hard mode DONE
+      about and tips update, etc. maybe welcome message idk DONE
+      no rule i have to release it on weekend! jusut do it when ready
