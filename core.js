@@ -28,6 +28,8 @@ export function runCore(gamemode) {
     loseSfx.volume = 0.2;
     var deathSfx = new Audio("sfx/death.wav");
     deathSfx.volume = 0.2;
+    var goldenKey = new Audio("sfx/golden key.wav");
+    goldenKey.volume = 0.2;
     var isMuted = false;
 
     var hardMode = false;
@@ -210,7 +212,7 @@ export function runCore(gamemode) {
                         totalGames: 0,
                         secretRoomsFound: 0,
                         superSecretRoomsFound: 0,
-                        ultrasecretRoomsFound: 0,
+                        ultraSecretRoomsFound: 0,
                         wins: 0,
                         winStreak: 0,
                         maxStreak: 0
@@ -237,6 +239,7 @@ export function runCore(gamemode) {
             document.getElementById("gamesWon").textContent = gamedata.stats.wins; 
             document.getElementById("secretRoomsFound").textContent = gamedata.stats.secretRoomsFound; 
             document.getElementById("superSecretRoomsFound").textContent = gamedata.stats.superSecretRoomsFound; 
+            document.getElementById("ultraSecretRoomsFound").textContent = gamedata.stats.ultraSecretRoomsFound; 
             document.getElementById("currentWinstreak").textContent = gamedata.stats.winStreak; 
             document.getElementById("bestWinstreak").textContent = gamedata.stats.maxStreak; 
         }
@@ -281,6 +284,8 @@ export function runCore(gamemode) {
         loseSfx.currentTime = 0;
         deathSfx.pause();
         deathSfx.currentTime = 0;
+        goldenKey.pause();
+        goldenKey.currentTime = 0;
 
         if (gamemode == "daily") {
             Math.seedrandom(seed); // THERE WAS SOME WEIRD RACE CONDITION THAT MADE THE SEED SWITCH BETWEEN 2 !!! FIXED.
@@ -920,6 +925,7 @@ export function runCore(gamemode) {
         winSfx.muted = isMuted;
         loseSfx.muted = isMuted;
         deathSfx.muted = isMuted;
+        goldenKey.muted = isMuted;
 
         if (isMuted) {
             document.getElementById("muteButton").style.backgroundImage = "url('images/volume-mute-fill.svg')";
@@ -937,6 +943,11 @@ export function runCore(gamemode) {
     document.getElementById("ultraButton").addEventListener("click", (event) => {
         if (stage == 0 && !secretFound && stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) {
             setHard();
+            if (hardMode) {
+                goldenKey.pause();
+                goldenKey.currentTime = 0;
+                goldenKey.play();
+            }
         }
     });
 
