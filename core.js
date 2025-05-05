@@ -16,7 +16,7 @@ export function runCore(gamemode) {
         ["Void"]
     ]
 
-    var debugmode = true;
+    var debugmode = false;
 
     var bombSfx = new Audio("sfx/explosion.wav");
     bombSfx.volume = 0.1;
