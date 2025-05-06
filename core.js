@@ -191,6 +191,10 @@ export function runCore(gamemode) {
                 if (parsedData.lastWonDate && getPuzzleNumber() - parsedData.lastWonDate > 1) {
                     parsedData.stats.winStreak = 0;
                 }
+                // If upon initialising gamedata, there is no ultra secret room stats, create! for updating old users
+                if (!parsedData.stats.ultraSecretRoomsFound) {
+                    parsedData.stats.ultraSecretRoomsFound = 0;
+                }
                 gamedata = parsedData;
             } else {
                 gamedata = {
