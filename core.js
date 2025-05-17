@@ -255,6 +255,7 @@ export function runCore(gamemode) {
         let curse = "no curse";
         if (curseLabyrinth) {
             curse = "curse of the labyrinth";
+            document.getElementById("floorname").textContent = document.getElementById("floorname").textContent.replace(/ I$/, " XL");;
         }
         if (curseLost) {
             curse = "curse of the lost";
