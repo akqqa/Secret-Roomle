@@ -550,8 +550,10 @@ export function runCore(gamemode) {
             let room = generator.map[y][x];
             // If room is undefined, set it to a wrong room
             if (!room) {
-                if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
-                    gamedata.stats.totalGames += 1;
+                if (gamemode == "daily") {
+                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
+                        gamedata.stats.totalGames += 1;
+                    }
                 }
                 let newRoom = new Room(y,x);
                 newRoom.type = "wrong";
@@ -561,9 +563,11 @@ export function runCore(gamemode) {
                 bombSfx.pause();
                 bombSfx.currentTime = 0;
                 bombSfx.play();
-            } else if (room.type == "red") { // If red room, treat like nonexistant room as should be hidden (until end)
-                if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
-                    gamedata.stats.totalGames += 1;
+            } else if (room.type == "red" && !hardMode) { // If red room, treat like nonexistent room as should be hidden (until end)
+                if (gamemode == "daily") {
+                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
+                        gamedata.stats.totalGames += 1;
+                    }
                 }
                 room.type = "redwrong";
                 stage = Math.min(2, stage+1);
@@ -571,6 +575,32 @@ export function runCore(gamemode) {
                 bombSfx.pause();
                 bombSfx.currentTime = 0;
                 bombSfx.play();
+            } else if (room.type == "red" && hardMode && room.hidden) { // If red room on hard mode, reveal usr!
+                if (gamemode == "daily") {
+                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
+                        gamedata.stats.totalGames += 1;
+                    }
+                    gamedata.stats.ultraSecretRoomsFound += 1;
+                }
+                guesses -= 1;
+                bombSfx.pause();
+                bombSfx.currentTime = 0;
+                bombSfx.play();
+                secretRoomSfx.pause();
+                secretRoomSfx.currentTime = 0;
+                secretRoomSfx.play();
+                room.hidden = false;
+                ultrasecretFound = true;
+                // Find usr and unhide it,as well as all other red rooms
+                for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
+                    for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
+                        let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
+                        if (room && (room.type == "ultrasecret" || room.type == "red")) {
+                            room.hidden = false;
+                        }
+                    }
+                }
+
             } else if (room.type == "secret" && room.hidden) {
                 if (gamemode == "daily") {
                     if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) {
@@ -619,9 +649,20 @@ export function runCore(gamemode) {
                 secretRoomSfx.currentTime = 0;
                 bombSfx.play();
                 secretRoomSfx.play();
+                // Find red rooms and unhide
+                for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
+                    for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
+                        let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
+                        if (room &&  room.type == "red") {
+                            room.hidden = false;
+                        }
+                    }
+                }
             } else if (room.type == "ultrasecret" && room.hidden && !hardMode) {
-                if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
-                    gamedata.stats.totalGames += 1;
+                if (gamemode == "daily") {
+                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
+                        gamedata.stats.totalGames += 1;
+                    }
                 }
                 room.type = "wrong";
                 stage = Math.min(2, stage+1);
@@ -956,6 +997,7 @@ export function runCore(gamemode) {
     });
 
     function setHard() {
+        console.log("sethard called!")
         hardMode = !hardMode;
 
         if (hardMode) {
