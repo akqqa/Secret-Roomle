@@ -2,24 +2,37 @@ TODO based on reddit feedback:
 Rock placements - try to maybe follow likelihood of real room probabilities? - would also fix issue of not having super rare spawns where rocks block most places
 Make scorch marks easier to see on dark backgrounds? 
 LABYRINTH CAN HAVE (RARE) ROOMS NEXT TO EACH OTHER
+see how red rooms also showing usr works with balance?
+^ MAKES IT MORE CONSISTENT, BUT ALSO POSSIBLE TO ACCIDENTALLY STUMBLE UPON A RED ROOMS
+    I THINK IT FEELS BETTER, BUT THE RANDOM WINS TAKE AWAY FROM THE SKILL ELEMENT
+    IDEALLY, WOULD HAVE A SEPARATE INPUT TO UNLOCK RED ROOMS. HM. WOULD JUST COMPLICATE IT TOO MUCH AND MAKE IT TOO OBTUSE WITH A PROPERTUTORIAL NEEDED, PLAYER CONFUSION etc
+    JUST LEAVE AS IS FOR NOW. AS OVERWHELMING PLAYER FEEDBACK ASKED FOR IT, THEN IN A WEEK OR TWO RUN A POLL. SIMPLE. ITS OK IF ITS IMPERFECT RN
+    can make an options section and add "assist mode" for red rooms and "precision mode" for not
+large rooms (probably never)
+potentially add a seed option to endless, + more customisation
+BUG - at some point, the localstorage makes it so that the red key isnt activated if its saved. very weird
+
+CONSIDER changing volume to settings, making an assist mode for the red rooms there too, a tutorial when you activate red key, etc.
+or not, depending on the poll
+ITS NOT THAT DEEP
+
+POTENTIAL EASY ADJUSTMENT - if the player guesses the exact spot, the get a special emoji next to ultra secret room, or (exact) or something. this incentivises perfection!
+
+poll options:
+leave as is
+leave as is but reduce bombs as more spaces to get right
+revert back to precision
+add a setting to switch between the modes
+add a "perfect" to the win message, so players who pick the exact position are rewarded
+do it next sat
+after the win message. 
+
+
 
 Bugs:
 can place bombs while loading oops
-
-
-PLAN:
-implement ultra secrets, make post aout it. if you feel like you need to in the future, then rework the gameplay to be a run. simple. also post to hutts server
-WAIT - YOU CAN LITERALLY JUST ADD THE DAILY RUN AS A THIRD MODE LOL THATS LITERALLY, FINE. make a MAIN MENU!!!! three options - daily floor, daily run, and endless!
-consider updating the rock stuff, or just the odds so that can spawn in 2 room more likely even if three (actually dont its not fun or fair)
-so. first add ultra secret and a main menu. and a timer?
-then add daily run page. 
-timer complicates ultra secret design. um. main menu isnt rly an option considering 2 different pages will have diff stats, and would have to be different maps or theyd both be playable
-i think just maybe, button on page. doesnt reset timer? but is remembered. timing isnt a big deal, 
-
-
-todo: wrong room mark disappears on normal mode when finished FIXED
-      stats page - still need to add ultra secret tracking and maybe the code in core DONE
-      any bug fixes?  DONE for the winstreak stuff
-      add +2 bombs per, and rework the colours for hard mode DONE
-      about and tips update, etc. maybe welcome message idk DONE
-      no rule i have to release it on weekend! jusut do it when ready
+RED KEY NOT SAVING - IT IS IN LOCALSTORAGE BUT NOT APPLYING CORRECTLY?
+delerium invalid spawns
+NEW BUG - when new day while on page, the generated map had the same layout, but the rooms were different incl secret room placement. must be some issue with the seed after the initial gen?
+unsure. thought it was a browser thing but working fine in private tabs after
+cant replicate it manually. which makes it scarier
