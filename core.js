@@ -130,11 +130,14 @@ export function runCore(gamemode) {
     settingsdata = JSON.parse(settingsdata);
     if (settingsdata && settingsdata.isMuted) {
         setMute();
-    } else if (gamemode == "daily" && settingsdata && settingsdata.hardModeDaily) {
-        setHard();
-    } else if (gamemode == "endless" && settingsdata && settingsdata.hardModeEndless) {
-        setHard();
-    } else if (!settingsdata) {
+    }
+    if (gamemode == "daily" && settingsdata && settingsdata.hardModeDaily) {
+        setHard(true);
+    }
+    if (gamemode == "endless" && settingsdata && settingsdata.hardModeEndless) {
+        setHard(true);
+    }
+    if (!settingsdata) {
         settingsdata = {isMuted: false};
     }
 
