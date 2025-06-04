@@ -16,6 +16,9 @@ export function runCore(gamemode) {
         ["Void"]
     ]
 
+    // Note that the hard mode switching and memory is very hacked together to fix bugs. likely a much more elegant way of unifying it rather than tacking it onto a growing knot of code.
+    // Maybe one day in the future you can address this. for now, it works.
+
     var debugmode = false;
 
     var bombSfx = new Audio("sfx/explosion.wav");
@@ -231,10 +234,10 @@ export function runCore(gamemode) {
         setElements();
         // Set hard
         if (gamemode == "daily" && settingsdata && settingsdata.hardModeDaily) {
-            setHard();
+            setHard(true);
         }
         if (gamemode == "endless" && settingsdata && settingsdata.hardModeEndless) {
-            setHard();
+            setHard(true);
         }
         
     }
@@ -961,7 +964,7 @@ export function runCore(gamemode) {
             // Debug option for incrementing seed
             seedIncrement += 1;
         }
-        if (event.key == "l" && true) {
+        if (event.key == "l" && false) {
             console.log(hardMode)
         }
     });
@@ -996,7 +999,7 @@ export function runCore(gamemode) {
     // Hard mode button functionality
     document.getElementById("ultraButton").addEventListener("click", (event) => {
         if (stage == 0 && !secretFound && stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) {
-            setHard();
+            setHard(!hardMode);
             if (hardMode) {
                 goldenKey.pause();
                 goldenKey.currentTime = 0;
@@ -1005,20 +1008,24 @@ export function runCore(gamemode) {
         }
     });
 
-    function setHard() {
+    function setHard(enable) {
         console.log("sethard called!")
-        hardMode = !hardMode;
+        let switching = false;
+        if (enable == !hardMode) { //  Really scuffed way of ensuring that guesses are only added if player is actively switching it on or off. otherwise, sethard is called by initialiseGamedata for new games, adding additional bombs when hardmode is already enabled and guesses are already added
+            switching = true;
+        }
+        hardMode = enable;
 
         if (hardMode) {
             document.getElementById("ultraButton").style.backgroundImage = "url('images/redKey.png')";
             // If hard, add two bombs. 
-            if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) { //only add guesses if fresh game
+            if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && switching) { //only add guesses if fresh game
                 guesses += 2;
             }
         } else {
             document.getElementById("ultraButton").style.backgroundImage = "url('images/key.png')";
             // If switched back, remove two bombs. 
-            if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) { //only add guesses if fresh game
+            if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && switching) { //only add guesses if fresh game
                 guesses -= 2;
             }
         }
