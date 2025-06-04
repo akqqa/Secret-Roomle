@@ -124,18 +124,12 @@ export function runCore(gamemode) {
 
     // Gets the stored data if any in storage
     if (gamemode == "daily") {
-        var gamedata = localStorage.getItem("secretRoomleData");
+        var gamedata = JSON.parse(localStorage.getItem("secretRoomleData"));
     }
     var settingsdata = localStorage.getItem("settingsData");
     settingsdata = JSON.parse(settingsdata);
     if (settingsdata && settingsdata.isMuted) {
         setMute();
-    }
-    if (gamemode == "daily" && settingsdata && settingsdata.hardModeDaily) {
-        setHard(true);
-    }
-    if (gamemode == "endless" && settingsdata && settingsdata.hardModeEndless) {
-        setHard(true);
     }
     if (!settingsdata) {
         settingsdata = {isMuted: false};
@@ -152,10 +146,8 @@ export function runCore(gamemode) {
         // Once game starts, load localstorage gamedata and load in the data if relevant
         // Get game data
         if (gamemode == "daily") {
-
-            gamedata = localStorage.getItem("secretRoomleData");
             if (gamedata) {
-                let parsedData = JSON.parse(gamedata);
+                let parsedData = gamedata;
                 // If no longer the data in saved data, replace it with fresh data
                 if ( getPuzzleNumber()!= parsedData.lastPlayedDate) {
                     parsedData.lastPlayedDate = getPuzzleNumber();
@@ -177,6 +169,7 @@ export function runCore(gamemode) {
                     }
                     stage = parsedData.currentProgress.stage;
                     guesses = parsedData.currentProgress.guesses;
+                    console.log("setting guesses based off saved data" + guesses)
 
                     secretFound = parsedData.currentProgress.secretFound;
                     supersecretFound = parsedData.currentProgress.supersecretFound;
@@ -236,6 +229,13 @@ export function runCore(gamemode) {
         }
         // Set stats
         setElements();
+        // Set hard
+        if (gamemode == "daily" && settingsdata && settingsdata.hardModeDaily) {
+            setHard();
+        }
+        if (gamemode == "endless" && settingsdata && settingsdata.hardModeEndless) {
+            setHard();
+        }
         
     }
 
@@ -325,6 +325,8 @@ export function runCore(gamemode) {
             levelnum === 12 ? startingGuesses + 4 : // Void is nasty
             null)
             + (hardMode ? 2 : 0); // Attempt at balance based on starting floor
+        console.log("calculating guesses at start of game")
+        console.log(guesses)
         secretFound = false;
         supersecretFound = false;
         ultrasecretFound = false;
@@ -959,6 +961,9 @@ export function runCore(gamemode) {
             // Debug option for incrementing seed
             seedIncrement += 1;
         }
+        if (event.key == "l" && true) {
+            console.log(hardMode)
+        }
     });
 
     // Mute button functionality
@@ -1007,13 +1012,18 @@ export function runCore(gamemode) {
         if (hardMode) {
             document.getElementById("ultraButton").style.backgroundImage = "url('images/redKey.png')";
             // If hard, add two bombs. 
-            guesses += 2;
+            if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) { //only add guesses if fresh game
+                guesses += 2;
+            }
         } else {
             document.getElementById("ultraButton").style.backgroundImage = "url('images/key.png')";
             // If switched back, remove two bombs. 
-            guesses -= 2;
+            if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) { //only add guesses if fresh game
+                guesses -= 2;
+            }
         }
         document.getElementById("guessesremaining").textContent = guesses; // Set new guesses
+        console.log("setting guesses based on sethard" + guesses)
 
         if (settingsdata && gamemode == "daily") {
             settingsdata.hardModeDaily = hardMode;
@@ -1021,6 +1031,7 @@ export function runCore(gamemode) {
             settingsdata.hardModeEndless = hardMode;
         }
         localStorage.setItem("settingsData", JSON.stringify(settingsdata));
+
     }
 
     function getPuzzleNumber() {
