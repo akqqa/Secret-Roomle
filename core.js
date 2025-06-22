@@ -952,6 +952,7 @@ export function runCore(gamemode) {
 
     if (gamemode == "endless") {
         document.getElementById("resetButton").addEventListener("click", (event) => {
+            startTime = Date.now()
             startGame();
         })
     }
