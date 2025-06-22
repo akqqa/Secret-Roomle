@@ -142,8 +142,9 @@ export function runCore(gamemode) {
     if (gamemode == "daily") {
         countdown();
         setInterval(countdown, 1000);
-        setInterval(timer, 10);
     }
+    setInterval(timer, 10);
+
 
     function initializeGamedata(levelGuesses) {
         // Once game starts, load localstorage gamedata and load in the data if relevant
@@ -957,6 +958,8 @@ export function runCore(gamemode) {
 
     addEventListener("keydown", (event) => {
         if (event.key == "r" && gamemode == "endless") {
+            // Reset timer and start game
+            startTime = Date.now()
             startGame();
         }
         if (event.key == "p" && gamemode == "daily" && false) {
