@@ -169,7 +169,6 @@ export class Generator {
                 roomQueue.push(neighbour);
                 roomsRemaining -= 1;
                 roomCounter += 1;
-
             });
             // Blog post says a room is a dead end if it creates no neighbours, but is this true? say one doesnt create any, but later on it loops around and tries to put a room there from the other side. it can do this because no more than 2 already filled neighbours (does allow some loops see void). Therefore must wait till end, manually calculate dead ends, create list, sort by manhattan distance to start room (manhattan? no.. cause could loop around . hm. is there a way of doing it so they loop et it writes dead ends as it goes? AH write them as it goes then do a final pass of them and remove any that dont meet the criteria :) tht keeps it in order !!) - actually basically unnecceesary except for void so do it anyway lol
             if (roomCounter == 0) {
@@ -499,7 +498,6 @@ export class Generator {
         // Assign each ultraCandidate its weight
         let weightedCandidates = []
         ultraCandidates.forEach(ultraCandidate => {
-            console.log("Hi")
             let ultraCandidateNeighbours = this.findNeighbours(ultraCandidate); // Guarenteed to only be red rooms
             // For eachr adjacent red room to a candidate position, find what normal rooms are adjacent to these and add to a unique list 
             let roomSet = new Set();

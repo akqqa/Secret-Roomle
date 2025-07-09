@@ -307,6 +307,7 @@ export function runCore(gamemode) {
 
         do {
             levelnum = Math.floor(Math.random()*12 + 1);
+            console.log("FLOOR SELECTED:" + levelnum);
         } while (levelnum == 9); // Prevents level from being 9 as that makes womb 2 more common!
         curseLabyrinth = false;
         curseLost = false;
@@ -329,8 +330,6 @@ export function runCore(gamemode) {
             levelnum === 12 ? startingGuesses + 4 : // Void is nasty
             null)
             + (hardMode ? 2 : 0); // Attempt at balance based on starting floor
-        console.log("calculating guesses at start of game")
-        console.log(guesses)
         secretFound = false;
         supersecretFound = false;
         ultrasecretFound = false;
@@ -706,7 +705,6 @@ export function runCore(gamemode) {
                 loseSfx.play();
                 deathSfx.play();
             } else if (guesses == 0 && !(secretFound && supersecretFound && ultrasecretFound) && hardMode) {
-                console.log("2");
                 gameover = true;
                 won = false;
                 lost = true;
@@ -728,7 +726,6 @@ export function runCore(gamemode) {
                 loseSfx.play();
                 deathSfx.play();
             } else if (secretFound && supersecretFound && !hardMode) {
-                console.log("3");
                 gameover = true;
                 won = true;
                 lost = false;
@@ -748,7 +745,6 @@ export function runCore(gamemode) {
                     gamedata.stats.wins += 1;
                     gamedata.stats.winStreak  += 1;
                     gamedata.lastWonDate = getPuzzleNumber();
-                    console.log(gamedata.lastWonDate);
                     if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
                         gamedata.stats.maxStreak = gamedata.stats.winStreak;
                     }
@@ -758,7 +754,6 @@ export function runCore(gamemode) {
                 secretRoomSfx.currentTime = 0;
                 winSfx.play();
             } else if (secretFound && supersecretFound && ultrasecretFound && hardMode) {
-                console.log("4");
                 gameover = true;
                 won = true;
                 lost = false;
@@ -1013,7 +1008,6 @@ export function runCore(gamemode) {
     });
 
     function setHard(enable) {
-        console.log("sethard called!")
         let switching = false;
         if (enable == !hardMode) { //  Really scuffed way of ensuring that guesses are only added if player is actively switching it on or off. otherwise, sethard is called by initialiseGamedata for new games, adding additional bombs when hardmode is already enabled and guesses are already added
             switching = true;
@@ -1034,7 +1028,6 @@ export function runCore(gamemode) {
             }
         }
         document.getElementById("guessesremaining").textContent = guesses; // Set new guesses
-        console.log("setting guesses based on sethard" + guesses)
 
         if (settingsdata && gamemode == "daily") {
             settingsdata.hardModeDaily = hardMode;
