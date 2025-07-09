@@ -579,7 +579,7 @@ export class Generator {
     placeRocks() {
         let rockOddsAdjusted = rockOdds;
         if (this.stage == 11) {
-            rockOddsAdjusted = 0; // No rocks on chest or dark room!
+            rockOddsAdjusted = 0.03; // No rocks on chest or dark room!
         }
         for(let i = 0; i < 13; i++) {
             for(let j = 0; j < 13; j++) {
