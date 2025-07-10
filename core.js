@@ -845,9 +845,9 @@ export function runCore(gamemode) {
 
                 let roomleNumber = getPuzzleNumber();
                 if (hardMode) {
-                    document.getElementById("gameOverText").textContent = `You ${winOrLoss} Ultra Secret Voidle #${roomleNumber} \n${results}\nTime: ${formatted}`;
+                    document.getElementById("gameOverText").textContent = `You ${winOrLoss} Ultra Secret  ̶V̶o̶i̶d̶Roomle #${roomleNumber} \n${results}\nTime: ${formatted}`;
                 } else {
-                    document.getElementById("gameOverText").textContent = `You ${winOrLoss} Secret Voidle #${roomleNumber} \n${results}\nTime: ${formatted}`;
+                    document.getElementById("gameOverText").textContent = `You ${winOrLoss} Secret  ̶V̶o̶i̶d̶Roomle #${roomleNumber} \n${results}\nTime: ${formatted}`;
                 }
                 document.getElementById("gameOverModal").style.display = "block";
             }
