@@ -197,6 +197,7 @@ export function runCore(gamemode) {
                 }
                 // Same as above but for fastest time
                 if (!parsedData.stats.fastestTime) {
+                    console.log("adding fastest time");
                     parsedData.stats.fastestTime = -1;
                 }
                 if (!parsedData.stats.fastestTimeUltra) {
