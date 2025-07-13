@@ -195,6 +195,13 @@ export function runCore(gamemode) {
                 if (!parsedData.stats.ultraSecretRoomsFound) {
                     parsedData.stats.ultraSecretRoomsFound = 0;
                 }
+                // Same as above but for fastest time
+                if (!parsedData.stats.fastestTime) {
+                    parsedData.stats.fastestTime = -1;
+                }
+                if (!parsedData.stats.fastestTimeUltra) {
+                    parsedData.stats.fastestTimeUltra = -1;
+                }
                 gamedata = parsedData;
             } else {
                 gamedata = {
@@ -219,7 +226,9 @@ export function runCore(gamemode) {
                         ultraSecretRoomsFound: 0,
                         wins: 0,
                         winStreak: 0,
-                        maxStreak: 0
+                        maxStreak: 0,
+                        fastestTime: -1,
+                        fastestTimeUltra: -1
                     }
                 };
             }
@@ -253,6 +262,17 @@ export function runCore(gamemode) {
             document.getElementById("ultraSecretRoomsFound").textContent = gamedata.stats.ultraSecretRoomsFound; 
             document.getElementById("currentWinstreak").textContent = gamedata.stats.winStreak; 
             document.getElementById("bestWinstreak").textContent = gamedata.stats.maxStreak; 
+            if (gamedata.stats.fastestTime == -1) {
+                document.getElementById("fastestTime").textContent = "N/A"; 
+            } else {
+                document.getElementById("fastestTime").textContent =  new Date(gamedata.stats.fastestTime * 1000).toISOString().substring(14, 22); 
+            }
+            if (gamedata.stats.fastestTimeUltra == -1) {
+                document.getElementById("fastestTimeUltra").textContent = "N/A"; 
+            } else {
+                document.getElementById("fastestTimeUltra").textContent =  new Date(gamedata.stats.fastestTimeUltra * 1000).toISOString().substring(14, 22); 
+            }
+
         }
         // Also set the guesses remaining for this current game
         document.getElementById("guessesremaining").textContent = guesses;
@@ -748,6 +768,12 @@ export function runCore(gamemode) {
                     if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
                         gamedata.stats.maxStreak = gamedata.stats.winStreak;
                     }
+                    let elapsed = Date.now() - startTime;
+                    let seconds = gameTime + (elapsed/1000);
+                    if (gamedata.stats.fastestTime == -1 || gamedata.stats.fastestTime > seconds) {
+                        gamedata.stats.fastestTime = seconds;
+                        console.log("FINISHED IN " + seconds);
+                    } 
                 }
                 // Stop sounds and play win
                 secretRoomSfx.pause();
@@ -776,6 +802,12 @@ export function runCore(gamemode) {
                     if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
                         gamedata.stats.maxStreak = gamedata.stats.winStreak;
                     }
+                    let elapsed = Date.now() - startTime;
+                    let seconds = gameTime + (elapsed/1000);
+                    if (gamedata.stats.fastestTimeUltra == -1 || gamedata.stats.fastestTimeUltra > seconds) {
+                        gamedata.stats.fastestTimeUltra = seconds;
+                        console.log("FINISHED IN " + seconds);
+                    } 
                 }
                 // Stop sounds and play win
                 secretRoomSfx.pause();
