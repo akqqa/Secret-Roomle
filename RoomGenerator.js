@@ -467,8 +467,8 @@ export class Generator {
         
         // Now that red and blue rooms are placed, go through all rooms and if a red room neighbour +  doesnt touch any non-red rooms , add to ultraCandidates list
         let ultraCandidates = [];
-        for(let i = 0; i < 13; i++) {
-            for(let j = 0; j < 13; j++) {
+        for(let i = 1; i < 12; i++) {
+            for(let j = 1; j < 12; j++) { // Restrict search to not include edges as these are never valid
                 if (this.map[j][i]) {
                     continue;
                 }
