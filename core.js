@@ -11,7 +11,7 @@ export function runCore(gamemode) {
         ["Womb I", "Utero I", "Scarred Womb I"],
         ["Womb II", "Utero II", "Scarred Womb II"],
         ["Womb II", "Utero II", "Scarred Womb II"], // Technicality due to stage 9 being hush
-        ["Cathederal", "Sheol"],
+        ["Cathedral", "Sheol"],
         ["Chest", "Dark Room"],
         ["Void"]
     ]
