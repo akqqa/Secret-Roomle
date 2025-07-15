@@ -1,6 +1,9 @@
 import { Room, Generator } from './RoomGenerator.js';
 
 export function runCore(gamemode) {
+
+    var resultsShowing = false;
+
     const floornames = [
         ["Basement I", "Burning Basement I", "Cellar I"],
         ["Basement II", "Burning Basement II", "Cellar II"],
@@ -75,7 +78,7 @@ export function runCore(gamemode) {
     const imageNames = ["emptyRoom", "bossRoom", "shopRoom", "itemRoom", "secretRoom", 
         "superSecretRoom", "planetariumRoom", "diceRoom", "sacrificeRoom", "libraryRoom", 
         "curseRoom", "minibossRoom", "challengeRoom", "bossChallengeRoom", "arcadeRoom", 
-        "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb", "startRoom", "redRoom", "blueRoom", "ultraSecretRoom"];
+        "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb", "startRoom", "redRoom", "blueRoom", "ultraSecretRoom", "button2"];
 
     function cacheImages() {
         const promises = imageNames.map(name => {
@@ -496,6 +499,12 @@ export function runCore(gamemode) {
             ctx.fill();
             ctx.fillStyle = "rgba(0, 0, 0, 1)";
             ctx.fillText("You lose!", mapSize / 2, mapSize*1.8 / 20);
+            ctx.fillStyle = "rgba(0, 0, 0, 1)";
+            if (gamemode == "daily" && !resultsShowing) {
+                drawCachedImage("button2", mapSize/5 * 1.5, mapSize / 20 * 16.5, mapSize/5 * 2, mapSize * 2 / 20)
+                ctx.font = "140px Upheaval";
+                ctx.fillText("Results", mapSize / 2, mapSize / 20 * 17.35);
+            }
         } else if (won) {
             ctx.beginPath();
             ctx.font = "200px Upheaval";
@@ -506,6 +515,11 @@ export function runCore(gamemode) {
             ctx.fill();
             ctx.fillStyle = "rgba(0, 0, 0, 1)";
             ctx.fillText("You win!", mapSize / 2, mapSize*1.8 / 20);
+            if (gamemode == "daily" && !resultsShowing) {
+                drawCachedImage("button2", mapSize/5 * 1.5, mapSize / 20 * 16.5, mapSize/5 * 2, mapSize * 2 / 20)
+                ctx.font = "140px Upheaval";
+                ctx.fillText("Results", mapSize / 2, mapSize / 20 * 17.35);
+            }
         }
     }
 
@@ -882,6 +896,8 @@ export function runCore(gamemode) {
                     document.getElementById("gameOverText").textContent = `You ${winOrLoss} Secret Roomle #${roomleNumber} \n${results}\nTime: ${formatted}`;
                 }
                 document.getElementById("gameOverModal").style.display = "block";
+                resultsShowing = true;
+                drawMap();
             }
 
             // After every valid click, update localstorage with info about todays game, overwriting it.
