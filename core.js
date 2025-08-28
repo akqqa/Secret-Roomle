@@ -8,7 +8,7 @@ export function runCore(gamemode) {
         ["Basement I", "Burning Basement I", "Cellar I"],
         ["Basement II", "Burning Basement II", "Cellar II"],
         ["Caves I", "Catacombs I", "Flooded Caves I"],
-        ["Caves II", "Catacombs II", "Flooded Caves II"],
+        ["Caves II", "Catacombs II", "Flooded Caves II"],w
         ["Depths I", "Necropolis I", "Dank Depths I"],
         ["Depths II", "Necropolis II", "Dank Depths II"],
         ["Womb I", "Utero I", "Scarred Womb I"],
@@ -723,6 +723,68 @@ export function runCore(gamemode) {
         document.getElementById("guessesremaining").textContent = guesses; // Update guesses remaining visually
     }
 
+    function handleGameOver() {
+        // Game over logic
+        if (guesses == 0 && !(secretFound && supersecretFound) && !hardMode) { // Loss on normal
+            gameover = true;
+            won = false;
+            lost = true;
+            stage = 2;
+            // Unhide secret rooms
+            unhideRooms(room => room.hidden == true && room.type != "redwrong" && room.type != "red" && room.type != "ultrasecret");
+            drawMap(null);
+            // Modify users stats
+            if (gamemode == "daily") {
+                gamedata.stats.winStreak = 0;
+            }
+            loseSfx.play();
+            deathSfx.play();
+        } else if (guesses == 0 && !(secretFound && supersecretFound && ultrasecretFound) && hardMode) { // Loss on hard
+            gameover = true;
+            won = false;
+            lost = true;
+            stage = 2;
+            unhideRooms(room => room.hidden == true);
+            drawMap(null);
+            // Modify users stats
+            if (gamemode == "daily") {
+                gamedata.stats.winStreak = 0;
+            }
+            loseSfx.play();
+            deathSfx.play();
+        } else if (secretFound && supersecretFound && !hardMode) { // Win on normal
+            gameover = true;
+            won = true;
+            lost = false;
+            stage = 2;
+            unhideRooms(room => room.hidden == true && room.type != "redwrong" && room.type != "red" && room.type != "ultrasecret");
+            drawMap(null);
+            if (gamemode == "daily") {
+                // Modify users stats
+                updateWinStats();
+            }
+            // Stop sounds and play win
+            secretRoomSfx.pause();
+            secretRoomSfx.currentTime = 0;
+            winSfx.play();
+        } else if (secretFound && supersecretFound && ultrasecretFound && hardMode) { // Win on hard
+            gameover = true;
+            won = true;
+            lost = false;
+            stage = 2;
+            // Unhide secret rooms
+            unhideRooms(room => room.hidden == true);
+            drawMap(null);
+            if (gamemode == "daily") {
+                updateWinStats();
+            }
+            // Stop sounds and play win
+            secretRoomSfx.pause();
+            secretRoomSfx.currentTime = 0;
+            winSfx.play();
+        }
+    }
+
     canvas.addEventListener("mousemove", event => {
         if (!gameover) {
             let transform = ctx.getTransform();
@@ -757,65 +819,7 @@ export function runCore(gamemode) {
             // If room is undefined, set it to a wrong room
             handleRoomClick(room, x, y);
 
-            // Game over logic
-            if (guesses == 0 && !(secretFound && supersecretFound) && !hardMode) { // Loss on normal
-                gameover = true;
-                won = false;
-                lost = true;
-                stage = 2;
-                // Unhide secret rooms
-                unhideRooms(room => room.hidden == true && room.type != "redwrong" && room.type != "red" && room.type != "ultrasecret");
-                drawMap(null);
-                // Modify users stats
-                if (gamemode == "daily") {
-                    gamedata.stats.winStreak = 0;
-                }
-                loseSfx.play();
-                deathSfx.play();
-            } else if (guesses == 0 && !(secretFound && supersecretFound && ultrasecretFound) && hardMode) { // Loss on hard
-                gameover = true;
-                won = false;
-                lost = true;
-                stage = 2;
-                unhideRooms(room => room.hidden == true);
-                drawMap(null);
-                // Modify users stats
-                if (gamemode == "daily") {
-                    gamedata.stats.winStreak = 0;
-                }
-                loseSfx.play();
-                deathSfx.play();
-            } else if (secretFound && supersecretFound && !hardMode) { // Win on normal
-                gameover = true;
-                won = true;
-                lost = false;
-                stage = 2;
-                unhideRooms(room => room.hidden == true && room.type != "redwrong" && room.type != "red" && room.type != "ultrasecret");
-                drawMap(null);
-                if (gamemode == "daily") {
-                    // Modify users stats
-                    updateWinStats();
-                }
-                // Stop sounds and play win
-                secretRoomSfx.pause();
-                secretRoomSfx.currentTime = 0;
-                winSfx.play();
-            } else if (secretFound && supersecretFound && ultrasecretFound && hardMode) { // Win on hard
-                gameover = true;
-                won = true;
-                lost = false;
-                stage = 2;
-                // Unhide secret rooms
-                unhideRooms(room => room.hidden == true);
-                drawMap(null);
-                if (gamemode == "daily") {
-                    updateWinStats();
-                }
-                // Stop sounds and play win
-                secretRoomSfx.pause();
-                secretRoomSfx.currentTime = 0;
-                winSfx.play();
-            }
+            handleGameOver();
 
             // Modal to display
             if (gameover && gamemode == "daily") {
