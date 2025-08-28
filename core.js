@@ -8,7 +8,7 @@ export function runCore(gamemode) {
         ["Basement I", "Burning Basement I", "Cellar I"],
         ["Basement II", "Burning Basement II", "Cellar II"],
         ["Caves I", "Catacombs I", "Flooded Caves I"],
-        ["Caves II", "Catacombs II", "Flooded Caves II"],w
+        ["Caves II", "Catacombs II", "Flooded Caves II"],
         ["Depths I", "Necropolis I", "Dank Depths I"],
         ["Depths II", "Necropolis II", "Dank Depths II"],
         ["Womb I", "Utero I", "Scarred Womb I"],
