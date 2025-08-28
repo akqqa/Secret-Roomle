@@ -1,11 +1,14 @@
 import { Room, Generator } from './RoomGenerator.js';
 
 export function runCore(gamemode) {
+
+    var resultsShowing = false;
+
     const floornames = [
         ["Basement I", "Burning Basement I", "Cellar I"],
         ["Basement II", "Burning Basement II", "Cellar II"],
         ["Caves I", "Catacombs I", "Flooded Caves I"],
-        ["Caves II", "Catacombs II", "Flooded Caves II"],
+        ["Caves II", "Catacombs II", "Flooded Caves II"],w
         ["Depths I", "Necropolis I", "Dank Depths I"],
         ["Depths II", "Necropolis II", "Dank Depths II"],
         ["Womb I", "Utero I", "Scarred Womb I"],
@@ -47,6 +50,27 @@ export function runCore(gamemode) {
     var rockSize;
     let currentDate = new Date();
 
+    // Variables
+    var generator = null;
+    var levelnum = null;
+    var curseLabyrinth = null;
+    var curseLost = null;
+    var hard = null;
+    var levelname = null;
+
+    var stage = 0; // stage = 1 is room types, stage = 2 is rocks
+    var guesses = startingGuesses;
+    var secretFound = false;
+    var supersecretFound = false;
+    var ultrasecretFound = false;
+    var attempts = 0;
+    var gameover = false;
+    var won = false;
+    var lost = false;
+
+    var startTime = Date.now(); // The time the puzzle was loaded, to get an accurate time diff
+    var gameTime = 0; // Timer works by taking gametime and adding to it the num of ms since timer restarted
+
     let seed = null;
     var seedIncrement = 0; // For debugging purposes set this to the number of days in the future you want the puzzle to be 
     if (gamemode == "daily") {
@@ -54,12 +78,56 @@ export function runCore(gamemode) {
         Math.seedrandom(seed); 
     }
 
-
     let visualSize = 1;
     // Create canvas and various variables
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     ctx.scale(size/visualSize, size/visualSize);
+
+    const stage0RoomMap = {
+        wrong: "scorch",
+        redwrong: "scorch",
+        start: "startRoom",
+        secret: r => !r.hidden ? "secretRoom" : null,
+        supersecret: r => !r.hidden ? "superSecretRoom" : null,
+        red: r => !r.hidden && hardMode ? "redRoom" : null,
+        blue: r => !r.hidden && hardMode ? "blueRoom" : null,
+        ultrasecret: r => !r.hidden && hardMode ? "ultraSecretRoom" : null,
+        default: r => !r.hidden ? "emptyRoom" : null
+    };
+
+    const stage1RoomMap = {
+        boss: "bossRoom",
+        start: "startRoom",
+        shop: "shopRoom",
+        item: "itemRoom",
+        wrong: "scorch",
+        redwrong: r => ( (!hardMode) || (r.hidden && !gameover && hardMode) ) ? "scorch" : null,
+        secret: r => !r.hidden ? "secretRoom" : null,
+        supersecret: r => !r.hidden ? "superSecretRoom" : null,
+        planetarium: r => !r.hidden ? "planetariumRoom" : null,
+        dice: r => !r.hidden ? "diceRoom" : null,
+        sacrifice: r => !r.hidden ? "sacrificeRoom" : null,
+        library: r => !r.hidden ? "libraryRoom" : null,
+        curse: r => !r.hidden ? "curseRoom" : null,
+        miniboss: r => !r.hidden ? "minibossRoom" : null,
+        challenge: r => !r.hidden ? "challengeRoom" : null,
+        bosschallenge: r => !r.hidden ? "bossChallengeRoom" : null,
+        arcade: r => !r.hidden ? "arcadeRoom" : null,
+        vault: r => !r.hidden ? "vaultRoom" : null,
+        bedroom: r => !r.hidden ? "bedroomRoom" : null,
+        red: r => !r.hidden && hardMode ? "redRoom" : null,
+        blue: r => !r.hidden && hardMode ? "blueRoom" : null,
+        ultrasecret: r => !r.hidden && hardMode ? "ultraSecretRoom" : null,
+        default: r => !r.hidden ? "emptyRoom" : null
+    };
+
+    function getRoomSprite(room, stage) {
+        if (!room) return null;
+        const map = (stage === 0) ? stage0RoomMap : stage1RoomMap;
+        const entry = map[room.type] ?? map.default;
+        return (typeof entry === "function") ? entry(room) : entry;
+    }
 
 
     // https://stackoverflow.com/questions/44484547/screen-width-screen-height-not-updating-after-screen-rotation iphones dont change screen.width when rotating, but the ability to zoom + fix on chrome and others when rotating is worth this minor flaw. still fully usable.
@@ -75,7 +143,7 @@ export function runCore(gamemode) {
     const imageNames = ["emptyRoom", "bossRoom", "shopRoom", "itemRoom", "secretRoom", 
         "superSecretRoom", "planetariumRoom", "diceRoom", "sacrificeRoom", "libraryRoom", 
         "curseRoom", "minibossRoom", "challengeRoom", "bossChallengeRoom", "arcadeRoom", 
-        "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb", "startRoom", "redRoom", "blueRoom", "ultraSecretRoom"];
+        "vaultRoom", "bedroomRoom", "rock", "scorch", "bomb", "startRoom", "redRoom", "blueRoom", "ultraSecretRoom", "button2"];
 
     function cacheImages() {
         const promises = imageNames.map(name => {
@@ -103,27 +171,6 @@ export function runCore(gamemode) {
         startTime = Date.now(); // SET START TIME TO BE THE TIME WHERE THE GAME ACTUALLY LOADS
         drawMap();
     });
-
-    // Variables
-    var generator = null;
-    var levelnum = null;
-    var curseLabyrinth = null;
-    var curseLost = null;
-    var hard = null;
-    var levelname = null;
-
-    var stage = 0; // stage = 1 is room types, stage = 2 is rocks
-    var guesses = startingGuesses;
-    var secretFound = false;
-    var supersecretFound = false;
-    var ultrasecretFound = false;
-    var attempts = 0;
-    var gameover = false;
-    var won = false;
-    var lost = false;
-
-    var startTime = Date.now(); // The time the puzzle was loaded, to get an accurate time diff
-    var gameTime = 0; // Timer works by taking gametime and adding to it the num of ms since timer restarted
 
     // Gets the stored data if any in storage
     if (gamemode == "daily") {
@@ -303,9 +350,7 @@ export function runCore(gamemode) {
         document.getElementById("gameCanvas").style.backgroundRepeat = "no-repeat"; // Prevent image repetition
     }
 
-    // Sets variables, and generates map, starting the game
-    function startGame() {
-
+    function stopSounds() {
         // Stop all sounds
         secretRoomSfx.pause();
         secretRoomSfx.currentTime = 0;
@@ -319,16 +364,16 @@ export function runCore(gamemode) {
         deathSfx.currentTime = 0;
         goldenKey.pause();
         goldenKey.currentTime = 0;
+    }
 
+    function generateLevel() {
         if (gamemode == "daily") {
-            Math.seedrandom(seed); // THERE WAS SOME WEIRD RACE CONDITION THAT MADE THE SEED SWITCH BETWEEN 2 !!! FIXED.
-
-            document.getElementById("gameOverModal").style.display = "none"; // closes modal on refreshr
+            Math.seedrandom(seed);
+            document.getElementById("gameOverModal").style.display = "none"; // closes modal on refresh
         }
 
         do {
             levelnum = Math.floor(Math.random()*12 + 1);
-            console.log("FLOOR SELECTED:" + levelnum);
         } while (levelnum == 9); // Prevents level from being 9 as that makes womb 2 more common!
         curseLabyrinth = false;
         curseLost = false;
@@ -359,10 +404,46 @@ export function runCore(gamemode) {
         won = false;
         lost = false;
         generator.generateMap();
+    }
 
+    // Sets variables, and generates map, starting the game
+    function startGame() {
+        stopSounds();
+        generateLevel()
         initializeGamedata(guesses);
-
         drawMap();
+    }
+
+    function drawLoading() {
+        ctx.beginPath();
+        ctx.font = "200px Upheaval";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fill();
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        ctx.fillText("Loading...", mapSize / 2, mapSize / 2);
+    }
+
+    function drawWinOrLose(won) {
+        ctx.beginPath();
+        ctx.font = "200px Upheaval";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        if (won) {
+            ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+        } else {
+            ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        }
+        ctx.rect(0, mapSize / 20, mapSize, mapSize * 2 / 20 );
+        ctx.fill();
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        if (won) {
+            ctx.fillText("You win!", mapSize / 2, mapSize*1.8 / 20);
+        } else {
+            ctx.fillText("You lose!", mapSize / 2, mapSize*1.8 / 20);
+
+        }
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
     }
 
     // Draws the map, also accounting for which room is hovered over, and what the current game stage is
@@ -371,13 +452,7 @@ export function runCore(gamemode) {
             return;
         }
         if (!gameImagesLoaded && document.fonts.check('1em "Upheaval"')) { // only show loading when the font is loaded!!!!
-            ctx.beginPath();
-            ctx.font = "200px Upheaval";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fill();
-            ctx.fillStyle = "rgba(0, 0, 0, 1)";
-            ctx.fillText("Loading...", mapSize / 2, mapSize / 2);
+            drawLoading();
             return;
         }
 
@@ -392,80 +467,10 @@ export function runCore(gamemode) {
                         drawCachedImage("bomb", x, y, roomSize, roomSize);
                     }
                 }
+                
+                let sprite = getRoomSprite(room, stage);
+                if (sprite) drawCachedImage(sprite, x, y, roomSize, roomSize);
 
- 
-
-                if (stage == 0) {
-                    if (room) {
-                        if (room.type == "wrong" || room.type == "redwrong") {
-                            drawCachedImage("scorch", x, y, roomSize, roomSize);
-                        } else if (room.type == "start") {
-                            drawCachedImage("startRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "secret" && !room.hidden) {
-                            drawCachedImage("secretRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "supersecret" && !room.hidden) {
-                            drawCachedImage("superSecretRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "red" && !room.hidden && hardMode) { //DEBUG
-                            drawCachedImage("redRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "blue" && !room.hidden && hardMode) { //DEBUG
-                            drawCachedImage("blueRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "ultrasecret" && !room.hidden && hardMode) { //DEBUG
-                            drawCachedImage("ultraSecretRoom", x, y, roomSize, roomSize);
-                        } else if (!room.hidden) {
-                            drawCachedImage("emptyRoom", x, y, roomSize, roomSize);
-                        }
-                    }
-                    // Add condition for if exposed secret room should still draw the ?
-                }
-                if (stage == 1 || stage == 2) {
-                    if (room) { // Yes, i should have used a map or something. sue me.
-                        if (room.type == "boss") {
-                            drawCachedImage("bossRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "start") {
-                            drawCachedImage("startRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "shop") {
-                            drawCachedImage("shopRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "item") {
-                            drawCachedImage("itemRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "wrong" || (room.type == "redwrong" && room.hidden && !gameover && hardMode) || (room.type == "redwrong" && !hardMode)) { // If wrong, or redwrong and hidden and not gameover and hard, or redwrong and not hard. god redwrong is convoluted but whatever
-                            drawCachedImage("scorch", x, y, roomSize, roomSize);
-                        } else if (room.type == "secret" && !room.hidden) {
-                            drawCachedImage("secretRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "supersecret" && !room.hidden) {
-                            drawCachedImage("superSecretRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "planetarium" && !room.hidden) {
-                            drawCachedImage("planetariumRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "dice" && !room.hidden) {
-                            drawCachedImage("diceRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "sacrifice" && !room.hidden) {
-                            drawCachedImage("sacrificeRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "library" && !room.hidden) {
-                            drawCachedImage("libraryRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "curse" && !room.hidden) {
-                            drawCachedImage("curseRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "miniboss" && !room.hidden) {
-                            drawCachedImage("minibossRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "challenge" && !room.hidden) {
-                            drawCachedImage("challengeRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "bosschallenge" && !room.hidden) {
-                            drawCachedImage("bossChallengeRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "arcade" && !room.hidden) {
-                            drawCachedImage("arcadeRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "vault" && !room.hidden) {
-                            drawCachedImage("vaultRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "bedroom" && !room.hidden) {
-                            drawCachedImage("bedroomRoom", x, y, roomSize, roomSize);
-                        } else if ((room.type == "red" || room.type == "redwrong") && !room.hidden && hardMode) {
-                            drawCachedImage("redRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "blue" && !room.hidden && hardMode) {
-                            drawCachedImage("blueRoom", x, y, roomSize, roomSize);
-                        } else if (room.type == "ultrasecret" && !room.hidden && hardMode) {
-                            drawCachedImage("ultraSecretRoom", x, y, roomSize, roomSize);
-                        } else if (!room.hidden) { 
-                            drawCachedImage("emptyRoom", x, y, roomSize, roomSize); 
-                        }
-                    }
-                }
                 if (stage == 2) {
                     // Draw rocks
                     if (room) {
@@ -488,25 +493,9 @@ export function runCore(gamemode) {
 
         // Won or lost
         if (lost) {
-            ctx.beginPath();
-            ctx.font = "200px Upheaval";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-            ctx.rect(0, mapSize / 20, mapSize, mapSize * 2 / 20 );
-            ctx.fill();
-            ctx.fillStyle = "rgba(0, 0, 0, 1)";
-            ctx.fillText("You lose!", mapSize / 2, mapSize*1.8 / 20);
+            drawWinOrLose(false);
         } else if (won) {
-            ctx.beginPath();
-            ctx.font = "200px Upheaval";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-            ctx.rect(0, mapSize / 20, mapSize, mapSize * 2 / 20 );
-            ctx.fill();
-            ctx.fillStyle = "rgba(0, 0, 0, 1)";
-            ctx.fillText("You win!", mapSize / 2, mapSize*1.8 / 20);
+            drawWinOrLose(true);
         }
     }
 
@@ -548,6 +537,255 @@ export function runCore(gamemode) {
         }
     }
 
+    function generateResults() {
+        let results = "";
+        let winOrLoss = won;
+        if (won) {
+            winOrLoss = "won";
+        } else {
+            winOrLoss = "lost";
+        }
+        if (secretFound) {
+            results += "🟩 Secret Room"
+        } else {
+            results += "🟥 Secret Room"
+        }
+        if (supersecretFound) {
+            results += "\n🟩 Super Secret Room "
+        } else {
+            results += "\n🟥 Super Secret Room"
+        }
+        if (hardMode && ultrasecretFound) {
+            results += "\n🟩 Ultra Secret Room "
+        } else if (hardMode) {
+            results += "\n🟥 Ultra Secret Room"
+        }
+        let totalBombs = (
+            levelnum <= 10 ? startingGuesses :
+            levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
+            levelnum === 12 ? startingGuesses + 4 : // Void is nasty
+            null)
+            + (hardMode ? 2 : 0); // hard mode gives 2 extra bombs!
+        let bombPerformance = (
+            won == false ? "🟥":
+            levelnum == 12 && guesses <= 2 && !hardMode ? "🟧" :
+            levelnum == 12 && guesses <= 5 && !hardMode ? "🟨" :
+            levelnum == 12 && guesses <= 10 && !hardMode ? "🟩" :
+            levelnum == 11 && guesses <= 1 && !hardMode ? "🟧" :
+            levelnum == 11 && guesses <= 4 && !hardMode ? "🟨" :
+            levelnum == 11 && guesses <= 8 && !hardMode ? "🟩" :
+            levelnum <= 10 && guesses <= 0 && !hardMode ? "🟧" :
+            levelnum <= 10 && guesses <= 2 && !hardMode ? "🟨" :
+            levelnum <= 10 && guesses <= 4 && !hardMode ? "🟩" :
+            levelnum == 12 && guesses <= 2 && hardMode ? "🟧" :
+            levelnum == 12 && guesses <= 6 && hardMode ? "🟨" :
+            levelnum == 12 && guesses <= 9 && hardMode ? "🟩" :
+            levelnum == 11 && guesses <= 1 && hardMode ? "🟧" :
+            levelnum == 11 && guesses <= 4 && hardMode ? "🟨" :
+            levelnum == 11 && guesses <= 7 && hardMode ? "🟩" :
+            levelnum <= 10 && guesses <= 1 && hardMode ? "🟧" :
+            levelnum <= 10 && guesses <= 3 && hardMode ? "🟨" :
+            levelnum <= 10 && guesses <= 5 && hardMode ? "🟩" :
+
+            null); // Attempt at balance based on starting floor - now hard coded to give a roughly even spread for each floor!
+            // Spread for normal (6 guesses) 2 green 2 yellow 1 orange, stage 10 (8 guesses) is 2 green 3 yellow 2 orange, stage 12 (10 guesses) is 3 green 3 yellow 3 orange!
+            // Spread for hard: (8 guesses) 2 green 2 yellow 2 orange (1 less cause takes 1 more bomb), stage 11 (10 guesses) 3 green 3 yellow 2 orange, stage 12 (12 gueses) green 3 yellow 4 orange 3
+        results += `\n${bombPerformance} ${guesses}/${totalBombs} bomb(s) remaining`
+
+        let elapsed = Date.now() - startTime;
+        let seconds = gameTime + (elapsed/1000);
+        let formatted = new Date(seconds * 1000).toISOString().substring(14, 22);
+
+        let roomleNumber = getPuzzleNumber();
+        if (hardMode) {
+            document.getElementById("gameOverText").textContent = `You ${winOrLoss} Ultra Secret Roomle #${roomleNumber} \n${results}\nTime: ${formatted}`;
+        } else {
+            document.getElementById("gameOverText").textContent = `You ${winOrLoss} Secret Roomle #${roomleNumber} \n${results}\nTime: ${formatted}`;
+        }
+        document.getElementById("gameOverModal").style.display = "block";
+        resultsShowing = true;
+        drawMap();
+    }
+
+    function playSfx(sound) {
+        sound.pause();
+        sound.currentTime = 0;
+        sound.play();
+    }
+
+    function updateWinStats() {
+        // Modify users stats
+        gamedata.stats.wins += 1;
+        gamedata.stats.winStreak  += 1;
+        gamedata.lastWonDate = getPuzzleNumber();
+        if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
+            gamedata.stats.maxStreak = gamedata.stats.winStreak;
+        }
+        let elapsed = Date.now() - startTime;
+        let seconds = gameTime + (elapsed/1000);
+        if (gamedata.stats.fastestTimeUltra == -1 || gamedata.stats.fastestTimeUltra > seconds) {
+            gamedata.stats.fastestTimeUltra = seconds;
+        } 
+    }
+
+    function unhideRooms(predicate) {
+        for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
+            for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
+                let room = generator.map[(y / roomSize) - 1][(x / roomSize) - 1];
+                if (room && predicate(room)) {
+                    room.hidden = false;
+                }
+            }
+        }
+    }
+
+    function increaseTotalGames() {
+        if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) {
+            gamedata.stats.totalGames += 1;
+        }
+    }
+
+    function handleRoomClick(room, x, y) {
+        if (!room) {
+            if (gamemode == "daily") {
+                increaseTotalGames()
+            }
+            let newRoom = new Room(y,x);
+            newRoom.type = "wrong";
+            generator.map[y][x] = newRoom;
+            stage = Math.min(2, stage+1);
+            guesses -= 1;
+            playSfx(bombSfx);
+        } else if (room.type == "red" && !hardMode) { // If red room, treat like nonexistent room as should be hidden (until end)
+            if (gamemode == "daily") {
+                increaseTotalGames();
+            }
+            room.type = "redwrong";
+            drawMap();
+            console.log("set to redwrong");
+            stage = Math.min(2, stage+1);
+            guesses -= 1;
+            playSfx(bombSfx);
+        } else if (room.type == "red" && hardMode && room.hidden) { // If red room on hard mode, reveal usr!
+            if (gamemode == "daily") {
+                increaseTotalGames();
+                gamedata.stats.ultraSecretRoomsFound += 1;
+            }
+            guesses -= 1;
+            playSfx(bombSfx);
+            playSfx(secretRoomSfx);
+            room.hidden = false;
+            ultrasecretFound = true;
+            // Find usr and unhide it,as well as all other red rooms
+            unhideRooms(room => room.type == "ultrasecret" || room.type == "red");
+
+        } else if (room.type == "secret" && room.hidden) {
+            if (gamemode == "daily") {
+                increaseTotalGames();
+                gamedata.stats.secretRoomsFound += 1;
+            }
+            room.hidden = false;
+            secretFound = true;
+            guesses -= 1;
+            playSfx(bombSfx);
+            playSfx(secretRoomSfx);
+        } else if (room.type == "supersecret" && room.hidden) {
+            if (gamemode == "daily") {
+                increaseTotalGames();
+                gamedata.stats.superSecretRoomsFound += 1;
+            }
+            room.hidden = false;
+            supersecretFound = true;
+            guesses -= 1;
+            playSfx(bombSfx);
+            playSfx(secretRoomSfx);
+        } else if (room.type == "ultrasecret" && room.hidden && hardMode) {
+            if (gamemode == "daily") {
+                increaseTotalGames();
+                gamedata.stats.ultraSecretRoomsFound += 1;
+            }
+            room.hidden = false;
+            ultrasecretFound = true;
+            guesses -= 1;
+            playSfx(bombSfx);
+            playSfx(secretRoomSfx);
+            // Find red rooms and unhide
+            unhideRooms(room => room.type == "red");
+
+        } else if (room.type == "ultrasecret" && room.hidden && !hardMode) {
+            if (gamemode == "daily") {
+                increaseTotalGames();
+            }
+            room.type = "wrong";
+            stage = Math.min(2, stage+1);
+            guesses -= 1;
+            playSfx(bombSfx);
+        }
+        document.getElementById("guessesremaining").textContent = guesses; // Update guesses remaining visually
+    }
+
+    function handleGameOver() {
+        // Game over logic
+        if (guesses == 0 && !(secretFound && supersecretFound) && !hardMode) { // Loss on normal
+            gameover = true;
+            won = false;
+            lost = true;
+            stage = 2;
+            // Unhide secret rooms
+            unhideRooms(room => room.hidden == true && room.type != "redwrong" && room.type != "red" && room.type != "ultrasecret");
+            drawMap(null);
+            // Modify users stats
+            if (gamemode == "daily") {
+                gamedata.stats.winStreak = 0;
+            }
+            loseSfx.play();
+            deathSfx.play();
+        } else if (guesses == 0 && !(secretFound && supersecretFound && ultrasecretFound) && hardMode) { // Loss on hard
+            gameover = true;
+            won = false;
+            lost = true;
+            stage = 2;
+            unhideRooms(room => room.hidden == true);
+            drawMap(null);
+            // Modify users stats
+            if (gamemode == "daily") {
+                gamedata.stats.winStreak = 0;
+            }
+            loseSfx.play();
+            deathSfx.play();
+        } else if (secretFound && supersecretFound && !hardMode) { // Win on normal
+            gameover = true;
+            won = true;
+            lost = false;
+            stage = 2;
+            unhideRooms(room => room.hidden == true && room.type != "redwrong" && room.type != "red" && room.type != "ultrasecret");
+            drawMap(null);
+            if (gamemode == "daily") {
+                // Modify users stats
+                updateWinStats();
+            }
+            // Stop sounds and play win
+            secretRoomSfx.pause();
+            secretRoomSfx.currentTime = 0;
+            winSfx.play();
+        } else if (secretFound && supersecretFound && ultrasecretFound && hardMode) { // Win on hard
+            gameover = true;
+            won = true;
+            lost = false;
+            stage = 2;
+            // Unhide secret rooms
+            unhideRooms(room => room.hidden == true);
+            drawMap(null);
+            if (gamemode == "daily") {
+                updateWinStats();
+            }
+            // Stop sounds and play win
+            secretRoomSfx.pause();
+            secretRoomSfx.currentTime = 0;
+            winSfx.play();
+        }
+    }
+
     canvas.addEventListener("mousemove", event => {
         if (!gameover) {
             let transform = ctx.getTransform();
@@ -577,312 +815,16 @@ export function runCore(gamemode) {
             if (x < 0 || x > 12 || y < 0 || y > 12) { // Cant place bombs out of 13x13 grid
                 return;
             }
-            let room = generator.map[y][x];
+
+            var room = generator.map[y][x];
             // If room is undefined, set it to a wrong room
-            if (!room) {
-                if (gamemode == "daily") {
-                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
-                        gamedata.stats.totalGames += 1;
-                    }
-                }
-                let newRoom = new Room(y,x);
-                newRoom.type = "wrong";
-                generator.map[y][x] = newRoom;
-                stage = Math.min(2, stage+1);
-                guesses -= 1;
-                bombSfx.pause();
-                bombSfx.currentTime = 0;
-                bombSfx.play();
-            } else if (room.type == "red" && !hardMode) { // If red room, treat like nonexistent room as should be hidden (until end)
-                if (gamemode == "daily") {
-                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
-                        gamedata.stats.totalGames += 1;
-                    }
-                }
-                room.type = "redwrong";
-                stage = Math.min(2, stage+1);
-                guesses -= 1;
-                bombSfx.pause();
-                bombSfx.currentTime = 0;
-                bombSfx.play();
-            } else if (room.type == "red" && hardMode && room.hidden) { // If red room on hard mode, reveal usr!
-                if (gamemode == "daily") {
-                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
-                        gamedata.stats.totalGames += 1;
-                    }
-                    gamedata.stats.ultraSecretRoomsFound += 1;
-                }
-                guesses -= 1;
-                bombSfx.pause();
-                bombSfx.currentTime = 0;
-                bombSfx.play();
-                secretRoomSfx.pause();
-                secretRoomSfx.currentTime = 0;
-                secretRoomSfx.play();
-                room.hidden = false;
-                ultrasecretFound = true;
-                // Find usr and unhide it,as well as all other red rooms
-                for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
-                    for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
-                        let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
-                        if (room && (room.type == "ultrasecret" || room.type == "red")) {
-                            room.hidden = false;
-                        }
-                    }
-                }
+            handleRoomClick(room, x, y);
 
-            } else if (room.type == "secret" && room.hidden) {
-                if (gamemode == "daily") {
-                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) {
-                        gamedata.stats.totalGames += 1;
-                    }
-                    gamedata.stats.secretRoomsFound += 1;
-                }
-                room.hidden = false;
-                secretFound = true;
-                guesses -= 1;
-                bombSfx.pause();
-                bombSfx.currentTime = 0;
-                secretRoomSfx.pause();
-                secretRoomSfx.currentTime = 0;
-                bombSfx.play();
-                secretRoomSfx.play();
-            } else if (room.type == "supersecret" && room.hidden) {
-                if (gamemode == "daily") {
-                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) {
-                        gamedata.stats.totalGames += 1;
-                    }
-                    gamedata.stats.superSecretRoomsFound += 1;
-                }
-                room.hidden = false;
-                supersecretFound = true;
-                guesses -= 1;
-                bombSfx.pause();
-                bombSfx.currentTime = 0;
-                secretRoomSfx.pause();
-                secretRoomSfx.currentTime = 0;
-                bombSfx.play();
-                secretRoomSfx.play();
-            } else if (room.type == "ultrasecret" && room.hidden && hardMode) {
-                if (gamemode == "daily") {
-                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound) {
-                        gamedata.stats.totalGames += 1;
-                    }
-                    gamedata.stats.ultraSecretRoomsFound += 1;
-                }
-                room.hidden = false;
-                ultrasecretFound = true;
-                guesses -= 1;
-                bombSfx.pause();
-                bombSfx.currentTime = 0;
-                secretRoomSfx.pause();
-                secretRoomSfx.currentTime = 0;
-                bombSfx.play();
-                secretRoomSfx.play();
-                // Find red rooms and unhide
-                for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
-                    for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
-                        let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
-                        if (room &&  room.type == "red") {
-                            room.hidden = false;
-                        }
-                    }
-                }
-            } else if (room.type == "ultrasecret" && room.hidden && !hardMode) {
-                if (gamemode == "daily") {
-                    if (stage == 0 && !secretFound && !supersecretFound && !ultrasecretFound && gamemode == "daily") {
-                        gamedata.stats.totalGames += 1;
-                    }
-                }
-                room.type = "wrong";
-                stage = Math.min(2, stage+1);
-                guesses -= 1;
-                bombSfx.pause();
-                bombSfx.currentTime = 0;
-                bombSfx.play();
-            }
-            document.getElementById("guessesremaining").textContent = guesses; // Update guesses remaining visually
-
-            // Loss logic
-            if (guesses == 0 && !(secretFound && supersecretFound) && !hardMode) {
-                gameover = true;
-                won = false;
-                lost = true;
-                stage = 2;
-                // Unhide secret rooms
-                for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
-                    for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
-                        let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
-                        if (room && room.hidden == true && room.type != "redwrong" && room.type != "red" && room.type != "ultrasecret") {
-                            room.hidden = false;
-                        }
-                    }
-                }
-                drawMap(null);
-                // Modify users stats
-                if (gamemode == "daily") {
-                    gamedata.stats.winStreak = 0;
-                }
-                loseSfx.play();
-                deathSfx.play();
-            } else if (guesses == 0 && !(secretFound && supersecretFound && ultrasecretFound) && hardMode) {
-                gameover = true;
-                won = false;
-                lost = true;
-                stage = 2;
-                // Unhide secret rooms
-                for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
-                    for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
-                        let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
-                        if (room && room.hidden == true) {
-                            room.hidden = false;
-                        }
-                    }
-                }
-                drawMap(null);
-                // Modify users stats
-                if (gamemode == "daily") {
-                    gamedata.stats.winStreak = 0;
-                }
-                loseSfx.play();
-                deathSfx.play();
-            } else if (secretFound && supersecretFound && !hardMode) {
-                gameover = true;
-                won = true;
-                lost = false;
-                stage = 2;
-                // Unhide secret rooms
-                for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
-                    for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
-                        let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
-                        if (room && room.hidden == true && room.type != "redwrong" && room.type != "red" && room.type != "ultrasecret") {
-                            room.hidden = false;
-                        }
-                    }
-                }
-                drawMap(null);
-                if (gamemode == "daily") {
-                    // Modify users stats
-                    gamedata.stats.wins += 1;
-                    gamedata.stats.winStreak  += 1;
-                    gamedata.lastWonDate = getPuzzleNumber();
-                    if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
-                        gamedata.stats.maxStreak = gamedata.stats.winStreak;
-                    }
-                    let elapsed = Date.now() - startTime;
-                    let seconds = gameTime + (elapsed/1000);
-                    if (gamedata.stats.fastestTime == -1 || gamedata.stats.fastestTime > seconds) {
-                        gamedata.stats.fastestTime = seconds;
-                        console.log("FINISHED IN " + seconds);
-                    } 
-                }
-                // Stop sounds and play win
-                secretRoomSfx.pause();
-                secretRoomSfx.currentTime = 0;
-                winSfx.play();
-            } else if (secretFound && supersecretFound && ultrasecretFound && hardMode) {
-                gameover = true;
-                won = true;
-                lost = false;
-                stage = 2;
-                // Unhide secret rooms
-                for (let x = roomSize; x < mapSize - roomSize; x += roomSize) {
-                    for (let y = roomSize; y < mapSize - roomSize; y += roomSize) {
-                        let room = generator.map[(y/roomSize) - 1][(x/roomSize) - 1];
-                        if (room && room.hidden == true) {
-                            room.hidden = false;
-                        }
-                    }
-                }
-                drawMap(null);
-                if (gamemode == "daily") {
-                    // Modify users stats
-                    gamedata.stats.wins += 1;
-                    gamedata.stats.winStreak  += 1;
-                    gamedata.lastWonDate = getPuzzleNumber();
-                    if (gamedata.stats.winStreak > gamedata.stats.maxStreak) {
-                        gamedata.stats.maxStreak = gamedata.stats.winStreak;
-                    }
-                    let elapsed = Date.now() - startTime;
-                    let seconds = gameTime + (elapsed/1000);
-                    if (gamedata.stats.fastestTimeUltra == -1 || gamedata.stats.fastestTimeUltra > seconds) {
-                        gamedata.stats.fastestTimeUltra = seconds;
-                        console.log("FINISHED IN " + seconds);
-                    } 
-                }
-                // Stop sounds and play win
-                secretRoomSfx.pause();
-                secretRoomSfx.currentTime = 0;
-                winSfx.play();
-            }
+            handleGameOver();
 
             // Modal to display
             if (gameover && gamemode == "daily") {
-                let results = "";
-                let winOrLoss = won;
-                if (won) {
-                    winOrLoss = "won";
-                } else {
-                    winOrLoss = "lost";
-                }
-                if (secretFound) {
-                    results += "🟩 Secret Room"
-                } else {
-                    results += "🟥 Secret Room"
-                }
-                if (supersecretFound) {
-                    results += "\n🟩 Super Secret Room "
-                } else {
-                    results += "\n🟥 Super Secret Room"
-                }
-                if (hardMode && ultrasecretFound) {
-                    results += "\n🟩 Ultra Secret Room "
-                } else if (hardMode) {
-                    results += "\n🟥 Ultra Secret Room"
-                }
-                let totalBombs = (
-                    levelnum <= 10 ? startingGuesses :
-                    levelnum == 11 ? startingGuesses + 2: // No rocks so need some extras to make it fair!
-                    levelnum === 12 ? startingGuesses + 4 : // Void is nasty
-                    null)
-                    + (hardMode ? 2 : 0); // hard mode gives 2 extra bombs!
-                let bombPerformance = (
-                    won == false ? "🟥":
-                    levelnum == 12 && guesses <= 2 && !hardMode ? "🟧" :
-                    levelnum == 12 && guesses <= 5 && !hardMode ? "🟨" :
-                    levelnum == 12 && guesses <= 10 && !hardMode ? "🟩" :
-                    levelnum == 11 && guesses <= 1 && !hardMode ? "🟧" :
-                    levelnum == 11 && guesses <= 4 && !hardMode ? "🟨" :
-                    levelnum == 11 && guesses <= 8 && !hardMode ? "🟩" :
-                    levelnum <= 10 && guesses <= 0 && !hardMode ? "🟧" :
-                    levelnum <= 10 && guesses <= 2 && !hardMode ? "🟨" :
-                    levelnum <= 10 && guesses <= 4 && !hardMode ? "🟩" :
-                    levelnum == 12 && guesses <= 2 && hardMode ? "🟧" :
-                    levelnum == 12 && guesses <= 6 && hardMode ? "🟨" :
-                    levelnum == 12 && guesses <= 9 && hardMode ? "🟩" :
-                    levelnum == 11 && guesses <= 1 && hardMode ? "🟧" :
-                    levelnum == 11 && guesses <= 4 && hardMode ? "🟨" :
-                    levelnum == 11 && guesses <= 7 && hardMode ? "🟩" :
-                    levelnum <= 10 && guesses <= 1 && hardMode ? "🟧" :
-                    levelnum <= 10 && guesses <= 3 && hardMode ? "🟨" :
-                    levelnum <= 10 && guesses <= 5 && hardMode ? "🟩" :
-
-                    null); // Attempt at balance based on starting floor - now hard coded to give a roughly even spread for each floor!
-                    // Spread for normal (6 guesses) 2 green 2 yellow 1 orange, stage 10 (8 guesses) is 2 green 3 yellow 2 orange, stage 12 (10 guesses) is 3 green 3 yellow 3 orange!
-                    // Spread for hard: (8 guesses) 2 green 2 yellow 2 orange (1 less cause takes 1 more bomb), stage 11 (10 guesses) 3 green 3 yellow 2 orange, stage 12 (12 gueses) green 3 yellow 4 orange 3
-                results += `\n${bombPerformance} ${guesses}/${totalBombs} bomb(s) remaining`
-
-                let elapsed = Date.now() - startTime;
-                let seconds = gameTime + (elapsed/1000);
-                let formatted = new Date(seconds * 1000).toISOString().substring(14, 22);
-
-                let roomleNumber = getPuzzleNumber();
-                if (hardMode) {
-                    document.getElementById("gameOverText").textContent = `You ${winOrLoss} Ultra Secret Roomle #${roomleNumber} \n${results}\nTime: ${formatted}`;
-                } else {
-                    document.getElementById("gameOverText").textContent = `You ${winOrLoss} Secret Roomle #${roomleNumber} \n${results}\nTime: ${formatted}`;
-                }
-                document.getElementById("gameOverModal").style.display = "block";
+                generateResults();
             }
 
             // After every valid click, update localstorage with info about todays game, overwriting it.
@@ -896,17 +838,10 @@ export function runCore(gamemode) {
                 gamedata.currentProgress.gameover = gameover;
                 gamedata.currentProgress.won = won;
                 gamedata.currentProgress.lost = lost;
-                // I dont think this is actually necessary - was an attempt to fix a bug that was caused by something else, but leaving it here just in case
-                // let elapsed = Date.now() - startTime;
-                // let seconds = gameTime + (elapsed/1000);
-                // gamedata.currentProgress.time = seconds;
                 localStorage.setItem("secretRoomleData", JSON.stringify(gamedata));
             }
             
-
             setElements();
-
-            // DRAW THE DAMN MAP LOL
             drawMap();
         }
     })
@@ -1042,7 +977,7 @@ export function runCore(gamemode) {
 
     function setHard(enable) {
         let switching = false;
-        if (enable == !hardMode) { //  Really scuffed way of ensuring that guesses are only added if player is actively switching it on or off. otherwise, sethard is called by initialiseGamedata for new games, adding additional bombs when hardmode is already enabled and guesses are already added
+        if (enable == !hardMode) { //  Way of ensuring that guesses are only added if player is actively switching it on or off. otherwise, sethard is called by initialiseGamedata for new games, adding additional bombs when hardmode is already enabled and guesses are already added
             switching = true;
         }
         hardMode = enable;
