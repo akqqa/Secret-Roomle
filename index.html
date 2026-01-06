@@ -23,8 +23,8 @@
       <div id="pollModal" class="modal-2">
         <div class="modal-content-2" style="margin-top: 30%";>
           <span class="close">&times;</span>
-          <h2 style="color:white;font-weight: normal;">Message</h2>
-          <p>Admin message goes here</p>
+          <h2 style="color:white;font-weight: normal;">New Update!</h2>
+          <p>Settings menu has been added where you can customise the behaviour of Ultra Secret Room bombing (Hi Mattman)</p>
         </div>
       </div>
       <div id="welcomeModal" class="modal" style="margin-top: 10%";>
@@ -48,7 +48,7 @@
             <button id=easyUSRButton class="easyUSR-button"></button>
           </div>
           <p style="margin-top: 6rem;">Toggle bombing Red Rooms</p>
-          <p>(With this setting enabled, bombed red rooms adjacent to the <span style="color: #9F0000">Ultra Secret Room</span> will reveal it. If disabled, only bombing the exact position will reveal the <span style="color: #9F0000">Ultra Secret Room</span>.)</p>
+          <p>(With this setting enabled, bombing red rooms adjacent to the <span style="color: #9F0000">Ultra Secret Room</span> will reveal it. If disabled, only bombing the exact position will reveal the <span style="color: #9F0000">Ultra Secret Room</span>.)</p>
         </div>
       </div>
       <div id="howToPlayModal" class="modal">
@@ -260,6 +260,14 @@
       if (!newUser) {
         modal5.style.display="block";
         localStorage.setItem("newUser2", true);
+      }
+
+      const seenAboutKey = "seenAboutVersion";
+      const currentAboutVersion = "2026-01-06-1"; // update per release
+
+      if (localStorage.getItem(seenAboutKey) !== currentAboutVersion) {
+        modal4.style.display = "block";
+        localStorage.setItem(seenAboutKey, currentAboutVersion);
       }
       
 
