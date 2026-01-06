@@ -452,6 +452,10 @@ export class Generator {
                     if (redCounter == redRoomCandidateNeighbours.length) {
                         valid = false;
                     }
+                    // DONT ALLOW RED ROOM IN MEGA SATAN SPOT
+                    if (this.stage == 11 && redRoomCandidate.posY == 5 && redRoomCandidate.posX == 6) {
+                        valid = false;
+                    }
                     if (valid) {
                         if (blue) {
                             redRoomCandidate.type = "blue";
