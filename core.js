@@ -39,7 +39,7 @@ export function runCore(gamemode) {
     var isMuted = false;
 
     var hardMode = false;
-    var easyUSR = false; // easy ultra secret room mode for testing
+    var easyUSR = true; // easy ultra secret room mode for testing
 
     const startingGuesses = 6;
 
@@ -182,9 +182,16 @@ export function runCore(gamemode) {
     if (settingsdata && settingsdata.isMuted) {
         setMute();
     }
-    if (!settingsdata) {
-        settingsdata = {isMuted: false};
+    if (settingsdata && settingsdata.isEasyUSR === false) {
+        setEasyUSR();
     }
+    if (!settingsdata) {
+        settingsdata = {isMuted: false, isEasyUSR: true};
+    }
+    if (!('isEasyUSR' in settingsdata)) {
+        settingsdata.isEasyUSR = true;
+    }
+    localStorage.setItem("settingsData", JSON.stringify(settingsdata));
 
     startGame();
     if (gamemode == "daily") {
@@ -966,6 +973,28 @@ export function runCore(gamemode) {
         }
         localStorage.setItem("settingsData", JSON.stringify(settingsdata));
     }
+
+    // easy usr button functionality
+    // CURRENT BUG - IF SWITCH TO EASYUSR ON MID GAME, RED ROOMS ALREADY BOMED AND SHOWING AS REDWRONG DONT CHANGE TO RED
+    document.getElementById("easyUSRButton").addEventListener("click", (event) => {
+        setEasyUSR();
+    });
+
+    function setEasyUSR() {
+        easyUSR = !easyUSR;
+
+        if (easyUSR) {
+            document.getElementById("easyUSRButton").style.backgroundImage = "url('images/checked.svg')";
+        } else {
+            document.getElementById("easyUSRButton").style.backgroundImage = "url('images/unchecked.svg')";
+        }
+
+        if (settingsdata) {
+            settingsdata.isEasyUSR = easyUSR;
+        }
+        localStorage.setItem("settingsData", JSON.stringify(settingsdata));
+    }
+
 
     // Hard mode button functionality
     document.getElementById("ultraButton").addEventListener("click", (event) => {
