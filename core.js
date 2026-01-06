@@ -39,6 +39,7 @@ export function runCore(gamemode) {
     var isMuted = false;
 
     var hardMode = false;
+    var easyUSR = true; // easy ultra secret room mode for testing
 
     const startingGuesses = 6;
 
@@ -181,9 +182,16 @@ export function runCore(gamemode) {
     if (settingsdata && settingsdata.isMuted) {
         setMute();
     }
-    if (!settingsdata) {
-        settingsdata = {isMuted: false};
+    if (settingsdata && settingsdata.isEasyUSR === false) {
+        setEasyUSR();
     }
+    if (!settingsdata) {
+        settingsdata = {isMuted: false, isEasyUSR: true};
+    }
+    if (!('isEasyUSR' in settingsdata)) {
+        settingsdata.isEasyUSR = true;
+    }
+    localStorage.setItem("settingsData", JSON.stringify(settingsdata));
 
     startGame();
     if (gamemode == "daily") {
@@ -634,6 +642,9 @@ export function runCore(gamemode) {
                 let room = generator.map[(y / roomSize) - 1][(x / roomSize) - 1];
                 if (room && predicate(room)) {
                     room.hidden = false;
+                    if (room.type == "redwrong" && hardMode && !easyUSR) {
+                        room.type = "red";
+                    }
                 }
             }
         }
@@ -656,7 +667,7 @@ export function runCore(gamemode) {
             stage = Math.min(2, stage+1);
             guesses -= 1;
             playSfx(bombSfx);
-        } else if (room.type == "red" && !hardMode) { // If red room, treat like nonexistent room as should be hidden (until end)
+        } else if (room.type == "red" && (!hardMode || (hardMode && !easyUSR && room.hidden))) { // If red room, treat like nonexistent room as should be hidden (until end). If not easy usrs and its hidden, that means its a revealed red room
             if (gamemode == "daily") {
                 increaseTotalGames();
             }
@@ -678,7 +689,6 @@ export function runCore(gamemode) {
             ultrasecretFound = true;
             // Find usr and unhide it,as well as all other red rooms
             unhideRooms(room => room.type == "ultrasecret" || room.type == "red");
-
         } else if (room.type == "secret" && room.hidden) {
             if (gamemode == "daily") {
                 increaseTotalGames();
@@ -710,8 +720,7 @@ export function runCore(gamemode) {
             playSfx(bombSfx);
             playSfx(secretRoomSfx);
             // Find red rooms and unhide
-            unhideRooms(room => room.type == "red");
-
+            unhideRooms(room => room.type == "red" || room.type == "redwrong");
         } else if (room.type == "ultrasecret" && room.hidden && !hardMode) {
             if (gamemode == "daily") {
                 increaseTotalGames();
@@ -784,6 +793,8 @@ export function runCore(gamemode) {
             secretRoomSfx.currentTime = 0;
             winSfx.play();
         }
+        console.log("AAAAA");
+        console.log(generator.map)
     }
 
     canvas.addEventListener("mousemove", event => {
@@ -962,6 +973,28 @@ export function runCore(gamemode) {
         }
         localStorage.setItem("settingsData", JSON.stringify(settingsdata));
     }
+
+    // easy usr button functionality
+    // CURRENT BUG - IF SWITCH TO EASYUSR ON MID GAME, RED ROOMS ALREADY BOMED AND SHOWING AS REDWRONG DONT CHANGE TO RED
+    document.getElementById("easyUSRButton").addEventListener("click", (event) => {
+        setEasyUSR();
+    });
+
+    function setEasyUSR() {
+        easyUSR = !easyUSR;
+
+        if (easyUSR) {
+            document.getElementById("easyUSRButton").style.backgroundImage = "url('images/checked.svg')";
+        } else {
+            document.getElementById("easyUSRButton").style.backgroundImage = "url('images/unchecked.svg')";
+        }
+
+        if (settingsdata) {
+            settingsdata.isEasyUSR = easyUSR;
+        }
+        localStorage.setItem("settingsData", JSON.stringify(settingsdata));
+    }
+
 
     // Hard mode button functionality
     document.getElementById("ultraButton").addEventListener("click", (event) => {
