@@ -215,6 +215,7 @@ export function runCore(gamemode) {
                                                 guesses: levelGuesses,
                                                 secretFound: false,
                                                 supersecretFound: false,
+                                                ultrasecretFound: false,
                                                 attempts: 0,
                                                 gameover: false,
                                                 won: false,
@@ -232,6 +233,7 @@ export function runCore(gamemode) {
 
                     secretFound = parsedData.currentProgress.secretFound;
                     supersecretFound = parsedData.currentProgress.supersecretFound;
+                    ultrasecretFound = parsedData.currentProgress.ultrasecretFound;
                     attempts = parsedData.currentProgress.attempts;
                     gameover = parsedData.currentProgress.gameover;
                     won = parsedData.currentProgress.won;
@@ -269,6 +271,7 @@ export function runCore(gamemode) {
                         guesses: levelGuesses,
                         secretFound: false,
                         supersecretFound: false,
+                        ultrasecretFound: false,
                         attempts: 0,
                         gameover: false,
                         won: false,
@@ -845,6 +848,7 @@ export function runCore(gamemode) {
                 gamedata.currentProgress.guesses = guesses;
                 gamedata.currentProgress.secretFound = secretFound;
                 gamedata.currentProgress.supersecretFound = supersecretFound;
+                gamedata.currentProgress.ultrasecretFound = ultrasecretFound;
                 gamedata.currentProgress.attempts = attempts;
                 gamedata.currentProgress.gameover = gameover;
                 gamedata.currentProgress.won = won;
