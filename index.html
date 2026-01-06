@@ -36,6 +36,16 @@
           <p>Good luck!</p>
         </div>
       </div>
+       <div id="settingsModal" class="modal">
+        <div class="modal-content-3">
+          <span class="close">&times;</span>
+          <h2 style="color:white;font-weight: normal;"> Settings </h2>
+          <div class="mute-button-container">
+            <button id=muteButton class="mute-button"></button>
+          </div>
+          <p style="margin-top: 2.5rem;">Toggle sound</p>
+        </div>
+      </div>
       <div id="howToPlayModal" class="modal">
         <div class="modal-content">
           <span class="close">&times;</span>
@@ -116,8 +126,8 @@
             <div class="ultra-button-container" style="right: 50px">
               <button id=ultraButton class="ultra-button"></button>
             </div>
-            <div class="mute-button-container">
-              <button id=muteButton class="mute-button"></button>
+            <div class="settings-button-container">
+              <button id=settingsButton class="settings-button"></button>
             </div>
           </div>
           <canvas id="gameCanvas" width="300" height="300"></canvas>
@@ -190,15 +200,18 @@
       var modal3 = document.getElementById("gameOverModal");
       var modal4 = document.getElementById("pollModal");
       var modal5 = document.getElementById("welcomeModal");
+      var modal6 = document.getElementById("settingsModal");
       // Get the button that opens the modal
       var btn1 = document.getElementById("howToPlayButton");
       var btn2 = document.getElementById("aboutButton");
+      var btn3 = document.getElementById("settingsButton");
       // Get the <span> element that closes the modal
       var span1 = modal1.getElementsByClassName("close")[0];
       var span2 = modal2.getElementsByClassName("close")[0];
       var span3 = modal3.getElementsByClassName("close")[0];
       var span4 = modal4.getElementsByClassName("close")[0];
       var span5 = modal5.getElementsByClassName("close")[0];
+      var span6 = modal6.getElementsByClassName("close")[0];
       const scrollTarget = window.innerHeight * 0;
       
       // When the user clicks the button, open the modal 
@@ -214,6 +227,15 @@
       }
       btn2.onclick = function() {
         modal2.style.display = "block";
+        if (window.scrollY > scrollTarget) {
+          window.scrollTo({
+            top: scrollTarget,
+            behavior: "smooth"
+          });
+        }
+      }
+      btn3.onclick = function() {
+        modal6.style.display = "block";
         if (window.scrollY > scrollTarget) {
           window.scrollTo({
             top: scrollTarget,
@@ -249,6 +271,9 @@
       span5.onclick = function() {
         modal5.style.display = "none";
       }
+      span6.onclick = function() {
+        modal6.style.display = "none";
+      }
       
       // When the user clicks anywhere outside of the modal, close it
       window.onclick = function(event) {
@@ -261,9 +286,9 @@
         if (event.target == modal4) {
           modal4.style.display = "none";
         }
-        // if (event.target == modal5) {
-        //   modal5.style.display = "none";
-        // }
+        if (event.target == modal6) {
+          modal6.style.display = "none";
+        }
       }
       </script>
   </body>

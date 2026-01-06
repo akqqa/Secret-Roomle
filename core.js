@@ -39,7 +39,7 @@ export function runCore(gamemode) {
     var isMuted = false;
 
     var hardMode = false;
-    var easyUSR = true; // easy ultra secret room mode for testing
+    var easyUSR = false; // easy ultra secret room mode for testing
 
     const startingGuesses = 6;
 
