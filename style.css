@@ -506,3 +506,38 @@ button:hover {
   
 }
 
+
+
+.side-ad {
+  position: fixed;
+  top: 30%;
+  transform: translateY(-50%);
+  width: clamp(160px,20vw, 300px);
+  min-height: 250px;
+  max-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.side-ad2 {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(160px,20vw, 300px);
+  min-height: 300px;
+  max-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+#adLeft { left: 60px; }
+#adRight { right: 60px; }
+
+@media (max-width: 1300px) {
+  .side-ad { display: none; }
+  .side-ad2 { display: none; }
+}
