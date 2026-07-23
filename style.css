@@ -512,7 +512,8 @@ button:hover {
   position: fixed;
   top: 30%;
   transform: translateY(-50%);
-  width: clamp(160px,20vw, 300px);
+  min-width: 160px;
+  max-width: 300px;
   min-height: 250px;
   max-height: 600px;
   display: flex;
@@ -525,7 +526,8 @@ button:hover {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
-  width: clamp(160px,20vw, 300px);
+  min-width: 160px;
+  max-width: 300px;
   min-height: 300px;
   max-height: 600px;
   display: flex;
