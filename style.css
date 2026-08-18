@@ -543,3 +543,18 @@ button:hover {
   .side-ad { display: none; }
   .side-ad2 { display: none; }
 }
+
+.footer-nav {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.footer-nav a,
+.footer-nav a:visited {
+  color: #000;
+  text-decoration: none;
+}
+
+.footer-nav a:hover {
+  text-decoration: underline;
+}
