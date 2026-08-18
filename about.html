@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" style="scrollbar-gutter: stable;">
+  <head>
+    <title>About</title>
+    <meta name="description" content="Find the Secret Rooms on a new floor every day!" />
+    <link rel="icon" href="images/favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="google-site-verification" content="4FwcroNbI2iSBD6e4GgvAt6tbwaMa39tec8bm632oHg" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "648a8b3af87d4c54892aeb6ace173f27"}'></script><!-- End Cloudflare Web Analytics -->
+    <script type="module" src="main.js"></script>
+    <link rel="preload" href="./fonts/upheavtt.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+    <link rel="canonical" href="https://roomle.net/" />
+    <meta name="robots" content="noindex, follow">
+  </head>
+  <body id="body" class="index" background="./images/Backgrounds/Basement.png">
+        <div id="outerDiv"> <!-- Div to get everything vertically in the center  -->
+      <div id="mainDiv" style="max-width: 50rem; text-align: center;"> <!-- Main Div  -->
+        <h1 id="titleName">About</h1>
+        <div id="verticalContentDiv"> <!-- Div containing main vertical content -->
+          <p>I started this project initially as just a recreation of the Isaac room generation algorithm, as I was interested in how it worked behind the scenes. I soon realised it would be really helpful to have a tool to practice my knowledge of secret rooms with, and from there I got the idea of a daily game. This site has both - a daily challenge and an endless mode for practice.</p>
+          <p>The algorithm should be quite close to the game, so its a great tool to build an intuition for secret room locations! It's not a 1-to-1 recration however so be warned. I hope you have fun with the site, as it was a lot of fun making it : )</p>
+          <p>If you have any feedback, bug reports or feature requests please dm me on <a href="https://www.reddit.com/user/akqqa/">reddit</a>, feel free to check out the <a href="https://github.com/Akqqa/Secret-Roomle">github</a> to see the spaghetti code, and if you're feeling generous you can support the site on <a href="https://ko-fi.com/akqqa">Ko-fi</a>.</p>
+          <p> I have recently added google adsense to the site - I'm sorry for the inconvenience! It will help pay for the yearly unkeep costs of the domain. There are no further planned features at this point, but I may return again if I get inspiration or think of a really cool new feature. I hope you have enjoyed playing for the past year and continue to enjoy for many more to come!</p>
+          <h1 style="color:white; font-weight: normal;"> Credits </h1>
+          <p>Please note that this is a fan creation, and is not officially associated with The Binding of Isaac or its creators.</p>
+          <p>Thanks to:</p>
+          <ul>
+            <li>thelord777 for helping me figure out how to make the frontend look decent!</li>
+            <li><a href="https://isaacle.net">isaacle</a> for being the first to do an isaac based daily game, and for giving me inspiration on the look of the site</li>
+            <li>The <a href="https://bindingofisaacrebirth.wiki.gg/wiki/Level_Generation">Isaac wiki</a> for details on the level generation algorithm</li>
+            <li><a href="https://www.boristhebrave.com/2020/09/12/dungeon-generation-in-binding-of-isaac/">boris the brave</a> for details on the level generation algorithm</li>
+            <li>Dio/Mashù Slyferiux for feedback on making the generation algorithm more accurate</li>
+          </ul>
+ 
+        </div>
+      <nav style="text-align:center; padding-top:20px;">
+        <a href="/">Home</a> | <a href="/endless">Endless</a> | <a href="/about">About</a> | <a href="/privacy-policy">Privacy Policy</a>
+      </nav>
+      </div>
+    </div>
+
+    
+
+  
+    <!--Mobile detector script to fix bug with blurry background on mobile causing lag-->
+    <script>
+      const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+      if (isMobile) {
+        document.body.style.backdropFilter = 'none';
+      }
+    </script>
+  </body>
+</html>
